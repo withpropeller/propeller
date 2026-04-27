@@ -6,6 +6,8 @@ import AcceptPaymentsSection from './components/AcceptPaymentsSection'
 import FeatureRow from './components/FeatureRow'
 import UserVerificationSection from './components/UserVerificationSection'
 import ComplianceFeatures from './components/ComplianceFeatures'
+import SolutionsSection from './components/SolutionsSection'
+import DevelopersSection from './components/DevelopersSection'
 import HowItWorksSection from './components/HowItWorksSection'
 import FeaturesGrid from './components/FeaturesGrid'
 import MissionStatement from './components/MissionStatement'
@@ -22,6 +24,8 @@ export default function App() {
       <FeatureRow />
       <UserVerificationSection />
       <ComplianceFeatures />
+      <SolutionsSection />
+      <DevelopersSection />
       <HowItWorksSection />
       <FeaturesGrid />
       <MissionStatement />
