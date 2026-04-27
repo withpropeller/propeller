@@ -31,7 +31,7 @@ export default function Navbar() {
           {/* Logo */}
           <a href="#" className="flex items-center">
             <img
-              src="/propeller-logo-white.svg"
+              src="./propeller-logo-white.svg"
               alt="Propeller"
               className="h-6 sm:h-5 w-auto"
             />
