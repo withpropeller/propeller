@@ -27,7 +27,7 @@ const steps = [
 
 export default function HowItWorksSection() {
   return (
-    <section id="how-it-works" className="bg-runway-black">
+    <section id="how-it-works" className="bg-cream-50">
       <div className="max-w-cinema mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-28">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -36,10 +36,10 @@ export default function HowItWorksSection() {
           transition={{ duration: 0.5 }}
           className="mb-14 md:mb-20"
         >
-          <p className="text-xs font-medium uppercase tracking-label text-runway-coolSlate mb-4">
+          <p className="text-xs font-medium uppercase tracking-label text-warm-light mb-4">
             How it works
           </p>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-normal leading-tight tracking-tight text-white max-w-2xl">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-normal leading-tight text-warm-text max-w-2xl">
             From Naira to USDC in three steps
           </h2>
         </motion.div>
@@ -52,7 +52,7 @@ export default function HowItWorksSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.15 }}
-              className="group relative bg-runway-surface border border-runway-borderDark rounded-comfortable p-6 md:p-8 hover:border-runway-coolSlate/30 transition-colors"
+              className="group relative bg-white border border-warm-border rounded-comfortable p-6 md:p-8 hover:border-warm-light/50 transition-colors"
             >
               <div className="flex items-center justify-between mb-8">
                 <span className="text-xs font-medium uppercase tracking-label text-runway-propellerBlue">
@@ -60,13 +60,13 @@ export default function HowItWorksSection() {
                 </span>
                 <step.icon
                   size={20}
-                  className="text-runway-coolSlate group-hover:text-white transition-colors"
+                  className="text-warm-light group-hover:text-warm-text transition-colors"
                 />
               </div>
-              <h3 className="text-lg md:text-xl font-normal text-white mb-3 leading-tight">
+              <h3 className="text-lg md:text-xl font-normal text-warm-text mb-3 leading-tight">
                 {step.title}
               </h3>
-              <p className="text-sm leading-body text-runway-coolSlate">
+              <p className="text-sm leading-body text-warm-muted">
                 {step.description}
               </p>
             </motion.div>

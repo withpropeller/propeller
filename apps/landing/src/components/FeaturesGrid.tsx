@@ -49,7 +49,7 @@ const features = [
 
 export default function FeaturesGrid() {
   return (
-    <section id="features" className="bg-runway-deep">
+    <section id="features" className="bg-cream-100">
       <div className="max-w-cinema mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-28">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -58,10 +58,10 @@ export default function FeaturesGrid() {
           transition={{ duration: 0.5 }}
           className="mb-14 md:mb-20"
         >
-          <p className="text-xs font-medium uppercase tracking-label text-runway-coolSlate mb-4">
+          <p className="text-xs font-medium uppercase tracking-label text-warm-light mb-4">
             Features
           </p>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-normal leading-tight tracking-tight text-white max-w-2xl">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-normal leading-tight text-warm-text max-w-2xl">
             Everything you need to move money across borders
           </h2>
         </motion.div>
@@ -74,17 +74,17 @@ export default function FeaturesGrid() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="group p-6 md:p-8 rounded-comfortable border border-runway-borderDark hover:border-runway-coolSlate/30 transition-colors"
+              className="group p-6 md:p-8 rounded-comfortable bg-white border border-warm-border hover:border-warm-light/50 transition-colors"
             >
               <feature.icon
                 size={22}
                 className="text-runway-propellerBlue mb-5"
                 strokeWidth={1.5}
               />
-              <h3 className="text-base md:text-lg font-normal text-white mb-2 leading-tight">
+              <h3 className="text-base md:text-lg font-normal text-warm-text mb-2 leading-tight">
                 {feature.title}
               </h3>
-              <p className="text-sm leading-body text-runway-coolSlate">
+              <p className="text-sm leading-body text-warm-muted">
                 {feature.description}
               </p>
             </motion.div>

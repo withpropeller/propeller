@@ -8,7 +8,7 @@ import Footer from './components/Footer'
 
 export default function App() {
   return (
-    <div className="bg-runway-black min-h-screen">
+    <div className="bg-cream-100 min-h-screen">
       <Navbar />
       <HeroSection />
       <TrustBar />

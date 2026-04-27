@@ -22,7 +22,7 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-runway-black/90 backdrop-blur-md border-b border-runway-borderDark'
+          ? 'bg-cream-50/90 backdrop-blur-md border-b border-warm-border'
           : 'bg-transparent'
       }`}
     >
@@ -31,9 +31,9 @@ export default function Navbar() {
           {/* Logo */}
           <a href="#" className="flex items-center">
             <img
-              src="./propeller-logo-white.svg"
+              src="./propeller-wordmark-dark.svg"
               alt="Propeller"
-              className="h-6 sm:h-5 w-auto"
+              className="h-6 w-auto"
             />
           </a>
 
@@ -43,7 +43,7 @@ export default function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-runway-coolSlate hover:text-white transition-colors"
+                className="text-sm font-medium text-warm-muted hover:text-warm-text transition-colors"
               >
                 {link.label}
               </a>
@@ -54,12 +54,12 @@ export default function Navbar() {
           <div className="flex items-center gap-4">
             <a
               href="#"
-              className="hidden md:inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-runway-propellerBlue hover:bg-runway-propellerBlue/90 rounded-sharp transition-colors"
+              className="hidden md:inline-flex items-center px-5 py-2 text-sm font-semibold text-runway-propellerBlue border border-runway-propellerBlue/30 hover:bg-runway-propellerBlue/5 rounded-sharp transition-colors"
             >
-              Get Started
+              Login
             </a>
             <button
-              className="md:hidden text-white"
+              className="md:hidden text-warm-text"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Toggle menu"
             >
@@ -71,23 +71,23 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden bg-runway-black/95 backdrop-blur-md border-t border-runway-borderDark">
+        <div className="md:hidden bg-cream-50/95 backdrop-blur-md border-t border-warm-border">
           <div className="px-6 py-6 flex flex-col gap-4">
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className="text-base font-medium text-runway-coolSlate hover:text-white transition-colors"
+                className="text-base font-medium text-warm-muted hover:text-warm-text transition-colors"
               >
                 {link.label}
               </a>
             ))}
             <a
               href="#"
-              className="mt-2 inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-white bg-runway-propellerBlue rounded-sharp"
+              className="mt-2 inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-runway-propellerBlue border border-runway-propellerBlue/30 rounded-sharp"
             >
-              Get Started
+              Login
             </a>
           </div>
         </div>
