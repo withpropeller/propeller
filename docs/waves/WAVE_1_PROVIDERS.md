@@ -48,7 +48,7 @@ Authorization = url_encode(json_stringify({
 - Empty `merch_id` keeps its newline (line 4 = `""` + `\n`).
 - Inbound callbacks: verify with PayKKa's public key BEFORE parsing body. Reject unsigned content; never log it to ops dashboards.
 - Nonce + timestamp dedup window in flo KV (anti-replay). 5-minute window; reject older.
-- Both PayKKa public key and Reef private key stored as PEM in Doppler. `key_id` is a regular config value (PayKKa-issued, supports rotation).
+- Both PayKKa public key and Propeller private key stored as PEM in Doppler. `key_id` is a regular config value (PayKKa-issued, supports rotation).
 
 **Test vectors required** (from Lin in PayKKa kickoff):
 - Sample canonical string + expected base64 signature against a known keypair
@@ -60,11 +60,11 @@ Do not write business logic in the PayKKa adapter until these vectors pass green
 
 | Method | Path | Function | Auth |
 |---|---|---|---|
-| POST | `/api/file/upload` | upload merchant document | RSA + Reef's `X-Merch-Id` |
+| POST | `/api/file/upload` | upload merchant document | RSA + Propeller's `X-Merch-Id` |
 | POST | `/api/v2/merch/onboard/apply` | submit KYB application | RSA only (no `X-Merch-Id`) |
 | inbound | callback URL | onboarding notification | PayKKa-signed, verified by us |
 
-`X-Merch-Id` for file upload is **Reef's own PayKKa merchant ID** (we register as a merchant ourselves). This is being clarified with Lin (item 6 in the kickoff email).
+`X-Merch-Id` for file upload is **Propeller's own PayKKa merchant ID** (we register as a merchant ourselves). This is being clarified with Lin (item 6 in the kickoff email).
 
 ## Paystack — PWT specifics
 

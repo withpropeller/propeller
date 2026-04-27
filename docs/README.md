@@ -1,6 +1,6 @@
-# Reef Docs
+# Propeller Docs
 
-Design documentation for Reef — the China–Africa NGN→USDC payment corridor.
+Design documentation for Propeller — the China–Africa NGN→USDC payment corridor.
 
 ## Reading order
 

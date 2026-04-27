@@ -22,7 +22,7 @@
 ## Repo layout (created in this wave)
 
 ```
-reef/
+propeller/
 ├── apps/
 │   ├── api/                  # placeholder Nest app + healthcheck
 │   ├── services/             # placeholder Nest app + healthcheck
@@ -96,7 +96,7 @@ From `other_issuing_project/api/src/core`:
 - `pipes/` — joi/class-validator wiring
 - `helpers/` — date, money (big.js), nanoid, etc.
 
-Drop modules irrelevant to Reef (anything card-issuer-specific). Replace `mongoose` with the latest, replace `nestjs-pino` if Nest 10+ requires.
+Drop modules irrelevant to Propeller (anything card-issuer-specific). Replace `mongoose` with the latest, replace `nestjs-pino` if Nest 10+ requires.
 
 ## Secret schema (Rune secrets + local `.env`)
 
@@ -127,7 +127,7 @@ Per environment:
 
 ```
 rune create config app-config --from-literal=NODE_ENV=staging --from-literal=LOG_LEVEL=info ...
-rune create secret reef-core --from-literal=DATABASE_URL=... --from-literal=SENTRY_DSN=...
+rune create secret propeller-core --from-literal=DATABASE_URL=... --from-literal=SENTRY_DSN=...
 ```
 
 CI holds only a Rune deploy token; no app secrets pass through CI. Production credentials never exist on developer laptops.

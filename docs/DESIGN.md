@@ -1,16 +1,16 @@
-# Reef — System Design
+# Propeller — System Design
 
 **Status:** Draft v1
 **Owners:** Oreofe + team
-**Scope:** China–Africa payment corridor. Naira inbound, USDC outbound. Reef is Merchant of Record (MOR).
+**Scope:** China–Africa payment corridor. Naira inbound, USDC outbound. Propeller is Merchant of Record (MOR).
 
 ---
 
-## 1. What Reef is
+## 1. What Propeller is
 
-Reef is a regulated payment-corridor platform. End-payers (mostly Nigerian businesses and individuals) settle invoices in NGN via NIP bank transfer. Merchants (mostly Chinese exporters) receive USDC at a destination of their choosing. Reef sits in the middle as the legal counterparty: collects NGN, runs compliance, executes FX, ships USDC.
+Propeller is a regulated payment-corridor platform. End-payers (mostly Nigerian businesses and individuals) settle invoices in NGN via NIP bank transfer. Merchants (mostly Chinese exporters) receive USDC at a destination of their choosing. Propeller sits in the middle as the legal counterparty: collects NGN, runs compliance, executes FX, ships USDC.
 
-Because Reef is MOR, regulatory obligations live with us: CBN/EFCC/NDPC on the Nigeria side, FATF/OFAC globally, with PayKKa and Globalstack carrying their own China-side obligations as our partners.
+Because Propeller is MOR, regulatory obligations live with us: CBN/EFCC/NDPC on the Nigeria side, FATF/OFAC globally, with PayKKa and Globalstack carrying their own China-side obligations as our partners.
 
 ## 2. Actors
 
@@ -20,7 +20,7 @@ Because Reef is MOR, regulatory obligations live with us: CBN/EFCC/NDPC on the N
 | **Merchant** | A business that collects payments. Can be standalone (top-level) or nested under a super-merchant. |
 | **End-payer** | The human who authenticates and submits the NIP transfer. KYC'd via Dojah. |
 | **Billed party** | The business named on the invoice (often the end-payer's employer). Metadata + sanctions-screened by name; not KYC'd. |
-| **Reef ops** | Internal users of the admin app. Handle reviews, approvals, exceptions. |
+| **Propeller ops** | Internal users of the admin app. Handle reviews, approvals, exceptions. |
 
 There is one entity in the data model — `business` — with a `tier` field (`merchant` | `super_merchant`) and capabilities. Tier upgrade is the only human-in-the-loop event in the onboarding rail.
 
@@ -30,9 +30,9 @@ There is one entity in the data model — `business` — with a `tier` field (`m
 apps/
   api/          NestJS + Fastify    public REST for super-merchants, OpenAPI/Scalar, HMAC auth
   services/    NestJS + Fastify    internal REST for dashboard (businesses + end-payers), cookie sessions
-  office/      NestJS + Fastify    internal REST for admin (Reef ops), CF Access identity header
+  office/      NestJS + Fastify    internal REST for admin (Propeller ops), CF Access identity header
   dashboard/   Vite + React        end-payer payment URL + business dashboard
-  admin/       Vite + React        Reef ops, behind Cloudflare Access + Google SSO + VPN
+  admin/       Vite + React        Propeller ops, behind Cloudflare Access + Google SSO + VPN
   docs/        Scalar              static docs site rendering apps/api OpenAPI
 
 workers/
@@ -149,7 +149,7 @@ interface AddressScreeningProvider {
 
 ## 6. TigerBeetle ledger
 
-One ledger, asset = NGN. USDC is metadata on payouts, not a balance — Globalstack converts and delivers, Reef never custodies USDC.
+One ledger, asset = NGN. USDC is metadata on payouts, not a balance — Globalstack converts and delivers, Propeller never custodies USDC.
 
 **Accounts:**
 
@@ -159,7 +159,7 @@ ext.paystack.fees                        expense — Paystack's cut
 ext.bank.<our_bank>.balance              asset — settled NGN at our partner bank
 ext.globalstack.suspense                 liability — NGN sent to Globalstack pending USDC delivery
 ext.globalstack.fees                     expense
-fee.<business_id>.revenue                revenue — Reef's take per business
+fee.<business_id>.revenue                revenue — Propeller's take per business
 business.<top_business_id>.collected     asset — top-level only (super-merchants and standalone merchants)
 business.<top_business_id>.payout_pending liability — held during payout
 fx.settled                               equity-style sink — closes Globalstack suspense after USDC delivery
@@ -171,7 +171,7 @@ Sub-business attribution is carried as `user_data` on transfers, not as a separa
 
 ## 7. Payment flow (collection)
 
-1. Super-merchant POSTs `/v1/payment-requests`. Reef calls Paystack `POST /charge` with `bank_transfer.account_expires_at`. Returns virtual account number scoped to that single charge (15min–8h TTL).
+1. Super-merchant POSTs `/v1/payment-requests`. Propeller calls Paystack `POST /charge` with `bank_transfer.account_expires_at`. Returns virtual account number scoped to that single charge (15min–8h TTL).
 2. End-payer opens payment URL. Dashboard renders amount, billed party, KYC gate.
 3. If KYC required (config + threshold based): Dojah widget embedded. End-payer completes liveness + ID. Dojah webhook fires `flo:kyc.completed`. ComplyAdvantage overlay → `customer.kyc_passed`.
 4. End-payer transfers via NIP. Paystack fires `charge.success`.
@@ -249,7 +249,7 @@ Secrets in Rune (encrypted at rest in `runed`'s BadgerDB; no read-API from outsi
 | `payout.completed` | Globalstack USDC settlement confirmed |
 | `payout.failed` | Any terminal failure |
 
-Each carries `event_id` (monotonic), `created_at`, `data`, signature in `X-Reef-Signature` header (HMAC over body). Retry schedule: 0s, 30s, 5m, 30m, 2h, 12h, 24h, then dead-letter.
+Each carries `event_id` (monotonic), `created_at`, `data`, signature in `X-Propeller-Signature` header (HMAC over body). Retry schedule: 0s, 30s, 5m, 30m, 2h, 12h, 24h, then dead-letter.
 
 ## 13. API surface (v1)
 
@@ -330,10 +330,10 @@ Deployment: `rune cast runeset/` applies the templated YAML bundle (one runeset 
 | PayKKa: full sub-industry codes, trade-volume tiers, employee tiers, export-type values, callback `biz_type` list | PayKKa | Wave 2 |
 | Paystack PWT enabled on our account | Paystack | Wave 3 |
 | Globalstack contract + sandbox keys | Globalstack | Wave 4 |
-| ComplyAdvantage account + monitoring config | Reef | Wave 2 |
-| Cloudflare Access + Google Workspace SSO setup | Reef | Wave 5 |
-| TigerBeetle 3-node cluster sizing + DO droplet plan | Reef | Wave 5 |
-| Address screening provider final pick (post-launch) | Reef | Post-v1 |
+| ComplyAdvantage account + monitoring config | Propeller | Wave 2 |
+| Cloudflare Access + Google Workspace SSO setup | Propeller | Wave 5 |
+| TigerBeetle 3-node cluster sizing + DO droplet plan | Propeller | Wave 5 |
+| Address screening provider final pick (post-launch) | Propeller | Post-v1 |
 
 ## 17. Glossary
 

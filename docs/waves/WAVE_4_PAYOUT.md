@@ -1,6 +1,6 @@
 # Wave 4 — Payout (NGN → USDC)
 
-**Goal**: super-merchant requests payout, Reef debits NGN and ships USDC via Globalstack to a destination address. Travel-rule data captured. Address screening (passthrough) in the pipeline.
+**Goal**: super-merchant requests payout, Propeller debits NGN and ships USDC via Globalstack to a destination address. Travel-rule data captured. Address screening (passthrough) in the pipeline.
 
 **Status**: not started
 **Estimated effort**: 2 weeks

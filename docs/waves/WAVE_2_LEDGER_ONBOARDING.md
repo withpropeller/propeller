@@ -109,7 +109,7 @@ POST   /public/businesses/:id/submit
 **Auth surfaces by app**:
 - `apps/api` `/v1/*` — HMAC (super-merchants)
 - `apps/services` `/public/*` and `/dashboard/*` — session cookie or signup token (business users + end-payers)
-- `apps/office` `/admin/*` — Cloudflare Access verified identity header (Reef ops)
+- `apps/office` `/admin/*` — Cloudflare Access verified identity header (Propeller ops)
 
 **Idempotency**: `Idempotency-Key` header → flo KV (`idem:<api_key_id>:<key>`) with 24h TTL. Hit returns cached response; miss reserves and proceeds.
 
@@ -117,7 +117,7 @@ POST   /public/businesses/:id/submit
 
 ```json
 {
-  "type": "https://reef.xyz/errors/business-kyb-not-passed",
+  "type": "https://propeller.xyz/errors/business-kyb-not-passed",
   "title": "KYB not passed",
   "status": 409,
   "code": "BUSINESS_KYB_NOT_PASSED",
@@ -135,16 +135,16 @@ POST   /public/businesses/:id/submit
 3. /public/businesses → create draft business
 4. Multi-step wizard:
    - business info (name, country, registration)
-   - industry (Reef enum, mapped to PayKKa codes)
+   - industry (Propeller enum, mapped to PayKKa codes)
    - stakeholders (legal_rep, directors, beneficiaries, shareholders)
-   - documents (multipart upload — Reef API → PayKKa file upload, capture file_id)
+   - documents (multipart upload — Propeller API → PayKKa file upload, capture file_id)
 5. /public/businesses/:id/submit
    → workers/compliance picks up flo:business.submission_ready
    → calls PayKKa apply onboarding
    → captures merch_id + authorize_link
    → emits flo:kyb.submitted
-6. Reef-hosted intermediary page emailed to legal rep:
-   https://merchants.reef.xyz/kyb/<id>?token=...
+6. Propeller-hosted intermediary page emailed to legal rep:
+   https://merchants.propeller.xyz/kyb/<id>?token=...
    → renders our consent + branding → redirect to authorize_link
 7. PayKKa Onboarding Notification → /webhooks/paykka
    → workers/compliance:
@@ -157,7 +157,7 @@ POST   /public/businesses/:id/submit
 
 ## Industry taxonomy
 
-Reef-side normalized vocabulary in `libs/compliance/industries.ts`:
+Propeller-side normalized vocabulary in `libs/compliance/industries.ts`:
 
 ```ts
 type ReefIndustry = 'fashion_apparel' | 'electronics' | 'beauty_health' | ...
@@ -209,10 +209,10 @@ Idempotent: every action is keyed off the consumed event ID.
 ## Risks
 
 - **PayKKa industry taxonomy mapping** still pending Lin's response — block on having the mapping table populated before this wave's UI work.
-- **Reef-hosted intermediary page UX** — needs a designer pass; default to functional.
+- **Propeller-hosted intermediary page UX** — needs a designer pass; default to functional.
 - **Document upload sizes**: PayKKa caps at 10 MiB. Phone-camera images may exceed. Add client-side resize before upload.
 - **ComplyAdvantage false positives** on common names — risk-score threshold needs tuning. Default conservative (more manual reviews) and loosen with data.
-- **Cloudflare Access provisioning** for admin — block on Reef's IT ownership of the Workspace.
+- **Cloudflare Access provisioning** for admin — block on Propeller's IT ownership of the Workspace.
 
 ## Out of scope
 

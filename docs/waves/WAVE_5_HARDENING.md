@@ -1,6 +1,6 @@
 # Wave 5 — Hardening + Ship
 
-**Goal**: production-ready. Audit, retention, monitoring, runbooks, security review, prod infra, DR drill. Reef goes live.
+**Goal**: production-ready. Audit, retention, monitoring, runbooks, security review, prod infra, DR drill. Propeller goes live.
 
 **Status**: not started
 **Estimated effort**: 2–3 weeks
@@ -216,7 +216,7 @@ Formalize:
 
 - **External pentest scheduling**: long lead time; book early in Wave 4 if going external.
 - **TigerBeetle 3-node cluster operational experience**: limited team familiarity. Plan for 1 day per node bring-up + 2 days troubleshooting.
-- **Cloudflare Access SSO setup**: depends on Reef's Google Workspace admin access.
+- **Cloudflare Access SSO setup**: depends on Propeller's Google Workspace admin access.
 - **First-week monitoring burden**: expect heavier ops load for 1–2 weeks post-launch; staffed coverage.
 
 ## Post-v1 (out of scope)

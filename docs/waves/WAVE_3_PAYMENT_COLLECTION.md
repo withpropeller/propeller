@@ -174,9 +174,9 @@ decision flow (cache-first, no I/O calls > 500ms):
 
 Headers:
 ```
-X-Reef-Signature: HMAC-SHA256 over body
-X-Reef-Event-Id: <event_id>
-X-Reef-Event-Type: <event type>
+X-Propeller-Signature: HMAC-SHA256 over body
+X-Propeller-Event-Id: <event_id>
+X-Propeller-Event-Type: <event type>
 ```
 
 Retry: 0s, 30s, 5m, 30m, 2h, 12h, 24h. Dead-letter to `webhook.dead_letter` queue → admin inspector view.
