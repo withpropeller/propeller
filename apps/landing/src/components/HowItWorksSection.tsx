@@ -11,7 +11,7 @@ const steps = [
   },
   {
     number: '02',
-    title: 'Reef handles compliance & FX',
+    title: 'Propeller handles compliance & FX',
     description:
       'Every transaction is screened for sanctions, KYC is verified via Dojah, and FX conversion is executed at competitive rates.',
     icon: ShieldCheck,
