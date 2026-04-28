@@ -12,7 +12,7 @@ export default function Footer() {
                 className="h-5 w-auto"
               />
             </a>
-            <div className="flex items-center gap-3 mb-6">
+            {/*<div className="flex items-center gap-3 mb-6">
               <a href="#" className="text-warm-light hover:text-warm-text transition-colors text-sm">
                 in
               </a>
@@ -22,7 +22,7 @@ export default function Footer() {
               <a href="#" className="text-warm-light hover:text-warm-text transition-colors text-sm">
                 YT
               </a>
-            </div>
+            </div>*/}
           </div>
 
           {/* Products */}

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { X, Check } from 'lucide-react'
+import SectionFrame from './SectionFrame'
 
 const comparisonRows = [
   {
@@ -42,7 +43,7 @@ const comparisonRows = [
 export default function CheckoutSection() {
   return (
     <section className="bg-cream-50 py-20 md:py-28">
-      <div className="max-w-cinema mx-auto px-6 md:px-12 lg:px-20">
+      <SectionFrame className="px-6 md:px-12 lg:px-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -129,7 +130,7 @@ export default function CheckoutSection() {
             </div>
           ))}
         </motion.div>
-      </div>
+      </SectionFrame>
     </section>
   )
 }

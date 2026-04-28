@@ -6,10 +6,10 @@ export default function CTASection() {
       {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: 'url(./cta-africa-landscape.jpg)' }}
+        style={{ backgroundImage: 'url(./cta-africa.jpg)' }}
       />
       {/* Dark overlay for text readability */}
-      <div className="absolute inset-0 bg-black/50" />
+      <div className="absolute inset-0 bg-black/80" />
       {/* Subtle gradient at bottom for smooth transition to footer */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/40 to-transparent" />
 
