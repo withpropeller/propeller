@@ -22,7 +22,7 @@ const steps = [
     title: 'Settle',
     subtitle: 'You receive USDC',
     description:
-      'Propeller\'s regulated partners handle the settlement. You receive USDC at your wallet or account of choice. Reconciliation data included.',
+      "Propeller's regulated partners handle the settlement. You receive USDC at your wallet or account of choice. Reconciliation data included.",
     duration: 'Same-day settlement',
   },
 ]
@@ -40,7 +40,7 @@ export default function HowItWorksSection() {
           className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-10 md:mb-14"
         >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-normal leading-tight text-warm-text">
-            Fast track to clarity
+            Three steps. One integration.
           </h2>
           <p className="text-sm md:text-base text-warm-muted leading-body max-w-sm">
             Start building a unified payment model you can trust as the source
@@ -69,28 +69,40 @@ export default function HowItWorksSection() {
             </a>
           </div>
 
-          {/* Timeline */}
-          <div className="relative">
-            {/* Horizontal line — desktop only */}
-            <div className="hidden md:block absolute top-[11px] left-0 right-0 h-px bg-warm-border" />
+          {/* Desktop: dots + animated line */}
+          <div className="hidden md:block">
+            {/* Dots row — same grid as content so columns align */}
+            <div className="grid grid-cols-3 gap-10 relative mb-6">
+              {/* Background track */}
+              <div className="absolute top-1/2 left-0 right-0 h-px -translate-y-1/2 bg-warm-border" />
 
-            {/* Steps */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+              {/* Animated highlight line */}
+              <motion.div
+                className="absolute top-1/2 left-0 h-px -translate-y-1/2 bg-warm-text origin-left"
+                style={{ right: 0 }}
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 1.2, ease: 'easeInOut', delay: 0.3 }}
+              />
+
+              {/* Dots */}
               {steps.map((step, i) => (
                 <motion.div
                   key={step.number}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  className="relative z-10 w-2 h-2 rounded-full bg-warm-text border-2 border-white"
+                  initial={{ scale: 0 }}
+                  whileInView={{ scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.3 + i * 0.12 }}
-                  className="relative"
-                >
-                  {/* Dot */}
-                  <div className="hidden md:flex absolute -top-[1px] left-0 w-6 h-6 -ml-3 items-center justify-center z-10">
-                    <div className="w-2.5 h-2.5 rounded-full bg-warm-text border-2 border-white" />
-                  </div>
+                  transition={{ duration: 0.3, delay: 0.5 + i * 0.25 }}
+                />
+              ))}
+            </div>
 
-                  {/* Number badge */}
+            {/* Content row */}
+            <div className="grid grid-cols-3 gap-10">
+              {steps.map((step) => (
+                <div key={step.number}>
                   <div className="flex items-center gap-2 mb-3">
                     <span className="inline-flex items-center justify-center w-7 h-7 rounded-md bg-cream-100 text-[11px] font-semibold text-warm-text border border-warm-border">
                       {step.number}
@@ -99,7 +111,6 @@ export default function HowItWorksSection() {
                       {step.title}
                     </span>
                   </div>
-
                   <h4 className="text-sm font-medium text-warm-text mb-1.5">
                     {step.subtitle}
                   </h4>
@@ -107,9 +118,38 @@ export default function HowItWorksSection() {
                     {step.description}
                   </p>
                   <p className="text-xs text-warm-light">{step.duration}</p>
-                </motion.div>
+                </div>
               ))}
             </div>
+          </div>
+
+          {/* Mobile: stacked steps */}
+          <div className="md:hidden space-y-8">
+            {steps.map((step, i) => (
+              <motion.div
+                key={step.number}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="inline-flex items-center justify-center w-7 h-7 rounded-md bg-cream-100 text-[11px] font-semibold text-warm-text border border-warm-border">
+                    {step.number}
+                  </span>
+                  <span className="text-sm font-medium text-warm-text">
+                    {step.title}
+                  </span>
+                </div>
+                <h4 className="text-sm font-medium text-warm-text mb-1.5">
+                  {step.subtitle}
+                </h4>
+                <p className="text-sm text-warm-muted leading-body mb-3">
+                  {step.description}
+                </p>
+                <p className="text-xs text-warm-light">{step.duration}</p>
+              </motion.div>
+            ))}
           </div>
         </motion.div>
       </div>

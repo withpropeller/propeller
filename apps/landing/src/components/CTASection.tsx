@@ -6,7 +6,7 @@ export default function CTASection() {
       {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: 'url(./cta-africa.jpg)' }}
+        style={{ backgroundImage: 'url(./cta-africa-landscape.jpg)' }}
       />
       {/* Dark overlay for text readability */}
       <div className="absolute inset-0 bg-black/50" />
