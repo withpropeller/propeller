@@ -2,128 +2,128 @@ export default function Footer() {
   return (
     <footer id="footer" className="bg-cream-100 border-t border-warm-border">
       <div className="max-w-cinema mx-auto px-6 md:px-12 lg:px-20 py-12 md:py-16">
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-10">
-          {/* Logo & tagline */}
-          <div className="max-w-xs">
-            <a href="#" className="flex items-center mb-4">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-8 md:gap-6">
+          {/* Logo & social */}
+          <div className="col-span-2">
+            <a href="#" className="flex items-center mb-6">
               <img
                 src="./propeller-wordmark-dark.svg"
                 alt="Propeller"
                 className="h-5 w-auto"
               />
             </a>
-            <p className="text-sm text-warm-muted leading-body">
-              The regulated payment layer for China–Africa trade. Settle NGN.
-              Receive USDC.
-            </p>
+            <div className="flex items-center gap-3 mb-6">
+              <a href="#" className="text-warm-light hover:text-warm-text transition-colors text-sm">
+                in
+              </a>
+              <a href="#" className="text-warm-light hover:text-warm-text transition-colors text-sm">
+                X
+              </a>
+              <a href="#" className="text-warm-light hover:text-warm-text transition-colors text-sm">
+                YT
+              </a>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-4 bg-blue-700 rounded-sm flex items-center justify-center">
+                <span className="text-white text-[6px] font-bold">NG</span>
+              </div>
+              <p className="text-[10px] text-warm-light leading-tight">
+                Licensed & Regulated
+                <br />
+                Payment Service Provider
+              </p>
+            </div>
           </div>
 
-          {/* Link columns */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 md:gap-16">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-label text-warm-light mb-4">
-                Product
-              </p>
-              <ul className="flex flex-col gap-2.5">
-                <li>
-                  <a
-                    href="#features"
-                    className="text-sm text-warm-muted hover:text-warm-text transition-colors"
-                  >
-                    Features
+          {/* Products */}
+          <div>
+            <p className="text-xs font-medium text-warm-text mb-4">Products</p>
+            <ul className="flex flex-col gap-2.5">
+              {['Virtual Accounts', 'Payments', 'Fraud', 'User Verification', 'FX', 'Onboarding', 'Dashboard', 'Integration'].map((item) => (
+                <li key={item}>
+                  <a href="#" className="text-xs text-warm-muted hover:text-warm-text transition-colors">
+                    {item}
                   </a>
                 </li>
-                <li>
-                  <a
-                    href="#how-it-works"
-                    className="text-sm text-warm-muted hover:text-warm-text transition-colors"
-                  >
-                    How it works
+              ))}
+            </ul>
+          </div>
+
+          {/* Solutions */}
+          <div>
+            <p className="text-xs font-medium text-warm-text mb-4">Solutions</p>
+            <ul className="flex flex-col gap-2.5">
+              {['B2C Marketplaces', 'B2B Platforms', 'Rental Marketplaces', 'Retail Marketplaces', 'Crowdfunding'].map((item) => (
+                <li key={item}>
+                  <a href="#" className="text-xs text-warm-muted hover:text-warm-text transition-colors">
+                    {item}
                   </a>
                 </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-warm-muted hover:text-warm-text transition-colors"
-                  >
-                    API Reference
+              ))}
+            </ul>
+          </div>
+
+          {/* Developers */}
+          <div>
+            <p className="text-xs font-medium text-warm-text mb-4">Developers</p>
+            <ul className="flex flex-col gap-2.5">
+              {['Documentation', 'API Reference', 'API Demonstration'].map((item) => (
+                <li key={item}>
+                  <a href="#" className="text-xs text-warm-muted hover:text-warm-text transition-colors">
+                    {item}
                   </a>
                 </li>
-              </ul>
-            </div>
-            <div>
-              <p className="text-xs font-medium uppercase tracking-label text-warm-light mb-4">
-                Company
-              </p>
-              <ul className="flex flex-col gap-2.5">
-                <li>
-                  <a
-                    href="#mission"
-                    className="text-sm text-warm-muted hover:text-warm-text transition-colors"
-                  >
-                    Mission
+              ))}
+            </ul>
+            <p className="text-xs font-medium text-warm-text mt-6 mb-4">Resources</p>
+            <ul className="flex flex-col gap-2.5">
+              {['FAQ', 'Blog'].map((item) => (
+                <li key={item}>
+                  <a href="#" className="text-xs text-warm-muted hover:text-warm-text transition-colors">
+                    {item}
                   </a>
                 </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-warm-muted hover:text-warm-text transition-colors"
-                  >
-                    Contact
+              ))}
+            </ul>
+          </div>
+
+          {/* Company */}
+          <div>
+            <p className="text-xs font-medium text-warm-text mb-4">Company</p>
+            <ul className="flex flex-col gap-2.5">
+              {['About us', 'Working @Propeller', 'Newsroom'].map((item) => (
+                <li key={item}>
+                  <a href="#" className="text-xs text-warm-muted hover:text-warm-text transition-colors">
+                    {item}
                   </a>
                 </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-warm-muted hover:text-warm-text transition-colors"
-                  >
-                    Careers
+              ))}
+            </ul>
+            <p className="text-xs font-medium text-warm-text mt-6 mb-4">Contact</p>
+            <ul className="flex flex-col gap-2.5">
+              {['Contact us', 'Contact sales'].map((item) => (
+                <li key={item}>
+                  <a href="#" className="text-xs text-warm-muted hover:text-warm-text transition-colors">
+                    {item}
                   </a>
                 </li>
-              </ul>
-            </div>
-            <div>
-              <p className="text-xs font-medium uppercase tracking-label text-warm-light mb-4">
-                Legal
-              </p>
-              <ul className="flex flex-col gap-2.5">
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-warm-muted hover:text-warm-text transition-colors"
-                  >
-                    Privacy Policy
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-warm-muted hover:text-warm-text transition-colors"
-                  >
-                    Terms of Service
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-warm-muted hover:text-warm-text transition-colors"
-                  >
-                    Compliance
-                  </a>
-                </li>
-              </ul>
-            </div>
+              ))}
+            </ul>
           </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 md:mt-16 pt-8 border-t border-warm-border flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-warm-light">
+        <div className="mt-12 md:mt-16 pt-8 border-t border-warm-border flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-[10px] text-warm-light">
             &copy; {new Date().getFullYear()} Propeller. All rights reserved.
           </p>
-          <p className="text-xs text-warm-light">
-            A Reef product. Regulated payment services.
-          </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+            {['Legal Notice', 'Privacy', 'Terms & Conditions', 'Cookies', 'Compliance'].map((item) => (
+              <a key={item} href="#" className="text-[10px] text-warm-light hover:text-warm-text transition-colors">
+                {item}
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </footer>

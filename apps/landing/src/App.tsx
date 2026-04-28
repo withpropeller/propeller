@@ -11,6 +11,8 @@ import DevelopersSection from './components/DevelopersSection'
 import HowItWorksSection from './components/HowItWorksSection'
 import FeaturesGrid from './components/FeaturesGrid'
 import MissionStatement from './components/MissionStatement'
+import TestimonialsSection from './components/TestimonialsSection'
+import CTASection from './components/CTASection'
 import Footer from './components/Footer'
 
 export default function App() {
@@ -29,6 +31,8 @@ export default function App() {
       <HowItWorksSection />
       <FeaturesGrid />
       <MissionStatement />
+      <TestimonialsSection />
+      <CTASection />
       <Footer />
     </div>
   )
