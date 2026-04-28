@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import GridBackground from './GridBackground'
 
 const steps = [
   {
@@ -29,8 +30,10 @@ const steps = [
 
 export default function HowItWorksSection() {
   return (
-    <section id="how-it-works" className="bg-cream-50 py-20 md:py-28 border-t border-warm-border">
-      <div className="max-w-cinema mx-auto px-6 md:px-12 lg:px-20">
+    <section id="how-it-works" className="relative bg-cream-50 py-20 md:py-28 border-t border-warm-border">
+      {/* Content grid — tighter dots */}
+      <GridBackground dotColor="#d4d0cb" gap={20} radius={1.2} fade="both" />
+      <div className="relative z-10 max-w-cinema mx-auto px-6 md:px-12 lg:px-20">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

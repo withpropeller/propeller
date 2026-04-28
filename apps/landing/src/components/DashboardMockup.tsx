@@ -17,7 +17,11 @@ import {
   Briefcase,
   Layers,
   Share2,
-  Star,
+  MessageCircle,
+  AlertTriangle,
+  CheckCircle2,
+  Clock,
+  TrendingUp,
 } from 'lucide-react'
 import {
   AreaChart,
@@ -59,76 +63,99 @@ const sidebarSections = [
 
 const metricCards = [
   {
-    label: 'ARR',
-    value: '$28M',
+    label: 'Pay-in Volume',
+    value: '₦128.4M',
     data: [
-      { v: 18 }, { v: 19 }, { v: 19.5 }, { v: 20 }, { v: 21 },
-      { v: 22 }, { v: 23 }, { v: 24 }, { v: 25 }, { v: 26 },
-      { v: 26.5 }, { v: 27 }, { v: 27.5 }, { v: 28 },
+      { v: 82 }, { v: 88 }, { v: 95 }, { v: 102 }, { v: 98 },
+      { v: 110 }, { v: 115 }, { v: 120 }, { v: 118 }, { v: 124 },
+      { v: 128 }, { v: 126 }, { v: 130 }, { v: 128.4 },
     ],
-    color: '#3b82f6',
-    fill: '#dbeafe',
+    color: '#e85d4a',
+    fill: '#fde8e5',
   },
   {
-    label: 'Cash',
-    value: '$46M',
+    label: 'USDC Settled',
+    value: '$2.4M',
     data: [
-      { v: 52 }, { v: 51 }, { v: 50 }, { v: 49 }, { v: 48 },
-      { v: 47 }, { v: 46.5 }, { v: 46 }, { v: 45.5 }, { v: 46 },
-      { v: 47 }, { v: 48 }, { v: 46 }, { v: 46 },
-    ],
-    color: '#10b981',
-    fill: '#d1fae5',
-  },
-  {
-    label: 'Average ACV',
-    value: '$23K',
-    data: [
-      { v: 18 }, { v: 19 }, { v: 20 }, { v: 21 }, { v: 22 },
-      { v: 23 }, { v: 22.5 }, { v: 23 }, { v: 23.5 }, { v: 23 },
-      { v: 22.5 }, { v: 23 }, { v: 23.2 }, { v: 23 },
+      { v: 1.2 }, { v: 1.4 }, { v: 1.5 }, { v: 1.6 }, { v: 1.7 },
+      { v: 1.8 }, { v: 1.9 }, { v: 2.0 }, { v: 2.1 }, { v: 2.2 },
+      { v: 2.25 }, { v: 2.3 }, { v: 2.35 }, { v: 2.4 },
     ],
     color: '#8b5cf6',
     fill: '#ede9fe',
   },
   {
-    label: 'Runway',
-    value: '14 Months',
+    label: 'Active Customers',
+    value: '14,203',
     data: [
-      { v: 22 }, { v: 20 }, { v: 19 }, { v: 18 }, { v: 17 },
-      { v: 16 }, { v: 15.5 }, { v: 15 }, { v: 14.5 }, { v: 14 },
-      { v: 13.5 }, { v: 14 }, { v: 14.2 }, { v: 14 },
+      { v: 8200 }, { v: 8500 }, { v: 8900 }, { v: 9200 }, { v: 9600 },
+      { v: 10100 }, { v: 10600 }, { v: 11100 }, { v: 11600 }, { v: 12100 },
+      { v: 12800 }, { v: 13400 }, { v: 13800 }, { v: 14203 },
+    ],
+    color: '#10b981',
+    fill: '#d1fae5',
+  },
+  {
+    label: 'Success Rate',
+    value: '97.3%',
+    data: [
+      { v: 94.2 }, { v: 94.8 }, { v: 95.1 }, { v: 95.5 }, { v: 95.8 },
+      { v: 96.1 }, { v: 96.4 }, { v: 96.6 }, { v: 96.8 }, { v: 97.0 },
+      { v: 97.1 }, { v: 97.2 }, { v: 97.25 }, { v: 97.3 },
     ],
     color: '#f59e0b',
     fill: '#fef3c7',
   },
 ]
 
-const roadmapItems = [
+const transactions = [
+  { customer: 'Adebayo O.', amount: '₦45,000', method: 'Bank Transfer', status: 'completed', settled: '$28.40' },
+  { customer: 'Sarah K.', amount: '₦12,500', method: 'Mobile Money', status: 'completed', settled: '$7.89' },
+  { customer: 'James M.', amount: '₦89,000', method: 'Bank Transfer', status: 'pending', settled: '—' },
+  { customer: 'Amina C.', amount: '₦34,200', method: 'Mobile Money', status: 'completed', settled: '$21.58' },
+  { customer: 'Kwame B.', amount: '₦67,500', method: 'Bank Transfer', status: 'completed', settled: '$42.60' },
+]
+
+const chatMessages = [
   {
-    title: 'Series C Fundraising',
-    quarters: ['Q1'],
-    expanded: false,
-    assignee: null,
+    from: 'Compliance',
+    icon: CheckCircle2,
+    color: 'text-green-600',
+    bg: 'bg-green-50',
+    text: 'KYC approved for Merchant #4821 — Flutterwave Corp.',
+    time: '2m ago',
   },
   {
-    title: 'Marketing Initiatives',
-    quarters: ['Q2'],
-    expanded: true,
-    assignee: 'https://i.pravatar.cc/150?u=1',
+    from: 'System',
+    icon: TrendingUp,
+    color: 'text-violet-600',
+    bg: 'bg-violet-50',
+    text: 'Settlement batch #8921 processed — $124K USDC to wallet 0x7a…3f',
+    time: '12m ago',
   },
   {
-    title: 'Increase Sales Headcount',
-    quarters: ['Q3'],
-    expanded: true,
-    assignee: 'https://i.pravatar.cc/150?u=2',
+    from: 'Alert',
+    icon: AlertTriangle,
+    color: 'text-amber-600',
+    bg: 'bg-amber-50',
+    text: 'Volume spike detected on GT Bank rail (+340% vs. avg).',
+    time: '28m ago',
+  },
+  {
+    from: 'Support',
+    icon: MessageCircle,
+    color: 'text-runway-propellerBlue',
+    bg: 'bg-blue-50',
+    text: 'New merchant onboarding request from Kenya — M-Pesa integration.',
+    time: '1h ago',
   },
 ]
 
-const scenarioData = [
-  { driver: 'Revenue', base: '$22M', rev3x: '$66M', variance: '200%', starred: true },
-  { driver: 'Headcount', base: '190', rev3x: '210', variance: '2%', starred: false },
-  { driver: 'Operating Expenses', base: '$19M', rev3x: '$21M', variance: '9%', starred: false },
+const settlementPipeline = [
+  { market: 'Nigeria', method: 'Bank Transfer', volume: '₦84.2M', settlement: '$52.8K USDC', status: 'Settled' },
+  { market: 'Ghana', method: 'Mobile Money', volume: '₦23.1M', settlement: '$14.5K USDC', status: 'Settled' },
+  { market: 'Kenya', method: 'Mobile Money', volume: '₦15.4M', settlement: '$9.7K USDC', status: 'Pending' },
+  { market: 'South Africa', method: 'Bank Transfer', volume: '₦5.7M', settlement: '$3.6K USDC', status: 'Settled' },
 ]
 
 function MiniChart({ data, color }: { data: any[]; color: string }) {
@@ -181,8 +208,8 @@ export default function DashboardMockup() {
         </div>
 
         {/* App layout */}
-        <div className="flex" style={{ minHeight: '520px' }}>
-          {/* Sidebar */}
+        <div className="flex" style={{ minHeight: '580px' }}>
+          {/* Sidebar — DO NOT TOUCH */}
           <div className="w-56 border-r border-warm-border bg-[#f8f8f8] p-3 hidden sm:block">
             <div className="space-y-4 mt-1">
               {sidebarSections.map((section, si) => (
@@ -227,7 +254,7 @@ export default function DashboardMockup() {
                 <ChevronRight size={13} className="text-warm-light" />
                 <span className="flex items-center gap-1 font-semibold">
                   <LayoutDashboard size={13} className="text-warm-text" />
-                  Exec Dashboard
+                  Payments Dashboard
                 </span>
               </div>
               <div className="flex items-center gap-3">
@@ -238,8 +265,9 @@ export default function DashboardMockup() {
                 <button className="text-warm-light hover:text-warm-muted">
                   <Search size={15} />
                 </button>
-                <button className="text-warm-light hover:text-warm-muted">
+                <button className="relative text-warm-light hover:text-warm-muted">
                   <Bell size={15} />
+                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-runway-propellerBlue" />
                 </button>
                 <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-300 to-orange-400" />
               </div>
@@ -263,81 +291,113 @@ export default function DashboardMockup() {
               ))}
             </div>
 
-            {/* Growth Roadmap */}
-            <div className="mb-6">
-              <h3 className="text-sm font-semibold text-warm-text mb-3">Growth Roadmap</h3>
-              <div className="rounded-lg border border-warm-border overflow-hidden">
-                <div className="grid grid-cols-[1fr_80px_80px_80px] text-[10px] text-warm-light px-3 py-2 border-b border-warm-border bg-cream-50/50">
-                  <span>Plan</span>
-                  <span className="text-center">Q2</span>
-                  <span className="text-center">Q3</span>
-                  <span className="text-center">Q4</span>
+            {/* Two-column: Transaction Feed + Compliance Chat */}
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-5 mb-6">
+              {/* Transaction Feed */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-semibold text-warm-text">Live Transaction Feed</h3>
+                  <span className="text-[10px] text-warm-light">Last 24 hours</span>
                 </div>
-                {roadmapItems.map((item) => (
-                  <div
-                    key={item.title}
-                    className="grid grid-cols-[1fr_80px_80px_80px] items-center px-3 py-2 border-b border-warm-border last:border-b-0 hover:bg-cream-50/50 transition-colors"
-                  >
-                    <div className="flex items-center gap-2">
-                      <ChevronRight size={11} className="text-warm-light" />
-                      <span className="text-[11px] text-warm-text">{item.title}</span>
-                    </div>
-                    {['Q2', 'Q3', 'Q4'].map((q) => (
-                      <div key={q} className="flex justify-center">
-                        {item.quarters.includes(q) && item.assignee ? (
-                          <img
-                            src={item.assignee}
-                            alt=""
-                            className="w-5 h-5 rounded-full object-cover ring-1 ring-white"
-                          />
-                        ) : item.quarters.includes(q) ? (
-                          <div className="w-5 h-5 rounded-full bg-runway-propellerBlue/10" />
-                        ) : null}
-                      </div>
-                    ))}
+                <div className="rounded-lg border border-warm-border overflow-hidden">
+                  <div className="grid grid-cols-[1fr_90px_100px_80px_70px] items-center px-3 py-2 border-b border-warm-border bg-cream-50/50 text-[10px] text-warm-light">
+                    <span>Customer</span>
+                    <span className="text-right">Amount</span>
+                    <span className="text-center">Method</span>
+                    <span className="text-center">Status</span>
+                    <span className="text-right">Settled</span>
                   </div>
-                ))}
-                <div className="px-3 py-2 border-t border-warm-border">
-                  <button className="text-[11px] text-warm-light hover:text-warm-muted transition-colors">
-                    + Create plan
+                  {transactions.map((tx) => (
+                    <div
+                      key={tx.customer}
+                      className="grid grid-cols-[1fr_90px_100px_80px_70px] items-center px-3 py-2.5 border-b border-warm-border last:border-b-0 hover:bg-cream-50/50 transition-colors"
+                    >
+                      <span className="text-[11px] text-warm-text font-medium truncate">{tx.customer}</span>
+                      <span className="text-right text-[11px] text-warm-text">{tx.amount}</span>
+                      <span className="text-center text-[10px] text-warm-muted">{tx.method}</span>
+                      <span className="flex justify-center">
+                        {tx.status === 'completed' ? (
+                          <span className="inline-flex items-center gap-1 text-[10px] text-green-600 bg-green-50 px-1.5 py-0.5 rounded">
+                            <CheckCircle2 size={9} />
+                            Done
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 text-[10px] text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">
+                            <Clock size={9} />
+                            Pending
+                          </span>
+                        )}
+                      </span>
+                      <span className="text-right text-[11px] text-warm-muted">{tx.settled}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Compliance Chat / Notifications */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-semibold text-warm-text">Team Chat</h3>
+                  <span className="text-[10px] text-warm-light">4 unread</span>
+                </div>
+                <div className="rounded-lg border border-warm-border p-3 space-y-3 bg-cream-50/30">
+                  {chatMessages.map((msg) => (
+                    <div key={msg.text} className="flex gap-2.5">
+                      <div className={`w-6 h-6 rounded-full ${msg.bg} flex items-center justify-center shrink-0 mt-0.5`}>
+                        <msg.icon size={12} className={msg.color} />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5 mb-0.5">
+                          <span className="text-[10px] font-semibold text-warm-text">{msg.from}</span>
+                          <span className="text-[9px] text-warm-light">{msg.time}</span>
+                        </div>
+                        <p className="text-[11px] text-warm-muted leading-snug">{msg.text}</p>
+                      </div>
+                    </div>
+                  ))}
+                  <button className="w-full text-center text-[10px] text-warm-light hover:text-warm-muted transition-colors pt-1">
+                    View all messages
                   </button>
                 </div>
               </div>
             </div>
 
-            {/* Scenario Comparison */}
+            {/* Settlement Pipeline */}
             <div>
-              <h3 className="text-sm font-semibold text-warm-text mb-3">Scenario Comparison</h3>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-semibold text-warm-text">Settlement Pipeline</h3>
+                <span className="text-[10px] text-warm-light">Today</span>
+              </div>
               <div className="rounded-lg border border-warm-border overflow-hidden">
-                <div className="grid grid-cols-[1fr_1fr_1fr_80px_1fr] items-center px-3 py-2 border-b border-warm-border bg-cream-50/50 text-[10px] text-warm-light">
-                  <span>Driver</span>
-                  <span className="flex items-center gap-1 justify-center">
-                    <span className="w-2 h-2 rounded-sm bg-blue-400" />
-                    Base
-                  </span>
-                  <span className="flex items-center gap-1 justify-center">
-                    <span className="w-2 h-2 rounded-sm bg-green-400" />
-                    3x Revenue
-                  </span>
-                  <span className="text-center">Variance %</span>
-                  <span className="flex items-center gap-1 justify-center">
-                    <span className="w-2 h-2 rounded-sm bg-blue-400" />
-                    Base
-                  </span>
+                <div className="grid grid-cols-[1fr_110px_100px_100px_80px] items-center px-3 py-2 border-b border-warm-border bg-cream-50/50 text-[10px] text-warm-light">
+                  <span>Market</span>
+                  <span className="text-center">Method</span>
+                  <span className="text-right">Volume</span>
+                  <span className="text-right">Settlement</span>
+                  <span className="text-center">Status</span>
                 </div>
-                {scenarioData.map((row) => (
+                {settlementPipeline.map((row) => (
                   <div
-                    key={row.driver}
-                    className="grid grid-cols-[1fr_1fr_1fr_80px_1fr] items-center px-3 py-2.5 border-b border-warm-border last:border-b-0 hover:bg-cream-50/50 transition-colors"
+                    key={row.market}
+                    className="grid grid-cols-[1fr_110px_100px_100px_80px] items-center px-3 py-2.5 border-b border-warm-border last:border-b-0 hover:bg-cream-50/50 transition-colors"
                   >
-                    <span className="flex items-center gap-2 text-[11px] text-warm-text">
-                      {row.starred && <Star size={10} className="text-warm-light fill-warm-light" />}
-                      {row.driver}
+                    <span className="text-[11px] text-warm-text font-medium">{row.market}</span>
+                    <span className="text-center text-[10px] text-warm-muted">{row.method}</span>
+                    <span className="text-right text-[11px] text-warm-text">{row.volume}</span>
+                    <span className="text-right text-[11px] text-warm-text">{row.settlement}</span>
+                    <span className="flex justify-center">
+                      {row.status === 'Settled' ? (
+                        <span className="inline-flex items-center gap-1 text-[10px] text-green-600 bg-green-50 px-1.5 py-0.5 rounded">
+                          <CheckCircle2 size={9} />
+                          Settled
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-[10px] text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">
+                          <Clock size={9} />
+                          Pending
+                        </span>
+                      )}
                     </span>
-                    <span className="text-center text-[11px] text-warm-muted">{row.base}</span>
-                    <span className="text-center text-[11px] text-warm-muted">{row.rev3x}</span>
-                    <span className="text-center text-[11px] text-warm-muted">{row.variance}</span>
-                    <span className="text-center text-[11px] text-warm-muted">{row.base}</span>
                   </div>
                 ))}
               </div>

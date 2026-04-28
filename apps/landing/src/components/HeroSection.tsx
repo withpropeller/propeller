@@ -1,9 +1,13 @@
 import { motion } from 'framer-motion'
 import DashboardMockup from './DashboardMockup'
+import GridBackground from './GridBackground'
 
 export default function HeroSection() {
   return (
     <section className="relative bg-cream-100 overflow-hidden pt-20 md:pt-24">
+      {/* Hero grid — fine dots, fade at bottom */}
+      <GridBackground dotColor="#c9c5c0" gap={24} radius={1} fade="bottom" />
+
       {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
