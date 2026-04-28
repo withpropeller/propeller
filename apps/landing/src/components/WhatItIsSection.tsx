@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Landmark, ArrowLeftRight, ShieldCheck } from 'lucide-react'
-import DottedFrame from './DottedFrame'
+import SectionFrame from './SectionFrame'
 
 const features = [
   {
@@ -25,11 +25,8 @@ const features = [
 
 export default function WhatItIsSection() {
   return (
-    <section
-      id="what-it-is"
-      className="relative bg-cream-50 py-20 md:py-28 border-t border-warm-border"
-    >
-      <DottedFrame className="max-w-cinema mx-auto px-6 md:px-12 lg:px-20 py-12 md:py-16">
+    <section id="what-it-is" className="relative bg-cream-50 py-20 md:py-28">
+      <SectionFrame className="px-6 md:px-12 lg:px-20 py-12 md:py-16">
         {/* ─── Header ─── */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -177,7 +174,7 @@ export default function WhatItIsSection() {
             </motion.div>
           ))}
         </div>
-      </DottedFrame>
+      </SectionFrame>
     </section>
   )
 }

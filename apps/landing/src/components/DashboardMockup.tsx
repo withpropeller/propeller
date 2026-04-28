@@ -23,14 +23,6 @@ import {
   Clock,
   TrendingUp,
 } from 'lucide-react'
-import {
-  AreaChart,
-  Area,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-} from 'recharts'
-
 const sidebarSections = [
   {
     label: 'Payments',
@@ -65,46 +57,34 @@ const metricCards = [
   {
     label: 'Pay-in Volume',
     value: '₦128.4M',
-    data: [
-      { v: 82 }, { v: 88 }, { v: 95 }, { v: 102 }, { v: 98 },
-      { v: 110 }, { v: 115 }, { v: 120 }, { v: 118 }, { v: 124 },
-      { v: 128 }, { v: 126 }, { v: 130 }, { v: 128.4 },
-    ],
-    color: '#e85d4a',
-    fill: '#fde8e5',
-  },
-  {
-    label: 'USDC Settled',
-    value: '$2.4M',
-    data: [
-      { v: 1.2 }, { v: 1.4 }, { v: 1.5 }, { v: 1.6 }, { v: 1.7 },
-      { v: 1.8 }, { v: 1.9 }, { v: 2.0 }, { v: 2.1 }, { v: 2.2 },
-      { v: 2.25 }, { v: 2.3 }, { v: 2.35 }, { v: 2.4 },
-    ],
-    color: '#8b5cf6',
-    fill: '#ede9fe',
-  },
-  {
-    label: 'Active Customers',
-    value: '14,203',
-    data: [
-      { v: 8200 }, { v: 8500 }, { v: 8900 }, { v: 9200 }, { v: 9600 },
-      { v: 10100 }, { v: 10600 }, { v: 11100 }, { v: 11600 }, { v: 12100 },
-      { v: 12800 }, { v: 13400 }, { v: 13800 }, { v: 14203 },
-    ],
+    solid: [18, 22, 30, 35, 48, 55, 62, 68, 75, 88, 95, 108, 118, 128.4],
+    dashed: [18, 28, 32, 38, 45, 52, 58, 65, 70, 82, 90, 100, 112, 120],
     color: '#10b981',
     fill: '#d1fae5',
   },
   {
+    label: 'USDC Settled',
+    value: '$2.4M',
+    solid: [48, 46, 44, 42, 40, 38, 36, 35, 34, 33, 32, 31, 30, 28],
+    dashed: [48, 47, 46, 45, 44, 43, 42, 40, 38, 36, 34, 32, 30, 28],
+    color: '#3b82f6',
+    fill: '#dbeafe',
+  },
+  {
+    label: 'Active Customers',
+    value: '14,203',
+    solid: [22, 24, 23, 25, 24, 26, 25, 27, 26, 28, 27, 29, 28, 30],
+    dashed: [22, 23, 24, 25, 26, 27, 28, 27, 28, 29, 30, 29, 30, 31],
+    color: '#8b5cf6',
+    fill: '#ede9fe',
+  },
+  {
     label: 'Success Rate',
     value: '97.3%',
-    data: [
-      { v: 94.2 }, { v: 94.8 }, { v: 95.1 }, { v: 95.5 }, { v: 95.8 },
-      { v: 96.1 }, { v: 96.4 }, { v: 96.6 }, { v: 96.8 }, { v: 97.0 },
-      { v: 97.1 }, { v: 97.2 }, { v: 97.25 }, { v: 97.3 },
-    ],
-    color: '#f59e0b',
-    fill: '#fef3c7',
+    solid: [42, 40, 38, 35, 32, 30, 28, 25, 22, 20, 18, 15, 12, 10],
+    dashed: [42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29],
+    color: '#0ea5e9',
+    fill: '#e0f2fe',
   },
 ]
 
@@ -158,29 +138,52 @@ const settlementPipeline = [
   { market: 'South Africa', method: 'Bank Transfer', volume: '₦5.7M', settlement: '$3.6K USDC', status: 'Settled' },
 ]
 
-function MiniChart({ data, color }: { data: any[]; color: string }) {
+function SparklineDual({ solid, dashed, color }: { solid: number[]; dashed: number[]; color: string }) {
+  const width = 180
+  const height = 48
+  const pad = 4
+
+  const all = [...solid, ...dashed]
+  const min = Math.min(...all)
+  const max = Math.max(...all)
+  const range = max - min || 1
+
+  const xFor = (i: number) => pad + (i / (solid.length - 1)) * (width - pad * 2)
+  const yFor = (v: number) => height - pad - ((v - min) / range) * (height - pad * 2)
+
+  const path = (data: number[]) =>
+    data.map((v, i) => `${i === 0 ? 'M' : 'L'} ${xFor(i)} ${yFor(v)}`).join(' ')
+
+  const areaPath = (data: number[]) => {
+    const top = path(data)
+    const first = `${xFor(0)} ${height - pad}`
+    const last = `${xFor(data.length - 1)} ${height - pad}`
+    return `${top} L ${last} L ${first} Z`
+  }
+
+  const dividerX = width * 0.6
+
   return (
-    <div className="w-full h-12">
-      <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={data} margin={{ top: 2, right: 2, left: 2, bottom: 2 }}>
-          <defs>
-            <linearGradient id={`grad-${color.replace('#', '')}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={color} stopOpacity={0.25} />
-              <stop offset="100%" stopColor={color} stopOpacity={0.02} />
-            </linearGradient>
-          </defs>
-          <XAxis dataKey="i" hide />
-          <YAxis hide domain={['dataMin - 1', 'dataMax + 1']} />
-          <Area
-            type="monotone"
-            dataKey="v"
-            stroke={color}
-            strokeWidth={1.5}
-            fill={`url(#grad-${color.replace('#', '')})`}
-          />
-        </AreaChart>
-      </ResponsiveContainer>
-    </div>
+    <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-12" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id={`grad-${color.replace('#', '')}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity={0.22} />
+          <stop offset="100%" stopColor={color} stopOpacity={0.02} />
+        </linearGradient>
+      </defs>
+
+      {/* Fill under solid line */}
+      <path d={areaPath(solid)} fill={`url(#grad-${color.replace('#', '')})`} />
+
+      {/* Dashed line */}
+      <path d={path(dashed)} fill="none" stroke={color} strokeWidth={1.5} strokeDasharray="3 3" opacity={0.6} />
+
+      {/* Solid line */}
+      <path d={path(solid)} fill="none" stroke={color} strokeWidth={1.5} />
+
+      {/* Vertical divider */}
+      <line x1={dividerX} y1={pad} x2={dividerX} y2={height - pad} stroke="#1a1a1a" strokeWidth={1} opacity={0.15} />
+    </svg>
   )
 }
 
@@ -280,13 +283,17 @@ export default function DashboardMockup() {
                   key={card.label}
                   className="p-3 rounded-lg bg-white border border-warm-border hover:shadow-sm transition-shadow"
                 >
-                  <div className="flex items-center gap-1.5 mb-2">
+                  <div className="flex items-center justify-between mb-2">
                     <span className="text-[10px] font-medium text-warm-light uppercase tracking-wide">
                       {card.label}
                     </span>
+                    <span className="text-[11px] font-bold text-warm-text">{card.value}</span>
                   </div>
-                  <p className="text-base font-bold text-warm-text mb-2">{card.value}</p>
-                  <MiniChart data={card.data} color={card.color} />
+                  <SparklineDual
+                    solid={card.solid}
+                    dashed={card.dashed}
+                    color={card.color}
+                  />
                 </div>
               ))}
             </div>

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import SectionFrame from './SectionFrame'
 
 const partners = [
   { name: 'Paystack', logo: '/logos/paystack.svg' },
@@ -10,7 +11,7 @@ const partners = [
 export default function TrustBar() {
   return (
     <section className="bg-cream-100">
-      <div className="max-w-cinema mx-auto px-6 md:px-12 lg:px-20 py-6 md:py-8">
+      <SectionFrame className="px-6 md:px-12 lg:px-20 py-6 md:py-8">
         <p className="text-center text-[11px] font-medium uppercase tracking-label text-warm-light mb-4 md:mb-5">
           Trusted by leading companies
         </p>
@@ -33,7 +34,7 @@ export default function TrustBar() {
             </motion.div>
           ))}
         </div>
-      </div>
+      </SectionFrame>
     </section>
   )
 }
