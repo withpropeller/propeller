@@ -126,7 +126,7 @@ export default function SolutionsSection() {
   const active = tabs.find((t) => t.id === activeTab)!
 
   return (
-    <div className="px-4 md:px-6 lg:px-8 py-6">
+    <div className="px-4 md:px-6 lg:px-8 py-6 bg-cream-50">
       <section
         id="solutions"
         className="bg-[#111111] py-20 md:py-28 rounded-[28px]"

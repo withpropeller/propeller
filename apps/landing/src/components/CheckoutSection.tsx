@@ -42,8 +42,9 @@ const comparisonRows = [
 
 export default function CheckoutSection() {
   return (
-    <section className="bg-cream-50 py-20 md:py-28">
-      <SectionFrame className="px-6 md:px-12 lg:px-20">
+    <section className="bg-cream-50 pb-20 md:pb-28">
+      <SectionFrame showTop={false} className="px-6 md:px-12 lg:px-20">
+        <div className="pt-40 p-10 md:p-18">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -130,6 +131,7 @@ export default function CheckoutSection() {
             </div>
           ))}
         </motion.div>
+        </div>
       </SectionFrame>
     </section>
   )
