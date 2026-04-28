@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import {
   CreditCard,
-  ArrowsHorizontal,
+  ArrowsLeftRight,
   ShieldCheck,
   PaperPlane,
   Flask,
@@ -13,7 +13,7 @@ import {
   LockKey,
   Flag,
   Users,
-  SquaresFour,
+  TreeStructure,
 } from '@phosphor-icons/react'
 
 const tabs = [
@@ -76,7 +76,7 @@ const tabs = [
     description:
       'Power your marketplace with programmable payouts, multi-party splitting, and automated compliance screening. Let every seller focus on their business while you handle the money movement.',
     cta: 'Learn more about platform solutions',
-    image: './microsoft-365-oUbzU87d1Gc-unsplash.jpg',
+    image: '/microsoft-365-oUbzU87d1Gc-unsplash.jpg',
     cards: [
       {
         title: 'Programmable payouts',
@@ -102,7 +102,7 @@ const tabs = [
     description:
       'Offer competitive NGN-to-USDC conversion rates with transparent pricing. Lock in rates at payment initiation and deliver fast, compliant settlement to destination wallets.',
     cta: 'Learn more about FX solutions',
-    image: './marga-santoso-OmPqCwX422Y-unsplash.jpg',
+    image: '/william-william-NndKt2kF1L4-unsplash.jpg',
     cards: [
       {
         title: 'Competitive corridor rates',
@@ -128,7 +128,7 @@ const tabs = [
     description:
       'Collect contributions in NGN from backers across Nigeria and settle to project creators in USDC. Built-in KYC, escrow-like holding, and automated disbursement on milestone completion.',
     cta: 'Learn more about crowdfunding solutions',
-    image: '/microsoft-edge-DNADGmifFsc-unsplash.jpg',
+    image: '/rosebox-BFdSCxmqvYc-unsplash.jpg',
     cards: [
       {
         title: 'NGN contribution collection',
@@ -150,18 +150,18 @@ const tabs = [
 ]
 
 const capabilities = [
-  { label: 'Virtual accounts', icon: CreditCard },
-  { label: 'Real-time FX', icon: ArrowsHorizontal },
-  { label: 'Compliance engine', icon: ShieldCheck },
-  { label: 'Webhook delivery', icon: PaperPlane },
-  { label: 'Sandbox testing', icon: Flask },
-  { label: 'Multi-currency', icon: Coins },
-  { label: 'API & SDKs', icon: Code },
-  { label: 'Audit trails', icon: ClipboardText },
-  { label: 'Escrow logic', icon: LockKey },
-  { label: 'Milestones', icon: Flag },
-  { label: 'Bulk payouts', icon: Users },
-  { label: 'Dashboard', icon: SquaresFour },
+  { label: 'Virtual accounts', Icon: CreditCard },
+  { label: 'Real-time FX', Icon: ArrowsLeftRight },
+  { label: 'Compliance engine', Icon: ShieldCheck },
+  { label: 'Webhook delivery', Icon: PaperPlane },
+  { label: 'Sandbox testing', Icon: Flask },
+  { label: 'Multi-currency', Icon: Coins },
+  { label: 'API & SDKs', Icon: Code },
+  { label: 'Audit trails', Icon: ClipboardText },
+  { label: 'Escrow logic', Icon: LockKey },
+  { label: 'Milestones', Icon: Flag },
+  { label: 'Bulk payouts', Icon: Users },
+  { label: 'Dashboard', Icon: TreeStructure },
 ]
 
 export default function SolutionsSection() {
@@ -169,139 +169,144 @@ export default function SolutionsSection() {
   const active = tabs.find((t) => t.id === activeTab)!
 
   return (
-    <section id="solutions" className="bg-[#111111] py-20 md:py-28 rounded-[20px] mx-3">
-      <div className="max-w-cinema mx-auto px-6 md:px-12 lg:px-20">
-        {/* Heading */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-10"
-        >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-normal text-white leading-tight">
-            One modern experience for{' '}
-            <span className="bg-gradient-to-r from-[#e85d4a] to-[#8b5cf6] bg-clip-text text-transparent">
-              today's workforce
-            </span>
-          </h2>
-        </motion.div>
-
-        {/* Tabs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="flex items-center justify-center gap-1 md:gap-2 mb-12"
-        >
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-4 md:px-6 py-2 text-sm font-medium rounded-full transition-all ${
-                activeTab === tab.id
-                  ? 'bg-white text-[#111111] shadow-sm'
-                  : 'text-white/60 hover:text-white/90'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </motion.div>
-
-        {/* Content */}
-        <AnimatePresence mode="wait">
+    <div className="px-4 md:px-6 lg:px-8 py-6">
+      <section
+        id="solutions"
+        className="bg-[#111111] py-20 md:py-28 rounded-[28px]"
+      >
+        <div className="max-w-cinema mx-auto px-6 md:px-12 lg:px-20">
+          {/* Heading */}
           <motion.div
-            key={activeTab}
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-10"
           >
-            {/* 3-up feature cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-6">
-              {active.cards.map((card, i) => (
-                <motion.div
-                  key={card.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.1 + i * 0.08 }}
-                  className="bg-[#1a1a1a] rounded-[20px] p-6 border border-white/5 hover:border-white/10 transition-colors"
-                >
-                  <h3 className="text-[15px] font-medium text-white mb-2 leading-snug">
-                    {card.title}
-                  </h3>
-                  <p className="text-[13px] text-white/50 leading-relaxed mb-4">
-                    {card.desc}
-                  </p>
-                  <a
-                    href="#"
-                    className="inline-flex items-center gap-1 text-xs font-medium text-white/70 hover:text-white transition-colors"
-                  >
-                    {card.cta}
-                    <ArrowUpRight size={12} strokeWidth={2} />
-                  </a>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Large image */}
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="rounded-[24px] overflow-hidden mb-6"
-            >
-              <img
-                src={active.image}
-                alt={active.heading}
-                className="w-full h-[300px] md:h-[420px] object-cover"
-              />
-            </motion.div>
-
-            {/* Bottom capabilities bar */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="bg-[#1a1a1a] rounded-[20px] p-6 md:p-8 border border-white/5"
-            >
-              <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-8 items-start">
-                {/* Left copy */}
-                <div>
-                  <p className="text-[13px] text-white/40 mb-3">
-                    {active.description}
-                  </p>
-                  <a
-                    href="#"
-                    className="inline-flex items-center gap-1 text-xs font-medium text-white/70 hover:text-white transition-colors"
-                  >
-                    {active.cta}
-                    <ArrowUpRight size={12} strokeWidth={2} />
-                  </a>
-                </div>
-
-                {/* Right capability tags */}
-                <div className="flex flex-wrap gap-2">
-                  {capabilities.map((cap) => (
-                    <span
-                      key={cap}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 text-[12px] text-white/60 border border-white/5"
-                    >
-                      <span className="w-1 h-1 rounded-full bg-green-400/80" />
-                      {cap}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-normal text-white leading-tight">
+              One modern experience for{' '}
+              <span className="bg-gradient-to-r from-[#e85d4a] to-[#8b5cf6] bg-clip-text text-transparent">
+                today's workforce
+              </span>
+            </h2>
           </motion.div>
-        </AnimatePresence>
-      </div>
-    </section>
+
+          {/* Tabs */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="flex items-center justify-center gap-1 md:gap-2 mb-12"
+          >
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-4 md:px-6 py-2 text-sm font-medium rounded-full transition-all ${
+                  activeTab === tab.id
+                    ? 'bg-white text-[#111111] shadow-sm'
+                    : 'text-white/60 hover:text-white/90'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </motion.div>
+
+          {/* Content */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+            >
+              {/* 3-up feature cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-6">
+                {active.cards.map((card, i) => (
+                  <motion.div
+                    key={card.title}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: 0.1 + i * 0.08 }}
+                    className="bg-[#1a1a1a] rounded-[20px] p-6 border border-white/5 hover:border-white/10 transition-colors"
+                  >
+                    <h3 className="text-[15px] font-medium text-white mb-2 leading-snug">
+                      {card.title}
+                    </h3>
+                    <p className="text-[13px] text-white/50 leading-relaxed mb-4">
+                      {card.desc}
+                    </p>
+                    <a
+                      href="#"
+                      className="inline-flex items-center gap-1 text-xs font-medium text-white/70 hover:text-white transition-colors"
+                    >
+                      {card.cta}
+                      <ArrowUpRight size={12} strokeWidth={2} />
+                    </a>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Large image */}
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="rounded-[24px] overflow-hidden mb-6"
+              >
+                <img
+                  src={active.image}
+                  alt={active.heading}
+                  className="w-full h-[300px] md:h-[420px] object-cover"
+                />
+              </motion.div>
+
+              {/* Bottom capabilities bar */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="bg-[#1a1a1a] rounded-[20px] p-6 md:p-8 border border-white/5"
+              >
+                <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-8 items-start">
+                  {/* Left copy */}
+                  <div>
+                    <p className="text-[13px] text-white/40 mb-3">
+                      {active.description}
+                    </p>
+                    <a
+                      href="#"
+                      className="inline-flex items-center gap-1 text-xs font-medium text-white/70 hover:text-white transition-colors"
+                    >
+                      {active.cta}
+                      <ArrowUpRight size={12} strokeWidth={2} />
+                    </a>
+                  </div>
+
+                  {/* Right capability tags */}
+                  <div className="flex flex-wrap gap-2">
+                    {capabilities.map((cap) => (
+                      <span
+                        key={cap.label}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 text-[12px] text-white/60 border border-white/5"
+                      >
+                        <cap.Icon size={12} weight="regular" />
+                        {cap.label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </section>
+    </div>
   )
 }
