@@ -10,8 +10,8 @@ export default function HeroSection() {
         style={{ backgroundImage: 'url(./hero-bg.jpg)' }}
       />
       <div className="absolute inset-0 bg-cream-100/70" />
-      <div className="max-w-cinema mx-auto px-6 md:px-12 lg:px-20">
-        <div className="text-center max-w-3xl mx-auto pt-12 md:pt-20 pb-10 md:pb-14">
+      <div className="relative z-10 max-w-cinema mx-auto px-6 md:px-12 lg:px-20">
+        <div className="relative z-10 text-center max-w-3xl mx-auto pt-12 md:pt-20 pb-10 md:pb-14">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
