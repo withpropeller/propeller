@@ -17,7 +17,6 @@ import {
   Briefcase,
   Layers,
   Share2,
-  MessageCircle,
   AlertTriangle,
   CheckCircle2,
   Clock,
