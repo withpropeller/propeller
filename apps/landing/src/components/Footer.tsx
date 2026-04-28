@@ -7,7 +7,7 @@ export default function Footer() {
           <div className="col-span-2">
             <a href="#" className="flex items-center mb-6">
               <img
-                src="./propeller-wordmark-dark.svg"
+                src="./propeller-logo-dark.svg"
                 alt="Propeller"
                 className="h-5 w-auto"
               />
