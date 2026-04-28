@@ -3,10 +3,21 @@ import DashboardMockup from './DashboardMockup'
 
 export default function HeroSection() {
   return (
-    <section className="relative bg-cream-100 overflow-hidden pt-20 md:pt-24">
+    <section
+      className="relative overflow-hidden pt-28 md:pt-32 pb-0"
+      style={{
+        backgroundImage: `
+          linear-gradient(to bottom, rgba(245,242,238,0.3) 0%, rgba(245,242,238,0.85) 60%, #f5f2ee 100%),
+          url('/hero-bg.jpg')
+        `,
+        backgroundPosition: 'center top, center 30%',
+        backgroundSize: 'cover, cover',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
       <div className="max-w-cinema mx-auto px-6 md:px-12 lg:px-20">
         {/* Top: Centered copy */}
-        <div className="text-center max-w-3xl mx-auto pt-12 md:pt-16 pb-10 md:pb-14">
+        <div className="text-center max-w-3xl mx-auto pt-8 md:pt-12 pb-10 md:pb-14">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -64,8 +75,8 @@ export default function HeroSection() {
           </motion.div>
         </div>
 
-        {/* Bottom: Dashboard mockup */}
-        <div className="pb-8 md:pb-12">
+        {/* Bottom: Dashboard mockup — blends into page below */}
+        <div className="relative z-10">
           <DashboardMockup />
         </div>
       </div>

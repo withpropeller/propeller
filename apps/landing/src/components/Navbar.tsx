@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react'
 import { Menu, X } from 'lucide-react'
 
 const navLinks = [
-  { label: 'How it works', href: '#how-it-works' },
-  { label: 'Features', href: '#features' },
-  { label: 'Mission', href: '#mission' },
+  { label: 'Solutions', href: '#solutions' },
+  { label: 'Developers', href: '#developers' },
+  { label: 'Testimonials', href: '#testimonials' },
   { label: 'Docs', href: '#footer' },
 ]
 
@@ -20,10 +20,10 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-cream-50/90 backdrop-blur-md border-b border-warm-border'
-          : 'bg-transparent'
+          ? 'top-0 bg-cream-50/95 backdrop-blur-md border-b border-warm-border shadow-sm'
+          : 'top-0 bg-transparent'
       }`}
     >
       <div className="max-w-cinema mx-auto px-6 md:px-12 lg:px-20">
@@ -56,7 +56,7 @@ export default function Navbar() {
               href="#"
               className="hidden md:inline-flex items-center px-5 py-2 text-sm font-semibold text-runway-propellerBlue border border-runway-propellerBlue/30 hover:bg-runway-propellerBlue/5 rounded-sharp transition-colors"
             >
-              Login
+              Get Started
             </a>
             <button
               className="md:hidden text-warm-text"
@@ -87,7 +87,7 @@ export default function Navbar() {
               href="#"
               className="mt-2 inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-runway-propellerBlue border border-runway-propellerBlue/30 rounded-sharp"
             >
-              Login
+              Get Started
             </a>
           </div>
         </div>

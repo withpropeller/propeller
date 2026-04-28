@@ -13,7 +13,7 @@ function CodeMockup() {
     "Amount": 1000
   },
   "CreditedWalletId": "12345678",
-  "ReturnURL": "https://propeller.com/successful-payment",
+  "ReturnURL": "https://withpropeller.com/successful-payment",
 }`
 
   const lines = code.split('\n')
@@ -76,7 +76,7 @@ function CodeMockup() {
 
 export default function DevelopersSection() {
   return (
-    <section className="bg-[#150a18] py-20 md:py-28">
+    <section id="developers" className="bg-[#150a18] py-20 md:py-28">
       <div className="max-w-cinema mx-auto px-6 md:px-12 lg:px-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left: Code mockup */}

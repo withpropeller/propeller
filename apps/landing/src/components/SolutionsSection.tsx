@@ -49,7 +49,7 @@ export default function SolutionsSection() {
   const active = tabs.find((t) => t.id === activeTab)!
 
   return (
-    <section className="bg-cream-100 py-20 md:py-28">
+    <section id="solutions" className="bg-cream-100 py-20 md:py-28">
       <div className="max-w-cinema mx-auto px-6 md:px-12 lg:px-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

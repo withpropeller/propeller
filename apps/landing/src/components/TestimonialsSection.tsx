@@ -34,7 +34,7 @@ export default function TestimonialsSection() {
   const next = () => setIndex((i) => (i === testimonials.length - 1 ? 0 : i + 1))
 
   return (
-    <section className="bg-cream-100 py-20 md:py-28">
+    <section id="testimonials" className="bg-cream-100 py-20 md:py-28">
       <div className="max-w-cinema mx-auto px-6 md:px-12 lg:px-20">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 items-start">
           {/* Left: Heading */}
