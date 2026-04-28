@@ -184,10 +184,11 @@ export default function SolutionsSection() {
             className="text-center mb-10"
           >
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-normal text-white leading-tight">
-              One modern experience for{' '}
+              The payment infrastructure global companies use to{' '}
               <span className="bg-gradient-to-r from-[#e85d4a] to-[#8b5cf6] bg-clip-text text-transparent">
-                today's workforce
+                serve Africa
               </span>
+              .
             </h2>
           </motion.div>
 
