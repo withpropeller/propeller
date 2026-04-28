@@ -359,47 +359,6 @@ export default function DashboardMockup() {
                 </div>
               </div>
             </div>
-
-            {/* Settlement Pipeline */}
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-warm-text">Settlement Pipeline</h3>
-                <span className="text-[10px] text-warm-light">Today</span>
-              </div>
-              <div className="rounded-lg border border-warm-border overflow-hidden">
-                <div className="grid grid-cols-[1fr_110px_100px_100px_80px] items-center px-3 py-2 border-b border-warm-border bg-cream-50/50 text-[10px] text-warm-light">
-                  <span>Market</span>
-                  <span className="text-center">Method</span>
-                  <span className="text-right">Volume</span>
-                  <span className="text-right">Settlement</span>
-                  <span className="text-center">Status</span>
-                </div>
-                {settlementPipeline.map((row) => (
-                  <div
-                    key={row.market}
-                    className="grid grid-cols-[1fr_110px_100px_100px_80px] items-center px-3 py-2.5 border-b border-warm-border last:border-b-0 hover:bg-cream-50/50 transition-colors"
-                  >
-                    <span className="text-[11px] text-warm-text font-medium">{row.market}</span>
-                    <span className="text-center text-[10px] text-warm-muted">{row.method}</span>
-                    <span className="text-right text-[11px] text-warm-text">{row.volume}</span>
-                    <span className="text-right text-[11px] text-warm-text">{row.settlement}</span>
-                    <span className="flex justify-center">
-                      {row.status === 'Settled' ? (
-                        <span className="inline-flex items-center gap-1 text-[10px] text-green-600 bg-green-50 px-1.5 py-0.5 rounded">
-                          <CheckCircle2 size={9} />
-                          Settled
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 text-[10px] text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">
-                          <Clock size={9} />
-                          Pending
-                        </span>
-                      )}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>

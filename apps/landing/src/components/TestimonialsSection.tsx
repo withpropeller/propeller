@@ -46,7 +46,7 @@ export default function TestimonialsSection() {
             className="lg:col-span-2"
           >
             <p className="text-xs font-medium uppercase tracking-label text-warm-light mb-4">
-              Social Proof
+              Testimonials
             </p>
             <h2 className="text-3xl md:text-4xl font-normal leading-tight text-warm-text mb-3">
               Built for teams that{' '}
