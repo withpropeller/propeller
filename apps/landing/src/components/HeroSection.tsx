@@ -83,7 +83,7 @@ export default function HeroSection() {
           </motion.div>
         </div>
 
-        <div className="pb-8 md:pb-12">
+        <div className="">
           <DashboardMockup />
         </div>
       </div>

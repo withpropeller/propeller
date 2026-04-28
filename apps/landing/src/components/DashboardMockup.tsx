@@ -122,13 +122,6 @@ const chatMessages = [
   },
 ]
 
-const settlementPipeline = [
-  { market: 'Nigeria', method: 'Bank Transfer', volume: '₦84.2M', settlement: '$52.8K USDC', status: 'Settled' },
-  { market: 'Ghana', method: 'Mobile Money', volume: '₦23.1M', settlement: '$14.5K USDC', status: 'Settled' },
-  { market: 'Kenya', method: 'Mobile Money', volume: '₦15.4M', settlement: '$9.7K USDC', status: 'Pending' },
-  { market: 'South Africa', method: 'Bank Transfer', volume: '₦5.7M', settlement: '$3.6K USDC', status: 'Settled' },
-]
-
 function SparklineDual({ solid, dashed, color }: { solid: number[]; dashed: number[]; color: string }) {
   const width = 180
   const height = 48
@@ -202,7 +195,7 @@ export default function DashboardMockup() {
         </div>
 
         {/* App layout */}
-        <div className="flex" style={{ minHeight: '580px' }}>
+        <div className="flex">
           {/* Sidebar — DO NOT TOUCH */}
           <div className="w-56 border-r border-warm-border bg-[#f8f8f8] p-3 hidden sm:block">
             <div className="space-y-4 mt-1">
@@ -246,10 +239,6 @@ export default function DashboardMockup() {
                   Overview
                 </span>
                 <ChevronRight size={13} className="text-warm-light" />
-                <span className="flex items-center gap-1 font-semibold">
-                  <LayoutDashboard size={13} className="text-warm-text" />
-                  Payments Dashboard
-                </span>
               </div>
               <div className="flex items-center gap-3">
                 <button className="flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-warm-border text-[11px] text-warm-muted hover:bg-cream-50 transition-colors">
@@ -361,10 +350,15 @@ export default function DashboardMockup() {
             </div>
           </div>
         </div>
+
+        {/* Bottom gradient — blends the white mockup into the cream page background */}
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-b from-white/0 via-white/0 to-cream-100 pointer-events-none z-10" />
       </div>
 
-      {/* Subtle shadow/reflection */}
-      <div className="absolute -bottom-4 left-4 right-4 h-8 bg-gradient-to-b from-black/5 to-transparent rounded-b-xl blur-sm" />
-    </motion.div>
+      {/* Subtle shadow/reflection
+       <div className="absolute -bottom-4 left-4 right-4 h-8 bg-gradient-to-b from-black/5 to-transparent rounded-b-xl blur-sm" />
+   
+   */}
+      </motion.div>
   )
 }
