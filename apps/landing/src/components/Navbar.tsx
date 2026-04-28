@@ -23,7 +23,7 @@ export default function Navbar() {
       className={`fixed left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
           ? 'top-0 bg-cream-50/95 backdrop-blur-md border-b border-warm-border shadow-sm'
-          : 'top-0 bg-transparent'
+          : 'top-8 bg-transparent'
       }`}
     >
       <div className="max-w-cinema mx-auto px-6 md:px-12 lg:px-20">
