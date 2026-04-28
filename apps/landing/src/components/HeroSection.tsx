@@ -31,13 +31,11 @@ export default function HeroSection() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-normal leading-tight text-warm-text mb-5"
           >
-            Sell to Africa.
-            <br />
+            Sell to Africa. {' '}
             <span className="bg-gradient-to-r from-[#e85d4a] via-[#c75b9b] to-[#8b5cf6] bg-clip-text text-transparent">
               Get paid
             </span>{' '}
             without
-            <br />
             the headache.
           </motion.h1>
 

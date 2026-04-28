@@ -1,20 +1,42 @@
 import { motion } from 'framer-motion'
 import { X, Check } from 'lucide-react'
 
-const without = [
-  'Local entity required in each market',
-  'Local banking relationships needed',
-  'Compliance managed in-house',
-  'High cart abandonment at checkout',
-  'Settlement delayed weeks',
-]
-
-const withPropeller = [
-  'One API integration',
-  'Regulated partners handle local rails',
-  'Compliance automated',
-  'Local checkout experience',
-  'USDC settlement in days',
+const comparisonRows = [
+  {
+    feature: 'Real-time local payment confirmation',
+    withPropeller: true,
+    withoutPropeller: false,
+  },
+  {
+    feature: 'Single API for multiple African markets',
+    withPropeller: true,
+    withoutPropeller: false,
+  },
+  {
+    feature: 'Built-in compliance and partner rails',
+    withPropeller: true,
+    withoutPropeller: false,
+  },
+  {
+    feature: 'Side-by-side transaction and settlement visibility',
+    withPropeller: true,
+    withoutPropeller: false,
+  },
+  {
+    feature: 'Collaborative workflow for finance + ops teams',
+    withPropeller: true,
+    withoutPropeller: true,
+  },
+  {
+    feature: 'Version control and audit trail support',
+    withPropeller: true,
+    withoutPropeller: true,
+  },
+  {
+    feature: 'AI-powered operational insights',
+    withPropeller: true,
+    withoutPropeller: true,
+  },
 ]
 
 export default function CheckoutSection() {
@@ -42,61 +64,71 @@ export default function CheckoutSection() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto">
-          {/* Without Propeller */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="bg-white rounded-[20px] p-6 md:p-8 border border-warm-border"
-          >
-            <p className="text-xs font-medium uppercase tracking-label text-warm-light mb-6">
-              Without Propeller
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.12 }}
+          className="max-w-5xl mx-auto border border-warm-border rounded-[22px] bg-white overflow-hidden"
+        >
+          <div className="grid grid-cols-[1.2fr_0.4fr_0.4fr] md:grid-cols-[2fr_1fr_1fr] items-center border-b border-warm-border px-4 md:px-8 py-4 md:py-5">
+            <p className="text-xs uppercase tracking-label text-warm-light font-medium">
+              Comparison
             </p>
-            <ul className="space-y-4">
-              {without.map((item) => (
-                <li key={item} className="flex items-start gap-3">
-                  <X
-                    size={16}
-                    className="text-red-400 mt-0.5 shrink-0"
-                    strokeWidth={2.5}
-                  />
-                  <span className="text-sm text-warm-muted">{item}</span>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
+            <div className="flex justify-center">
+              <p className="inline-flex items-center gap-2 text-sm md:text-base font-medium text-warm-text">
+                <span className="inline-flex items-center justify-center">
+                  <img src="/propeller-icon.svg" alt="Propeller" className="w-5 h-5" />
+                </span>
+                Propeller
+              </p>
+            </div>
+            <p className="text-sm md:text-base font-medium text-warm-muted text-center">
+              Others
+            </p>
+          </div>
 
-          {/* With Propeller */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.15 }}
-            className="bg-white rounded-[20px] p-6 md:p-8 border border-runway-propellerBlue/20 shadow-sm"
-          >
-            <p className="text-xs font-medium uppercase tracking-label text-runway-propellerBlue mb-6">
-              With Propeller
-            </p>
-            <ul className="space-y-4">
-              {withPropeller.map((item) => (
-                <li key={item} className="flex items-start gap-3">
-                  <div className="w-4 h-4 rounded-full bg-runway-propellerBlue/10 flex items-center justify-center mt-0.5 shrink-0">
-                    <Check
-                      size={10}
-                      className="text-runway-propellerBlue"
-                      strokeWidth={3}
-                    />
-                  </div>
-                  <span className="text-sm text-warm-text font-medium">
-                    {item}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-        </div>
+          {comparisonRows.map((row) => (
+            <div
+              key={row.feature}
+              className="grid grid-cols-[1.2fr_0.4fr_0.4fr] md:grid-cols-[2fr_1fr_1fr] items-center px-4 md:px-8 py-4 md:py-5 border-b border-warm-border last:border-b-0"
+            >
+              <p className="text-sm md:text-base text-warm-text pr-3">{row.feature}</p>
+
+              <div className="flex justify-center">
+                <span
+                  className={`inline-flex items-center justify-center w-6 h-6 rounded-full ${
+                    row.withPropeller
+                      ? 'bg-[#161108] text-white'
+                      : 'bg-warm-border text-warm-muted'
+                  }`}
+                >
+                  {row.withPropeller ? (
+                    <Check size={14} strokeWidth={3} />
+                  ) : (
+                    <X size={14} strokeWidth={2.6} />
+                  )}
+                </span>
+              </div>
+
+              <div className="flex justify-center">
+                <span
+                  className={`inline-flex items-center justify-center w-6 h-6 rounded-full ${
+                    row.withoutPropeller
+                      ? 'bg-[#161108] text-white'
+                      : 'bg-warm-border text-warm-muted'
+                  }`}
+                >
+                  {row.withoutPropeller ? (
+                    <Check size={14} strokeWidth={3} />
+                  ) : (
+                    <X size={14} strokeWidth={2.6} />
+                  )}
+                </span>
+              </div>
+            </div>
+          ))}
+        </motion.div>
       </div>
     </section>
   )

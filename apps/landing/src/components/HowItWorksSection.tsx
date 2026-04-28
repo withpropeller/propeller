@@ -86,7 +86,7 @@ export default function HowItWorksSection() {
                 initial={{ scaleX: 0 }}
                 whileInView={{ scaleX: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 1.2, ease: 'easeInOut', delay: 0.3 }}
+                transition={{ duration: 4, ease: 'easeInOut', delay: 0.3 }}
               />
 
               {/* Dots */}

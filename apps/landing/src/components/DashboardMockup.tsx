@@ -121,14 +121,6 @@ const chatMessages = [
     text: 'Volume spike detected on GT Bank rail (+340% vs. avg).',
     time: '28m ago',
   },
-  {
-    from: 'Support',
-    icon: MessageCircle,
-    color: 'text-runway-propellerBlue',
-    bg: 'bg-blue-50',
-    text: 'New merchant onboarding request from Kenya — M-Pesa integration.',
-    time: '1h ago',
-  },
 ]
 
 const settlementPipeline = [

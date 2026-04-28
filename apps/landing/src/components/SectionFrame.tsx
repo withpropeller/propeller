@@ -3,35 +3,42 @@ import { ReactNode } from 'react'
 interface SectionFrameProps {
   children: ReactNode
   className?: string
-  innerClassName?: string
 }
 
-export default function SectionFrame({
-  children,
-  className = '',
-  innerClassName = '',
-}: SectionFrameProps) {
+export default function SectionFrame({ children, className = '' }: SectionFrameProps) {
   return (
     <div className={`relative w-full ${className}`}>
-      {/* Inner bordered box (centered, max-width) */}
-      <div
-        className={`relative max-w-cinema mx-auto border border-warm-border rounded-[20px] ${innerClassName}`}
-      >
+      {/* Full-width top line */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-warm-border" />
+
+      {/* Inner box — left/right borders only */}
+      <div className="relative max-w-cinema mx-auto border-l border-r border-warm-border">
         {/* Corner dot — top-left */}
-        <span className="absolute -top-[3px] -left-[3px] w-[6px] h-[6px] rounded-full bg-warm-light" />
+        <div className="absolute -top-[7px] -left-[10px] w-5 h-5 rounded-full bg-cream-50">
+          <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-black" />
+        </div>
 
         {/* Corner dot — top-right */}
-        <span className="absolute -top-[3px] -right-[3px] w-[6px] h-[6px] rounded-full bg-warm-light" />
+        <div className="absolute -top-[7px] -right-[10px] w-5 h-5 rounded-full bg-cream-50">
+          <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-black" />
+        </div>
 
         {/* Corner dot — bottom-left */}
-        <span className="absolute -bottom-[3px] -left-[3px] w-[6px] h-[6px] rounded-full bg-warm-light" />
+        <div className="absolute -bottom-[10px] -left-[10px] w-5 h-5 rounded-full bg-cream-50 z-20">
+          <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-black" />
+        </div>
 
         {/* Corner dot — bottom-right */}
-        <span className="absolute -bottom-[3px] -right-[3px] w-[6px] h-[6px] rounded-full bg-warm-light" />
+        <div className="absolute -bottom-[10px] -right-[10px] w-5 h-5 rounded-full bg-cream-50 z-20">
+          <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-black" />
+        </div>
 
         {/* Content */}
         <div className="relative z-10">{children}</div>
       </div>
+
+      {/* Full-width bottom line */}
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-warm-border" />
     </div>
   )
 }

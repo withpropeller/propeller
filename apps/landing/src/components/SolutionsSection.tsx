@@ -1,5 +1,20 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { ArrowUpRight } from 'lucide-react'
+import {
+  CreditCard,
+  ArrowsHorizontal,
+  ShieldCheck,
+  PaperPlane,
+  Flask,
+  Coins,
+  Code,
+  ClipboardText,
+  LockKey,
+  Flag,
+  Users,
+  SquaresFour,
+} from '@phosphor-icons/react'
 
 const tabs = [
   {
@@ -9,6 +24,24 @@ const tabs = [
     description:
       'Create the future of cross-border trade with unique features that help you offer first rate experiences in your B2B platform. Leverage our virtual account functionality and real-time FX conversion to simplify earnings management for your merchants.',
     cta: 'Learn more about B2B solutions',
+    image: '/william-william-NndKt2kF1L4-unsplash.jpg',
+    cards: [
+      {
+        title: 'Virtual account functionality',
+        desc: 'Generate dedicated virtual accounts for each merchant or transaction, enabling automated reconciliation and streamlined cash-flow management.',
+        cta: 'Learn more',
+      },
+      {
+        title: 'Real-time FX conversion',
+        desc: 'Lock in competitive NGN-to-USDC rates at payment initiation with transparent pricing and instant execution across the corridor.',
+        cta: 'Learn more',
+      },
+      {
+        title: 'Compliance-first settlement',
+        desc: 'Built-in KYB, AML screening, and sanctions checks run automatically so your platform stays ahead of regulatory requirements.',
+        cta: 'Learn more',
+      },
+    ],
   },
   {
     id: 'b2c',
@@ -17,6 +50,24 @@ const tabs = [
     description:
       'Enable seamless checkout experiences for consumers across Africa and Asia. Accept local payments via NIP transfers and deliver instant settlement to merchants in USDC.',
     cta: 'Learn more about B2C solutions',
+    image: '/rosebox-BFdSCxmqvYc-unsplash.jpg',
+    cards: [
+      {
+        title: 'Local payment methods',
+        desc: 'Accept bank transfers, mobile money, and USSD from customers across Nigeria, Ghana, Kenya and South Africa — all through one integration.',
+        cta: 'Learn more',
+      },
+      {
+        title: 'Instant confirmation',
+        desc: 'Customers receive real-time payment confirmation via bank transfer, reducing cart abandonment and improving trust at checkout.',
+        cta: 'Learn more',
+      },
+      {
+        title: 'USDC settlement',
+        desc: 'Merchants receive settlement in USDC at the wallet of their choice, eliminating correspondent banking delays and FX opacity.',
+        cta: 'Learn more',
+      },
+    ],
   },
   {
     id: 'platform',
@@ -25,6 +76,24 @@ const tabs = [
     description:
       'Power your marketplace with programmable payouts, multi-party splitting, and automated compliance screening. Let every seller focus on their business while you handle the money movement.',
     cta: 'Learn more about platform solutions',
+    image: './microsoft-365-oUbzU87d1Gc-unsplash.jpg',
+    cards: [
+      {
+        title: 'Programmable payouts',
+        desc: 'Define payout rules, splits, and schedules via API. Automate disbursements to vendors, creators, or service providers on your platform.',
+        cta: 'Learn more',
+      },
+      {
+        title: 'Multi-party splitting',
+        desc: 'Split incoming payments between multiple recipients automatically — perfect for marketplaces with sellers, agents, and platform fees.',
+        cta: 'Learn more',
+      },
+      {
+        title: 'Automated compliance',
+        desc: 'Every transaction is screened in real-time against sanctions lists and AML rules, keeping your marketplace compliant by default.',
+        cta: 'Learn more',
+      },
+    ],
   },
   {
     id: 'fx',
@@ -33,6 +102,24 @@ const tabs = [
     description:
       'Offer competitive NGN-to-USDC conversion rates with transparent pricing. Lock in rates at payment initiation and deliver fast, compliant settlement to destination wallets.',
     cta: 'Learn more about FX solutions',
+    image: './marga-santoso-OmPqCwX422Y-unsplash.jpg',
+    cards: [
+      {
+        title: 'Competitive corridor rates',
+        desc: 'Access institutional-grade NGN-to-USDC pricing with full transparency — no hidden spreads or last-minute markups.',
+        cta: 'Learn more',
+      },
+      {
+        title: 'Rate lock at initiation',
+        desc: 'Lock in the exchange rate when the payment request is created, protecting both you and your customers from volatility.',
+        cta: 'Learn more',
+      },
+      {
+        title: 'Fast compliant settlement',
+        desc: 'Settle to any USDC wallet on Base or Ethereum within hours, with full audit trails and regulatory documentation included.',
+        cta: 'Learn more',
+      },
+    ],
   },
   {
     id: 'crowdfunding',
@@ -41,7 +128,40 @@ const tabs = [
     description:
       'Collect contributions in NGN from backers across Nigeria and settle to project creators in USDC. Built-in KYC, escrow-like holding, and automated disbursement on milestone completion.',
     cta: 'Learn more about crowdfunding solutions',
+    image: '/microsoft-edge-DNADGmifFsc-unsplash.jpg',
+    cards: [
+      {
+        title: 'NGN contribution collection',
+        desc: 'Backers pay via familiar local methods — bank transfer, mobile money, or USSD — with instant confirmation and receipt.',
+        cta: 'Learn more',
+      },
+      {
+        title: 'Milestone-based disbursement',
+        desc: 'Hold funds in escrow-like accounts and release them to project creators only when predefined milestones are verified.',
+        cta: 'Learn more',
+      },
+      {
+        title: 'Built-in KYC & screening',
+        desc: 'Every backer and creator is automatically verified through Dojah KYC and sanctions screening, keeping your platform safe.',
+        cta: 'Learn more',
+      },
+    ],
   },
+]
+
+const capabilities = [
+  { label: 'Virtual accounts', icon: CreditCard },
+  { label: 'Real-time FX', icon: ArrowsHorizontal },
+  { label: 'Compliance engine', icon: ShieldCheck },
+  { label: 'Webhook delivery', icon: PaperPlane },
+  { label: 'Sandbox testing', icon: Flask },
+  { label: 'Multi-currency', icon: Coins },
+  { label: 'API & SDKs', icon: Code },
+  { label: 'Audit trails', icon: ClipboardText },
+  { label: 'Escrow logic', icon: LockKey },
+  { label: 'Milestones', icon: Flag },
+  { label: 'Bulk payouts', icon: Users },
+  { label: 'Dashboard', icon: SquaresFour },
 ]
 
 export default function SolutionsSection() {
@@ -49,17 +169,21 @@ export default function SolutionsSection() {
   const active = tabs.find((t) => t.id === activeTab)!
 
   return (
-    <section id="solutions" className="bg-cream-100 py-20 md:py-28">
+    <section id="solutions" className="bg-[#111111] py-20 md:py-28 rounded-[20px] mx-3">
       <div className="max-w-cinema mx-auto px-6 md:px-12 lg:px-20">
+        {/* Heading */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className="text-center mb-10"
         >
-          <h2 className="text-3xl md:text-4xl font-normal text-warm-text">
-            Ready to go solutions
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-normal text-white leading-tight">
+            One modern experience for{' '}
+            <span className="bg-gradient-to-r from-[#e85d4a] to-[#8b5cf6] bg-clip-text text-transparent">
+              today's workforce
+            </span>
           </h2>
         </motion.div>
 
@@ -69,7 +193,7 @@ export default function SolutionsSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="flex items-center justify-center gap-1 md:gap-2 mb-10"
+          className="flex items-center justify-center gap-1 md:gap-2 mb-12"
         >
           {tabs.map((tab) => (
             <button
@@ -77,8 +201,8 @@ export default function SolutionsSection() {
               onClick={() => setActiveTab(tab.id)}
               className={`px-4 md:px-6 py-2 text-sm font-medium rounded-full transition-all ${
                 activeTab === tab.id
-                  ? 'bg-white text-warm-text shadow-sm border border-warm-border'
-                  : 'text-warm-light hover:text-warm-muted'
+                  ? 'bg-white text-[#111111] shadow-sm'
+                  : 'text-white/60 hover:text-white/90'
               }`}
             >
               {tab.label}
@@ -86,7 +210,7 @@ export default function SolutionsSection() {
           ))}
         </motion.div>
 
-        {/* Content Card */}
+        {/* Content */}
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
@@ -94,49 +218,87 @@ export default function SolutionsSection() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            className="bg-white rounded-[24px] p-8 md:p-12 shadow-sm border border-warm-border"
           >
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-              {/* Left: Copy */}
-              <div>
-                <p className="text-xs font-medium uppercase tracking-label text-warm-light mb-4">
-                  Solutions
-                </p>
-                <h3 className="text-2xl md:text-3xl font-normal text-warm-text mb-4">
-                  {active.heading}
-                </h3>
-                <p className="text-base text-warm-muted leading-body mb-6">
-                  {active.description}
-                </p>
-                <a
-                  href="#"
-                  className="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-warm-text border border-warm-border hover:border-warm-muted rounded-sharp transition-colors"
+            {/* 3-up feature cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-6">
+              {active.cards.map((card, i) => (
+                <motion.div
+                  key={card.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.1 + i * 0.08 }}
+                  className="bg-[#1a1a1a] rounded-[20px] p-6 border border-white/5 hover:border-white/10 transition-colors"
                 >
-                  {active.cta}
-                </a>
-              </div>
-
-              {/* Right: Image placeholder */}
-              <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-cream-200">
-                <div className="absolute inset-0 bg-gradient-to-br from-cream-200 to-cream-300" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-cream-100 flex items-center justify-center">
-                      <span className="text-3xl">📦</span>
-                    </div>
-                    <p className="text-sm text-warm-light">Solution preview</p>
-                  </div>
-                </div>
-                {/* Decorative dots */}
-                <div
-                  className="absolute top-4 right-4 w-20 h-20 opacity-20"
-                  style={{
-                    backgroundImage: 'radial-gradient(circle, #9e9690 1px, transparent 1px)',
-                    backgroundSize: '8px 8px',
-                  }}
-                />
-              </div>
+                  <h3 className="text-[15px] font-medium text-white mb-2 leading-snug">
+                    {card.title}
+                  </h3>
+                  <p className="text-[13px] text-white/50 leading-relaxed mb-4">
+                    {card.desc}
+                  </p>
+                  <a
+                    href="#"
+                    className="inline-flex items-center gap-1 text-xs font-medium text-white/70 hover:text-white transition-colors"
+                  >
+                    {card.cta}
+                    <ArrowUpRight size={12} strokeWidth={2} />
+                  </a>
+                </motion.div>
+              ))}
             </div>
+
+            {/* Large image */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="rounded-[24px] overflow-hidden mb-6"
+            >
+              <img
+                src={active.image}
+                alt={active.heading}
+                className="w-full h-[300px] md:h-[420px] object-cover"
+              />
+            </motion.div>
+
+            {/* Bottom capabilities bar */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="bg-[#1a1a1a] rounded-[20px] p-6 md:p-8 border border-white/5"
+            >
+              <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-8 items-start">
+                {/* Left copy */}
+                <div>
+                  <p className="text-[13px] text-white/40 mb-3">
+                    {active.description}
+                  </p>
+                  <a
+                    href="#"
+                    className="inline-flex items-center gap-1 text-xs font-medium text-white/70 hover:text-white transition-colors"
+                  >
+                    {active.cta}
+                    <ArrowUpRight size={12} strokeWidth={2} />
+                  </a>
+                </div>
+
+                {/* Right capability tags */}
+                <div className="flex flex-wrap gap-2">
+                  {capabilities.map((cap) => (
+                    <span
+                      key={cap}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 text-[12px] text-white/60 border border-white/5"
+                    >
+                      <span className="w-1 h-1 rounded-full bg-green-400/80" />
+                      {cap}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
         </AnimatePresence>
       </div>

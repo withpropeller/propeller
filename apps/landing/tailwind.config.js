@@ -65,7 +65,7 @@ export default {
         generous: '16px',
       },
       maxWidth: {
-        'cinema': '1600px',
+        'cinema': '1200px',
       },
       backgroundImage: {
         'gradient-headline': 'linear-gradient(135deg, #e85d4a 0%, #8b5cf6 100%)',

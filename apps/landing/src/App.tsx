@@ -4,6 +4,7 @@ import HeroSection from './components/HeroSection'
 import TrustBar from './components/TrustBar'
 import WhatItIsSection from './components/WhatItIsSection'
 import CheckoutSection from './components/CheckoutSection'
+import SolutionsSection from './components/SolutionsSection'
 import BoldCloserSection from './components/BoldCloserSection'
 import HowItWorksSection from './components/HowItWorksSection'
 import TestimonialsSection from './components/TestimonialsSection'
@@ -19,6 +20,7 @@ export default function App() {
       <TrustBar />
       <WhatItIsSection />
       <CheckoutSection />
+      <SolutionsSection />
       <BoldCloserSection />
       <HowItWorksSection />
       <TestimonialsSection />

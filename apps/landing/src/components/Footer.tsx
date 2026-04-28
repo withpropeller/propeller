@@ -23,16 +23,6 @@ export default function Footer() {
                 YT
               </a>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-4 bg-blue-700 rounded-sm flex items-center justify-center">
-                <span className="text-white text-[6px] font-bold">NG</span>
-              </div>
-              <p className="text-[10px] text-warm-light leading-tight">
-                Licensed & Regulated
-                <br />
-                Payment Service Provider
-              </p>
-            </div>
           </div>
 
           {/* Products */}
@@ -115,7 +105,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="mt-12 md:mt-16 pt-8 border-t border-warm-border flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-[10px] text-warm-light">
-            &copy; {new Date().getFullYear()} Propeller. All rights reserved.
+            &copy; {new Date().getFullYear()} Digital Credit Ltd. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
             {['Legal Notice', 'Privacy', 'Terms & Conditions', 'Cookies', 'Compliance'].map((item) => (

@@ -5,24 +5,24 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 const testimonials = [
   {
     quote:
-      'Through our partnership with Propeller we have been able to build effective solutions that enhance cross-border trade and deliver remarkable benefits for our merchants, who can receive payments safely and with confidence.',
-    author: 'Sara Reguilon',
-    role: 'Head of Transactional Business @Wallapop',
-    company: 'Wallapop',
+      'Propeller transformed how we settle payments with our Chinese suppliers. What used to take days now happens in minutes. The compliance layer gives our finance team peace of mind.',
+    author: 'Opeyemi',
+    role: 'Head of Operations @Topship',
+    company: 'Topship',
   },
   {
     quote:
-      'Propeller transformed how we settle payments with our Chinese suppliers. What used to take days now happens in minutes. The compliance layer gives our finance team peace of mind.',
-    author: 'Oluwaseun Adeyemi',
-    role: 'CFO @AfriTrade Logistics',
-    company: 'AfriTrade',
+      'Through our partnership with Propeller we have been able to build effective solutions that enhance cross-border trade and deliver remarkable benefits for our merchants, who can receive payments safely and with confidence.',
+    author: 'Victoria',
+    role: 'Design Director @ArtInTheCity',
+    company: 'ArtInTheCity',
   },
   {
     quote:
       'The NGN-to-USDC settlement rail is exactly what our marketplace needed. Our sellers get paid faster, and we have full visibility into every transaction through their webhook API.',
-    author: 'Li Wei',
-    role: 'Founder @SinoNigeria Exchange',
-    company: 'SinoNigeria',
+    author: 'Mayowa',
+    role: 'Founder @Paper',
+    company: 'Paper',
   },
 ]
 
