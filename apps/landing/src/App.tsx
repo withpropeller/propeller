@@ -2,8 +2,10 @@ import TopBanner from './components/TopBanner'
 import Navbar from './components/Navbar'
 import HeroSection from './components/HeroSection'
 import TrustBar from './components/TrustBar'
-import SolutionsSection from './components/SolutionsSection'
-import DevelopersSection from './components/DevelopersSection'
+import WhatItIsSection from './components/WhatItIsSection'
+import CheckoutSection from './components/CheckoutSection'
+import BoldCloserSection from './components/BoldCloserSection'
+import HowItWorksSection from './components/HowItWorksSection'
 import TestimonialsSection from './components/TestimonialsSection'
 import CTASection from './components/CTASection'
 import Footer from './components/Footer'
@@ -15,8 +17,10 @@ export default function App() {
       <Navbar />
       <HeroSection />
       <TrustBar />
-      <SolutionsSection />
-      <DevelopersSection />
+      <WhatItIsSection />
+      <CheckoutSection />
+      <BoldCloserSection />
+      <HowItWorksSection />
       <TestimonialsSection />
       <CTASection />
       <Footer />

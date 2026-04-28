@@ -125,6 +125,21 @@ export default function Footer() {
             ))}
           </div>
         </div>
+
+        {/* Disclaimer */}
+        <div className="mt-10 pt-6 border-t border-warm-border">
+          <p className="text-[10px] text-warm-light leading-relaxed max-w-4xl">
+            Propeller is a software platform, not a financial institution. All
+            payments, settlement, and financial services connected through our
+            API are facilitated by regulated third-party partners who hold the
+            required licenses and authorizations in their respective
+            jurisdictions. Propeller does not hold funds or provide regulated
+            financial services directly.
+          </p>
+          <p className="text-[10px] text-warm-light mt-2">
+            Propeller is a trademark of Digital Credit Ltd.
+          </p>
+        </div>
       </div>
     </footer>
   )

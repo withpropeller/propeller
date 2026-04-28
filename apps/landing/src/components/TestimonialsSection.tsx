@@ -46,18 +46,14 @@ export default function TestimonialsSection() {
             className="lg:col-span-2"
           >
             <p className="text-xs font-medium uppercase tracking-label text-warm-light mb-4">
-              Customer Stories
+              Social Proof
             </p>
             <h2 className="text-3xl md:text-4xl font-normal leading-tight text-warm-text mb-3">
-              How we walk
-              <br />
+              Built for teams that{' '}
               <span className="bg-gradient-to-r from-[#e85d4a] to-[#8b5cf6] bg-clip-text text-transparent">
-                the walk
+                ship globally
               </span>
             </h2>
-            <p className="text-sm text-warm-muted leading-body max-w-xs">
-              Read how companies benefit from using Propeller.
-            </p>
 
             {/* Carousel controls */}
             <div className="flex items-center gap-3 mt-8">

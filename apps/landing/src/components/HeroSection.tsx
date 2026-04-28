@@ -3,28 +3,16 @@ import DashboardMockup from './DashboardMockup'
 
 export default function HeroSection() {
   return (
-    <section
-      className="relative overflow-hidden pt-28 md:pt-32 pb-0"
-      style={{
-        backgroundImage: `
-          linear-gradient(to bottom, rgba(245,242,238,0.3) 0%, rgba(245,242,238,0.85) 60%, #f5f2ee 100%),
-          url('/hero-bg.jpg')
-        `,
-        backgroundPosition: 'center top, center 30%',
-        backgroundSize: 'cover, cover',
-        backgroundRepeat: 'no-repeat',
-      }}
-    >
+    <section className="relative bg-cream-100 overflow-hidden pt-20 md:pt-24">
       <div className="max-w-cinema mx-auto px-6 md:px-12 lg:px-20">
-        {/* Top: Centered copy */}
-        <div className="text-center max-w-3xl mx-auto pt-8 md:pt-12 pb-10 md:pb-14">
+        <div className="text-center max-w-3xl mx-auto pt-12 md:pt-20 pb-10 md:pb-14">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-xs font-medium uppercase tracking-label text-warm-light mb-4"
           >
-            FP&A for Cross-Border Teams
+            The world's best products deserve African customers
           </motion.p>
 
           <motion.h1
@@ -33,28 +21,40 @@ export default function HeroSection() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-normal leading-tight text-warm-text mb-5"
           >
-            Settle Naira.
+            Sell to Africa.
             <br />
-            Receive{' '}
             <span className="bg-gradient-to-r from-[#e85d4a] via-[#c75b9b] to-[#8b5cf6] bg-clip-text text-transparent">
-              USDC
-            </span>
+              Get paid
+            </span>{' '}
+            without
+            <br />
+            the headache.
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.35 }}
-            className="text-base md:text-lg text-warm-muted leading-body mb-8 max-w-xl mx-auto"
+            className="text-base md:text-lg text-warm-muted leading-body mb-4 max-w-xl mx-auto"
           >
-            Collaborative planning, reporting, and settlement powered by an
-            agent that knows your payment flow as well as you do.
+            Propeller helps global businesses accept payments from African
+            customers — in local currency, through local rails, with full
+            compliance built in.
+          </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.45 }}
+            className="text-sm text-warm-light mb-8"
+          >
+            No local entity required. No banking headaches. No FX guesswork.
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
+            transition={{ duration: 0.6, delay: 0.55 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-3"
           >
             <a
@@ -75,8 +75,7 @@ export default function HeroSection() {
           </motion.div>
         </div>
 
-        {/* Bottom: Dashboard mockup — blends into page below */}
-        <div className="relative z-10">
+        <div className="pb-8 md:pb-12">
           <DashboardMockup />
         </div>
       </div>
