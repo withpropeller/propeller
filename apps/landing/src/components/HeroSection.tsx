@@ -6,10 +6,10 @@ export default function HeroSection() {
     <section className="relative bg-cream-100 overflow-hidden pt-20 md:pt-24">
       {/* Background image */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: 'url(./hero-bg.jpg)' }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-cream-100/60 via-cream-100/40 to-cream-100" />
+      <div className="absolute inset-0 bg-cream-100/70" />
       <div className="max-w-cinema mx-auto px-6 md:px-12 lg:px-20">
         <div className="text-center max-w-3xl mx-auto pt-12 md:pt-20 pb-10 md:pb-14">
           <motion.p

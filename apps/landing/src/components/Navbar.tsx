@@ -54,7 +54,7 @@ export default function Navbar() {
           <div className="flex items-center gap-4">
             <a
               href="#"
-              className="hidden md:inline-flex items-center px-5 py-2 text-sm font-semibold text-runway-propellerBlue border border-runway-propellerBlue/30 hover:bg-runway-propellerBlue/5 rounded-sharp transition-colors"
+              className="hidden md:inline-flex items-center px-5 py-2 text-sm font-semibold text-white bg-gradient-to-r from-[#e85d4a] to-[#8b5cf6] hover:opacity-90 rounded-sharp transition-opacity"
             >
               Get Started
             </a>
@@ -85,7 +85,7 @@ export default function Navbar() {
             ))}
             <a
               href="#"
-              className="mt-2 inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-runway-propellerBlue border border-runway-propellerBlue/30 rounded-sharp"
+              className="mt-2 inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-[#e85d4a] to-[#8b5cf6] rounded-sharp"
             >
               Get Started
             </a>
