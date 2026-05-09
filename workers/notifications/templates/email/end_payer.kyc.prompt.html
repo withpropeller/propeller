@@ -1,0 +1,17 @@
+<p style="font-size: 16px; font-weight: 600; color: #0F1556; margin-bottom: 8px;">Complete your identity verification</p>
+<p style="color: #6b6560; font-size: 13px; margin-top: 0; margin-bottom: 20px;">Verification is required to complete your payment.</p>
+
+<p>Hello {{.firstName}},</p>
+
+<p>To complete your payment of <strong>{{.amount}} NGN</strong> to <strong>{{.merchantName}}</strong>, we need to verify your identity. This is a one-time step — once verified, future payments will be faster.</p>
+
+<p style="text-align: center;">
+  <a href="{{.paymentUrl}}" class="btn">Complete payment</a>
+</p>
+
+<p style="color: #6b6560;">This link will take you to the secure payment page where you can verify your identity and complete your transfer.</p>
+
+<p>
+  Thanks,<br />
+  <span style="font-weight: 600;">The Propeller Team</span>
+</p>

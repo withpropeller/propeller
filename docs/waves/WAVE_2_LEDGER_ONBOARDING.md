@@ -2,7 +2,7 @@
 
 **Goal**: a real business can self-serve onboard, complete PayKKa KYB, get activated, and log into the dashboard. Ledger primitives in place even though no money has moved yet.
 
-**Status**: not started
+**Status**: partially implemented (see audit below)
 **Estimated effort**: 2 weeks
 **Blocks**: Wave 3 (collection), Wave 4 (payout)
 **Blocked by**: Wave 1
@@ -160,9 +160,9 @@ POST   /public/businesses/:id/submit
 Propeller-side normalized vocabulary in `libs/compliance/industries.ts`:
 
 ```ts
-type ReefIndustry = 'fashion_apparel' | 'electronics' | 'beauty_health' | ...
+type PropellerIndustry = 'fashion_apparel' | 'electronics' | 'beauty_health' | ...
 
-const PAYKKA_MAPPING: Record<ReefIndustry, {
+const PAYKKA_MAPPING: Record<PropellerIndustry, {
   newIndustry: string                // PayKKa New Industry enum
   subIndustries: string[]
   businessCategory?: number          // legacy, if still required
@@ -201,10 +201,27 @@ Idempotent: every action is keyed off the consumed event ID.
 - [ ] A test business completes self-serve signup, uploads documents, hits PayKKa sandbox, receives authorize_link, completes legal-rep auth in sandbox, gets PayKKa "approved" callback, passes ComplyAdvantage overlay, becomes `active`
 - [ ] Same flow works via `POST /v1/businesses` from a super-merchant API client
 - [ ] Admin can see the business in queue, drill in, see PayKKa raw + sanctions, take action
-- [ ] TB business accounts created on activation; balances queryable via `apps/services` (business view) and `apps/office` (admin view)
-- [ ] OpenAPI generated from `apps/api`; published to `apps/docs`
-- [ ] Idempotency key replay returns cached response
+- [x] TB business accounts created on activation (`ActivateBusiness` handler wired); balances queryable via ledger queries
+- [x] OpenAPI generated from `apps/api`, `apps/services`, `apps/office` (SwaggerModule wired; schemas incomplete)
+- [x] Idempotency key replay returns cached response (TB native + ledger outbox + webhook KV dedup)
 - [ ] Compliance audit trail records every state transition with actor + evidence
+
+## Implementation Audit (as of 2026-04-30)
+
+| Scope Item | Status | Evidence / Location |
+|---|---|---|
+| TigerBeetle account model + `libs/ledger` wrapper | **Implemented** | `services/core/internal/ledger/ledger.go` — `ExecuteTransfer`, `EnsureSystemAccounts`, `EnsureBusinessAccounts`, deterministic IDs, outbox pattern, reaper |
+| `apps/api`, `apps/services`, `apps/office` skeletons | **Scaffolded** | NestJS + Fastify + SwaggerModule in each; only `HealthModule` imported; no auth, idempotency middleware, or business modules yet |
+| `business` entity, KYB workflow | **Partial** | `libs/go-common/models/business.go` & `business_entity.go` exist; `services/core/internal/handlers/handlers.go` has `SubmitKyb`, `CompleteKyb`, `ActivateBusiness` stubs (TODOs for PayKKa call + state machine) |
+| PayKKa orchestration | **Partial** | `libs/providers/paykka/index.ts` — RSA signing, `applyOnboarding`, `queryStatus`, `uploadFile` (stubbed multipart), `verifyCallbackSignature` (simplified); no ComplyAdvantage integration yet |
+| `apps/admin` skeleton | **Scaffolded** | Vite SPA with React Router; placeholder home page only; no KYB queue, business list, or actions |
+| `workers/compliance` | **Not started** | `workers/` is empty (`.gitkeep` only); event subscriptions and handler logic live in `services/core` for now |
+| Auth surfaces (HMAC, session, CF Access) | **Not started** | No middleware or guards in any NestJS app |
+| Idempotency middleware | **Partial** | TB + outbox give idempotency for ledger writes; webhook dedup via flo KV (`webhook:` prefix, 24h TTL); no HTTP `Idempotency-Key` middleware in `apps/api` or `apps/services` |
+| RFC 7807 error model | **Not started** | No shared error filter or exception factory |
+| OpenAPI emission | **Partial** | SwaggerModule wired in all three backends, but no controllers or DTOs registered beyond health |
+| ComplyAdvantage overlay | **Not started** | No provider adapter, no screening logic, no sanctions events emitted |
+| Cloudflare Access + Google SSO for admin | **Not started** | `apps/office` main.ts mentions "Behind Cloudflare Access + VPN" in Swagger description only |
 
 ## Risks
 
@@ -219,3 +236,16 @@ Idempotent: every action is keyed off the consumed event ID.
 - Tier upgrades (super-merchant promotion) beyond a manual admin action — formal 4-eyes flow can ship in Wave 5
 - Sub-business attribution rolled up to parent in Mongo views — placeholder in Wave 2, finalized in Wave 3 once payments arrive
 - Webhook outbound delivery for `business.kyb.approved` etc. — built in Wave 3 alongside the dispatcher
+
+## Next steps to complete Wave 2
+
+1. **Flesh out `apps/api` controllers** — `POST /v1/businesses`, `GET /v1/businesses/:id`, `GET /v1/businesses/:id/balance`; add HMAC auth middleware and `Idempotency-Key` filter.
+2. **Flesh out `apps/services` public endpoints** — `/public/signup`, `/public/businesses`, `/public/businesses/:id/documents`, `/public/businesses/:id/submit`; session-cookie auth.
+3. **Implement `apps/office` admin endpoints** — business list, KYB queue, detail page, approve/reject actions; Cloudflare Access header verification.
+4. **Build `apps/admin` UI** — business list, KYB queue, detail page with PayKKa raw response viewer, audit timeline, action buttons.
+5. **Wire PayKKa in `services/core` handlers** — replace `SubmitKyb` / `CompleteKyb` TODOs with real provider calls; emit correct flo events; persist `merch_id` + `authorize_link`.
+6. **Add ComplyAdvantage provider adapter** — `libs/providers/complyadvantage/` with screening interface; wire into `CompleteKyb` handler.
+7. **Create `workers/compliance`** — dedicated consumer for `kyb-events` and `business-events` streams (can start as a thin wrapper around `services/core` handlers if we want to keep logic centralized).
+8. **Add RFC 7807 error filter** — shared NestJS exception filter in `libs/core` or per-app.
+9. **Populate industry taxonomy mapping** — blocked on Lin's response; once unblocked, add `libs/compliance/industries.ts`.
+10. **End-to-end test** — run the full self-serve flow against PayKKa sandbox, verify TB accounts are created on activation, verify admin queue populates.

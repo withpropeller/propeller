@@ -1,0 +1,22 @@
+<p style="font-size: 16px; font-weight: 600; color: #0F1556; margin-bottom: 8px;">New API secret generated</p>
+<p style="color: #6b6560; font-size: 13px; margin-top: 0; margin-bottom: 20px;">A new API secret has been created for {{.businessName}}.</p>
+
+<p>Hello {{.firstName}},</p>
+
+<p>A new API secret key has been generated for <strong>{{.businessName}}</strong>. Only the last 4 characters of the key ID are shown below for security:</p>
+
+<div class="info-box">
+  <h4>Key details</h4>
+  <p style="margin: 0;">Key ID: ...{{.keyIdSuffix}}<br />
+  Created: {{.createdAt}}<br />
+  Label: {{.label}}</p>
+</div>
+
+<p style="color: #e85d4a; font-weight: 500;">Store this key securely. It will not be shown again. Use it to sign API requests with HMAC-SHA256.</p>
+
+<p>Manage your keys at <a href="https://dashboard.withpropeller.com/settings/api-keys">dashboard.withpropeller.com/settings/api-keys</a>.</p>
+
+<p>
+  Thanks,<br />
+  <span style="font-weight: 600;">The Propeller Team</span>
+</p>

@@ -1,0 +1,46 @@
+@import "@paystack/pax/theme.css";
+
+/* Tell Tailwind v4 to scan Pax's built JS for class names. */
+@source "../../node_modules/@paystack/pax/dist";
+
+/* Base resets */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   PRIMITIVE PALETTE
+───────────────────────────────────────────────────────────── */
+:root {
+  /* midnight */
+  --midnight-100:  #FFFFFF;
+  --midnight-200:  #F6F7FA;
+  --midnight-300:  #ECEEF3;
+  --midnight-400:  #D7DADF;
+  --midnight-500:  #C7CBD1;
+  --midnight-600:  #8E959C;
+  --midnight-700:  #646A71;
+  --midnight-800:  #4A5056;
+  --midnight-900:  #343A40;
+  --midnight-1000: #242B31;
+  --midnight-1100: #0E141B;
+
+  /* golden yellow */
+  --golden-yellow-100:  #FFF8E8;
+  --golden-yellow-200:  #FFF3D3;
+  --golden-yellow-300:  #FFE7A4;
+  --golden-yellow-400:  #FFE08B;
+  --golden-yellow-500:  #FFD459;
+  --golden-yellow-600:  #FFC522;
+  --golden-yellow-700:  #A66D00;
+  --golden-yellow-800:  #704700;
+  --golden-yellow-900:  #4A2F00;
+  --golden-yellow-1000: #2A1A00;
+}

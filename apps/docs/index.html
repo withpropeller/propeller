@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Propeller API</title>
+  </head>
+  <body>
+    <!--
+      Scalar API reference, hosted via their CDN.
+      Renders the OpenAPI document emitted by apps/api at /openapi.json.
+      In dev, set PROPELLER_OPENAPI_URL via the data-url attribute below.
+    -->
+    <script
+      id="api-reference"
+      data-url="http://localhost:3001/openapi.json"
+      data-configuration='{"theme":"default","layout":"modern"}'
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+  </body>
+</html>

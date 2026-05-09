@@ -1,0 +1,4 @@
+name: propeller
+version: "0.0.1"
+description: "Propeller — China–Africa NGN→USDC payment corridor (MOR)"
+namespace: "{{ values:namespace:propeller }}"

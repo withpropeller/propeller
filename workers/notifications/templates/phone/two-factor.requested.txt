@@ -1,0 +1,1 @@
+Your Propeller verification code is {{.token}}. It expires in 3 minutes.

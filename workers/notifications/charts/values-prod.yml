@@ -1,0 +1,17 @@
+# Default values for allawee.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicas: 1
+version: v1
+
+# Service Specific Values
+image:
+    repository: {{{ deployment.REPOSITORY }}}
+
+## Application level settings
+app:
+    env:
+        #[security]
+        APP_ENV: {{ deployment.ENV }}
+        LOG_LEVEL: debug

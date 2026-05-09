@@ -1,0 +1,37 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+directive @upper on FIELD_DEFINITION
+
+"""customer"""
+type Customer {
+  id: ID!
+  description: String
+  creationDate: Date!
+  ingredients: [String!]!
+}
+
+"""Date custom scalar type"""
+scalar Date
+
+type Query {
+  customers: [Customer!]!
+  recipe(id: String!): Customer!
+  recipes(skip: Int! = 0, take: Int! = 25): [Customer!]!
+}
+
+type Mutation {
+  addCustomer(newCustomerData: NewCustomerInput!): Customer!
+  removeCustomer(id: String!): Boolean!
+}
+
+input NewCustomerInput {
+  title: String!
+  description: String
+  ingredients: [String!]!
+}
+
+type Subscription {
+  recipeAdded: Customer!
+}

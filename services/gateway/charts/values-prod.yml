@@ -1,0 +1,34 @@
+# Default values for allawee.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicas: 1
+version: v1
+
+# Service Specific Values
+image:
+    repository: {{{ deployment.REPOSITORY }}}
+
+## Application level settings
+app:
+    env:
+        #[security]
+        NODE_ENV: {{ deployment.ENV }}
+        LOG_LEVEL: debug
+
+        #[swagger]
+        ENABLE_SWAGGER: "false"
+
+
+        #[domains]
+        APP_HOST: infrasrv.allawee.com
+        INFRA_WEB_DOMAIN: https://infra.allawee.com
+        MAIN_SITE_DOMAIN: https://allawee.com
+
+
+        #[externals]
+        SLACK_EVENTS_CHANNEL: infra-events-{{ deployment.ENV }}
+
+        #[storage]
+        AWS_REGION: eu-west-1
+        S3_DOCUMENT_STORE_BUCKET: cc-document-store-{{ deployment.ENV }}

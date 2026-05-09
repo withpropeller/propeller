@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package shortenerservice;
+
+option go_package = "./shortenerservice";
+
+service ShortenerService {
+    rpc ShortenUrl (ShortenDataRequest) returns (GrpcResponseData) {}
+}
+
+message ShortenDataRequest {
+    string url = 1;
+    int64 ttl = 2;
+}
+
+message GrpcResponseData {
+    string code = 1;
+    optional ShortenData data = 2;
+    optional string error = 3;
+}
+
+
+message ShortenData {
+    string url= 1;
+    string shortenedUrl = 2;
+}

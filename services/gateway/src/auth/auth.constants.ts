@@ -1,0 +1,1 @@
+export const SESSION_TOKEN_EXPIRY_SECONDS = 60 * 30;

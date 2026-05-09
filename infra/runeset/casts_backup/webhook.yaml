@@ -1,0 +1,31 @@
+service:
+  name: webhook
+  image: "ghcr.io/propeller/webhook:{{ values:app.tag }}"
+  scale: 1
+  ports:
+    - "{{ values:webhook.port }}:4000"
+  env:
+    PORT: "4000"
+    FLO_ADDR: "flo:9000"
+    LOG_LEVEL: "{{ values:logLevel }}"
+    PAYSTACK_ENABLED: "{{ values:webhook.paystackEnabled }}"
+    PAYKKA_ENABLED: "{{ values:webhook.paykkaEnabled }}"
+    DOJAH_ENABLED: "{{ values:webhook.dojahEnabled }}"
+    GLOBALSTACK_ENABLED: "{{ values:webhook.globalstackEnabled }}"
+  envFrom:
+    - secretRef: propeller-core
+    - secretRef: propeller-providers
+  health:
+    liveness:
+      type: http
+      path: /health
+      port: 4000
+      interval: 10
+      timeout: 3
+  resources:
+    cpu:
+      request: "50m"
+      limit: "200m"
+    memory:
+      request: "32Mi"
+      limit: "128Mi"

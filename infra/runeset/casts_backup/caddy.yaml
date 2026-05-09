@@ -1,0 +1,29 @@
+service:
+  name: caddy
+  image: "caddy:2-alpine"
+  scale: 1
+  ports:
+    - "80:80"
+    - "443:443"
+  volumes:
+    - /var/lib/propeller/caddy/data:/data
+    - /var/lib/propeller/caddy/config:/config
+    - /etc/propeller/Caddyfile:/etc/caddy/Caddyfile
+  health:
+    liveness:
+      type: http
+      path: /
+      port: 80
+      interval: 10
+      timeout: 3
+  dependencies:
+    - api
+    - services
+    - office
+  resources:
+    cpu:
+      request: "50m"
+      limit: "200m"
+    memory:
+      request: "32Mi"
+      limit: "128Mi"

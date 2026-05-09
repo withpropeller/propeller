@@ -1,0 +1,26 @@
+<p style="font-size: 16px; font-weight: 600; color: #0F1556; margin-bottom: 8px;">Payment received</p>
+<p style="color: #6b6560; font-size: 13px; margin-top: 0; margin-bottom: 20px;">A payment has been received for your payment request.</p>
+
+<p>Hello {{.firstName}},</p>
+
+<p>We've received a payment for your payment request <strong>{{.reference}}</strong>.</p>
+
+<table>
+  <tr><th>Amount</th><td>{{.amount}} NGN</td></tr>
+  <tr><th>Reference</th><td>{{.reference}}</td></tr>
+  <tr><th>Payment request ID</th><td>{{.paymentRequestId}}</td></tr>
+</table>
+
+<div class="info-box">
+  <h4>Status</h4>
+  <p style="margin: 0;">The payment is being processed through compliance checks. You'll receive a confirmation once it's cleared and posted to your ledger.</p>
+</div>
+
+<p>Track this payment in your <a href="https://dashboard.withpropeller.com">Propeller dashboard</a>.</p>
+
+<p style="color: #6b6560;">Questions? Reach us at <a href="mailto:support@withpropeller.com">support@withpropeller.com</a>.</p>
+
+<p>
+  Thanks,<br />
+  <span style="font-weight: 600;">The Propeller Team</span>
+</p>

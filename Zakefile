@@ -1,0 +1,4 @@
+##  Zakefile
+
+import "./scripts/tools/deployments.zake"
+import "./scripts/tools/dev.zake"

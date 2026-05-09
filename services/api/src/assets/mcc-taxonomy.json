@@ -1,0 +1,239 @@
+{
+    "airlines": [
+      "3000-3299",
+      "4511"
+    ],
+    "agricultural-services": [
+      "0763",
+      "8511"
+    ],
+    "amusement-entertainment": [
+      "7832-7997",
+      "7999"
+    ],
+    "automobile-vehicles": [
+      "5013-5599",
+      "7542"
+    ],
+    "automobile-vehicle-rental": [
+      "3300-3499",
+      "7512-7514",
+      "7519"
+    ],
+    "business-services": [
+      "7392-7394"
+    ],
+    "clothing-stores": [
+      "5137-5699"
+    ],
+    "contracted-services": [
+      "1520-1542",
+      "1600"
+    ],
+    "government-services": [
+      "9100-9111"
+    ],
+    "hotels-motels": [
+      "3501-3725",
+      "7011"
+    ],
+    "miscellaneous-stores": [
+      "5261",
+      "5300",
+      "5331",
+      "5399",
+      "5631"
+    ],
+    "personal-service-providers": [
+      "7297",
+      "8090",
+      "8200-8299"
+    ],
+    "professional-services-membership-organizations": [
+      "8601-8699",
+      "9331"
+    ],
+    "repair-services": [
+      "7692-7699"
+    ],
+    "retail-stores": [
+      "5311-5399",
+      "5411-5499"
+    ],
+    "service-providers": [
+      "7311-7392",
+      "7395-7399"
+    ],
+    "transportation-services": [
+      "4011",
+      "4111-4119",
+      "4225-4226",
+      "4784-4789"
+    ],
+    "utilities-services": [
+      "4899",
+      "4951"
+    ],
+    "wholesale-distributors-manufacturers": [
+      "5040-5047",
+      "5065-5099"
+    ],
+    "eating-places-restaurants-bars": [
+      "5812-5814"
+    ],
+    "department-stores": [
+      "5311"
+    ],
+    "digital-goods": [
+      "5816",
+      "5817",
+      "5818"
+    ],
+    "drug-stores": [
+      "5912"
+    ],
+    "fast-food": [
+      "5814"
+    ],
+    "fuel-stations": [
+      "5541",
+      "5542",
+      "5983"
+    ],
+    "health-care": [
+      "8011-8049",
+      "8099"
+    ],
+    "hotels": [
+      "3501-3725"
+    ],
+    "online-shopping": [
+      "5964",
+      "5965",
+      "5969"
+    ],
+    "personal-care": [
+      "7230-7251"
+    ]
+  }
+  
+  {
+    "airlines": [
+        "3000-3299",
+        "4511"
+    ],
+    "agricultural-services": [
+        "0763",
+        "8511"
+    ],
+    "amusement-entertainment": [
+        "7832-7997",
+        "7999"
+    ],
+    "automobile-vehicles": [
+        "5013-5599",
+        "7542"
+    ],
+    "automobile-vehicle-rental": [
+        "3300-3499",
+        "7512-7514",
+        "7519"
+    ],
+    "business-services": [
+        "7392-7399",
+        "5599",
+        "3578"
+    ],
+    "clothing-stores": [
+        "5137-5699"
+    ],
+    "contracted-services": [
+        "1520-1542",
+        "1600"
+    ],
+    "government-services": [
+        "9100-9111"
+    ],
+    "hotels-motels": [
+        "3501-3725",
+        "7011"
+    ],
+    "miscellaneous-stores": [
+        "5261",
+        "5300",
+        "5331",
+        "5399",
+        "5631"
+    ],
+    "personal-service-providers": [
+        "7297",
+        "7692-7699",
+        "8234"
+    ],
+    "professional-services-membership-organizations": [
+        "8601-8699",
+        "9331"
+    ],
+    "repair-services": [
+        "7692-7699"
+    ],
+    "retail-stores": [
+        "5311-5399",
+        "5411-5499"
+    ],
+    "service-providers": [
+        "7311-7394",
+        "7399"
+    ],
+    "transportation-services": [
+        "4011",
+        "4111-4119",
+        "4225-4226",
+        "4784-4789"
+    ],
+    "utilities-services": [
+        "4899",
+        "4951"
+    ],
+    "wholesale-distributors-manufacturers": [
+        "5040-5047",
+        "5065-5099"
+    ],
+    "eating-places-restaurants-bars": [
+        "5812-5814"
+    ],
+    "department-stores": [
+        "5311"
+    ],
+    "digital-goods": [
+        "5816",
+        "5817",
+        "5818"
+    ],
+    "drug-stores": [
+        "5912"
+    ],
+    "fast-food": [
+        "5814"
+    ],
+    "fuel-stations": [
+        "5541",
+        "5542",
+        "5983"
+    ],
+    "health-care": [
+        "8011-8049",
+        "8099"
+    ],
+    "hotels": [
+        "3501-3725"
+    ],
+    "online-shopping": [
+        "5964",
+        "5965",
+        "5969"
+    ],
+    "personal-care": [
+        "7230-7251"
+    ]
+}

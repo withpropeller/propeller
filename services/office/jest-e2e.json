@@ -1,0 +1,16 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": ".",
+  "testRegex": ".e2e-spec.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "preset": "@shelf/jest-mongodb",
+  "moduleNameMapper": {
+    "^@core/(.*)$": "<rootDir>/src/core/$1",
+    "^@config/(.*)$": "<rootDir>/src/config/$1",
+    "^@api/(.*)$": "<rootDir>/src/api/$1",
+    "^@auth/(.*)$": "<rootDir>/src/auth/$1",
+    "^@common/(.*)$": "<rootDir>/src/common/$1"
+  }
+}

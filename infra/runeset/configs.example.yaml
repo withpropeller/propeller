@@ -1,0 +1,14 @@
+# Non-secret configuration for Propeller. Apply via:
+#
+#   rune cast configs.yaml
+#
+# Configmap values are stored plaintext. Use secrets for anything sensitive.
+
+configmaps:
+  - name: propeller-config
+    namespace: propeller
+    data:
+      - { key: NODE_ENV, value: production }
+      - { key: LOG_LEVEL, value: info }
+      - { key: FLO_ADDR, value: "flo:9000" }
+      - { key: AWS_REGION, value: us-east-1 }

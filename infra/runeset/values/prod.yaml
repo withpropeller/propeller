@@ -1,0 +1,33 @@
+# Production values — populated as Wave 5 hardens up.
+
+app:
+  tag: ""  # set per release: `rune cast --values=prod --set app.tag=v0.1.0`
+
+logLevel: info
+
+flo:
+  tag: ""  # pin in prod; never use latest
+  clientPort: 9000
+  metricsPort: 9001
+  dashboardPort: 9002
+  cpuLimit: "2000m"
+  memLimit: "2Gi"
+
+api:
+  scale: 2
+  port: 3001
+  publicUrl: "https://api.propeller.xyz"
+  cpuLimit: "1000m"
+  memLimit: "1Gi"
+
+services:
+  scale: 2
+  port: 3002
+  cpuLimit: "1000m"
+  memLimit: "1Gi"
+
+office:
+  scale: 1
+  port: 3003
+  cpuLimit: "500m"
+  memLimit: "512Mi"

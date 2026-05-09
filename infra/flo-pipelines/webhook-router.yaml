@@ -1,0 +1,58 @@
+# ──────────────────────────────────────────────────────────────
+# Webhook Router — flo processing pipeline
+# ──────────────────────────────────────────────────────────────
+# Reads from raw-webhooks stream, classifies by provider source,
+# routes to dedicated event streams for downstream consumption.
+#
+# Deploy: flo processing submit infra/flo-pipelines/webhook-router.yaml -n propeller
+# ──────────────────────────────────────────────────────────────
+
+kind: Processing
+name: webhook-router
+namespace: propeller
+parallelism: 4
+batch_size: 200
+
+sources:
+  - name: raw-webhooks
+    stream:
+      name: raw-webhooks
+      namespace: propeller
+
+operators:
+  - type: classify
+    name: route-by-provider
+    rules:
+      - condition: "json:source=paystack"
+        tag: paystack
+      - condition: "json:source=paykka"
+        tag: paykka
+      - condition: "json:source=dojah"
+        tag: dojah
+      - condition: "json:source=globalstack"
+        tag: globalstack
+
+sinks:
+  - name: payment-sink
+    stream:
+      name: payment-events
+      namespace: propeller
+    match: [paystack]
+
+  - name: kyb-sink
+    stream:
+      name: kyb-events
+      namespace: propeller
+    match: [paykka]
+
+  - name: kyc-sink
+    stream:
+      name: kyc-events
+      namespace: propeller
+    match: [dojah]
+
+  - name: payout-sink
+    stream:
+      name: payout-events
+      namespace: propeller
+    match: [globalstack]

@@ -1,0 +1,21 @@
+<p style="font-size: 16px; font-weight: 600; color: #0F1556; margin-bottom: 8px;">Payment link expired</p>
+<p style="color: #6b6560; font-size: 13px; margin-top: 0; margin-bottom: 20px;">A payment request has expired without receiving payment.</p>
+
+<p>Hello {{.firstName}},</p>
+
+<p>The payment request <strong>{{.reference}}</strong> has expired without a payment. The virtual account is no longer valid.</p>
+
+<table>
+  <tr><th>Amount</th><td>{{.amount}} NGN</td></tr>
+  <tr><th>Reference</th><td>{{.reference}}</td></tr>
+  <tr><th>Expired at</th><td>{{.expiredAt}}</td></tr>
+</table>
+
+<p>If your customer still needs to pay, create a new payment request from your <a href="https://dashboard.withpropeller.com">Propeller dashboard</a> or via the API.</p>
+
+<p style="color: #6b6560;">Questions? Reach us at <a href="mailto:support@withpropeller.com">support@withpropeller.com</a>.</p>
+
+<p>
+  Thanks,<br />
+  <span style="font-weight: 600;">The Propeller Team</span>
+</p>

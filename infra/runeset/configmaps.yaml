@@ -1,0 +1,5 @@
+configmaps:
+  - name: caddy-config
+    namespace: propeller
+    data:
+      Caddyfile: ":80 {\n    reverse_proxy landing:80\n}\n"

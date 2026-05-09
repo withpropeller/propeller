@@ -1,0 +1,23 @@
+<p style="font-size: 16px; font-weight: 600; color: #0F1556; margin-bottom: 8px;">Payment confirmed</p>
+<p style="color: #6b6560; font-size: 13px; margin-top: 0; margin-bottom: 20px;">A payment has cleared and posted to your balance.</p>
+
+<p>Hello {{.firstName}},</p>
+
+<p>A payment for your request <strong>{{.reference}}</strong> has passed compliance and been posted to your balance.</p>
+
+<table>
+  <tr><th>Amount</th><td>{{.amount}} NGN</td></tr>
+  <tr><th>Fee</th><td>{{.fee}} NGN</td></tr>
+  <tr><th>Net</th><td>{{.net}} NGN</td></tr>
+  <tr><th>Reference</th><td>{{.reference}}</td></tr>
+  <tr><th>Payment request ID</th><td>{{.paymentRequestId}}</td></tr>
+</table>
+
+<p>Your available balance has been updated. You can request a payout to USDC when ready.</p>
+
+<p style="color: #6b6560;">Questions? Reach us at <a href="mailto:support@withpropeller.com">support@withpropeller.com</a>.</p>
+
+<p>
+  Confirmed,<br />
+  <span style="font-weight: 600;">The Propeller Team</span>
+</p>

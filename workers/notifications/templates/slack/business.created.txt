@@ -1,0 +1,5 @@
+📦 *New business signup*
+
+*Name:* {{.businessName}}
+*Email:* {{.email}}
+*Name:* {{.firstName}} {{.lastName}}

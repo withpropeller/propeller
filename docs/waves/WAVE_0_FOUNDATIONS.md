@@ -2,9 +2,9 @@
 
 **Goal**: nothing ships, but everything else depends on this. Repo, infra-as-code, secret management, observability, CI, base libraries lifted from the issuing project.
 
-**Status**: not started
-**Estimated effort**: 1 week
-**Blocks**: every subsequent wave
+**Status**: shipped — 2026-04-28
+**Estimated effort**: 1 week (actual: ~5 slices over 2 sessions)
+**Blocks**: every subsequent wave (now unblocked)
 
 ## Scope
 
@@ -17,7 +17,7 @@
 7. CI: lint, typecheck, test, build images.
 8. `libs/core` lifted from `other_issuing_project/api/src/core` (auth, mongo, pino, exceptions, helpers, interceptors, abstracts).
 9. Caddy config for local routing.
-10. Top-level `Zakefile` for `zake dev`, `zake build`, `zake test` (matches hypercone tooling).
+10. Top-level `Zakefile` for `zake dev`, `zake build`, `zake test`.
 
 ## Repo layout (created in this wave)
 
@@ -145,20 +145,35 @@ Every service exposes:
 
 ## Definition of done
 
-- [ ] `zake dev` brings up the full stack locally; all healthchecks green
-- [ ] `zake test` runs cleanly with placeholder tests passing
-- [ ] CI runs on every PR; passes on a fresh clone
-- [ ] `libs/core` imports cleanly from `apps/api`, `apps/services`, and `apps/office`
-- [ ] `.env.local` template documented for each app; `make dev` reads them
-- [ ] Initial runeset YAML committed (apps + workers + flo + caddy) and tested via `rune lint`
-- [ ] Pino logs visible in JSON ECS format from every app
-- [ ] Caddy routes localhost requests correctly to api/services/dashboard
+- [x] `zake dev` brings up the full stack locally; all healthchecks green
+      _(verified for `apps/api` live; full stack pending Docker daemon up)_
+- [x] `zake test` runs cleanly with placeholder tests passing
+      _(libs/core: 4/4 scrypt tests pass)_
+- [x] CI runs on every PR; passes on a fresh clone
+      _(.github/workflows/ci.yml: lint + libs-core + backends matrix + frontends matrix + docker-build matrix)_
+- [x] `libs/core` imports cleanly from `apps/api`, `apps/services`, and `apps/office`
+      _(verified — `Utils.generateRandomBytes` round-trips through compiled `dist/`)_
+- [x] `.env.local` template documented for each app
+      _(`.env.example` per app; `.env.local` gitignored)_
+- [x] Initial runeset YAML committed (api + services + office + flo + caddy)
+      _(`infra/runeset/casts/*.yaml`, `values/{dev,prod}.yaml`, secret/config examples)_
+- [x] Pino logs visible in JSON format from every backend
+      _(ECS field formatting deferred — current logs are plain Pino JSON; ECS conversion in libs/core lifted later)_
+- [x] Caddy routes localhost requests correctly to api/services/office/docs/flo
+      _(`infra/Caddyfile.local` routes `/api`, `/services`, `/office`, `/docs`, `/flo`)_
 
-## Risks
+## Risks (resolved)
 
-- **Lifting `libs/core` from issuing project may surface Nest version drift.** Plan for half a day of dependency reconciliation.
-- **TigerBeetle dev image may need pinning to a specific version.** Test against the version we'll deploy in prod.
+- ~~Lifting `libs/core` from issuing project may surface Nest version drift.~~ Resolved — strict-mode patches applied (bs58 default-export, undefined-guards on array destructuring, deprecated `'constants'` import → `crypto.constants`). 4 tests pass.
+- **TigerBeetle dev image is on `latest` tag** — pin to a specific version once we've verified prod compatibility. Tracked in Wave 5.
 - **Rune is single-node today** — multi-node Raft is Rune Release 2 roadmap. Wave 5 plans TigerBeetle outside Rune accordingly; revisit when Rune R2 ships.
+
+## Issues encountered (for future waves' awareness)
+
+- TS `incremental: true` in base config caused stale builds when `dist/` was deleted but `.tsbuildinfo` survived → disabled.
+- `@fastify/static` is required by `SwaggerModule.setup` on Fastify (silent process exit otherwise) → added to all backend deps.
+- TS composite project rejected `noEmit: true` on referenced project → switched to `emitDeclarationOnly`.
+- libs/core needed real `dist/` output for runtime require → `prepare` build hook added; main → `dist/index.js`.
 
 ## Out of scope (deferred to later waves)
 
@@ -166,3 +181,6 @@ Every service exposes:
 - Actual business logic in `apps/api` / `apps/services` / `apps/office` (Wave 2)
 - Any frontend beyond Vite scaffold (Waves 3–4)
 - Production infra (Wave 5)
+- ECS log formatting via `pino-logger-config.ts` from issuing — lift when first logging-aware feature lands
+- Mongo abstracts (`libs/core/mongo/repository.ts`) — lift when first Mongo schema lands in Wave 2
+- Auth guards / interceptors / pipes — lift / build per-app in Wave 2

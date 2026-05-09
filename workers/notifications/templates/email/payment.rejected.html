@@ -1,0 +1,26 @@
+<p style="font-size: 16px; font-weight: 600; color: #e85d4a; margin-bottom: 8px;">Payment rejected</p>
+<p style="color: #6b6560; font-size: 13px; margin-top: 0; margin-bottom: 20px;">A payment could not be processed.</p>
+
+<p>Hello {{.firstName}},</p>
+
+<p>A payment for your request <strong>{{.reference}}</strong> could not be processed.</p>
+
+<div class="info-box">
+  <h4>Reason</h4>
+  <p>{{.reason}}</p>
+</div>
+
+<table>
+  <tr><th>Amount</th><td>{{.amount}} NGN</td></tr>
+  <tr><th>Reference</th><td>{{.reference}}</td></tr>
+  <tr><th>Payment request ID</th><td>{{.paymentRequestId}}</td></tr>
+</table>
+
+<p>If the reason is an incorrect transfer amount, the payer can retry with the correct amount. For other rejections, please contact support.</p>
+
+<p style="color: #6b6560;">Questions? Reach us at <a href="mailto:support@withpropeller.com">support@withpropeller.com</a>.</p>
+
+<p>
+  Thanks,<br />
+  <span style="font-weight: 600;">The Propeller Team</span>
+</p>

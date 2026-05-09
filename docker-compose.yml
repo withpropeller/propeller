@@ -1,0 +1,239 @@
+# ─────────────────────────────────────────────────────
+# Propeller — Local Development Stack
+# ─────────────────────────────────────────────────────
+# Usage:
+#   docker compose up -d                           start everything
+#   docker compose --profile infra up -d           start only infra (flo, mongo, tigerbeetle)
+#   docker compose up -d flo mongo tigerbeetle     same as above (by name)
+#   docker compose --profile apps up -d            start only app services (api, gateway, etc.)
+#   docker compose ps                              list services
+#   docker compose logs -f                         tail logs
+#   docker compose down -v                         tear down + remove volumes
+#
+# Services are grouped with profiles:
+#   infra   — flo, mongo, tigerbeetle
+#   apps    — api, gateway, office, web, admin, docs, caddy
+
+services:
+  # ─────────────── Flo Runtime ───────────────
+  flo:
+    profiles: [infra]
+    #image: ghcr.io/floruntime/flo:latest
+    image: flo:latest
+    container_name: propeller-flo
+    ports:
+      - "9000:9000"   # client API
+      - "9001:9001"   # metrics
+      - "9002:9002"   # dashboard
+    volumes:
+      - propeller-flo-data:/data/flo
+      - ./infra/flo.toml:/etc/flo/flo.toml:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9002/health || nc -z localhost 9000 || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+    networks: [propeller]
+
+  # ─────────────── MongoDB ───────────────
+  mongo:
+    profiles: [infra]
+    image: mongo:7
+    container_name: propeller-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=propeller
+    volumes:
+      - propeller-mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+    networks: [propeller]
+
+  # ─────────────── TigerBeetle ───────────────
+  tigerbeetle:
+    profiles: [infra]
+    image: ghcr.io/tigerbeetle/tigerbeetle:latest
+    container_name: propeller-tigerbeetle
+    command: >
+      sh -c "
+      test -f /data/0_0.tigerbeetle ||
+      /tigerbeetle format --cluster=0 --replica=0 --replica-count=1 /data/0_0.tigerbeetle;
+      exec /tigerbeetle start --addresses=0.0.0.0:4000 /data/0_0.tigerbeetle
+      "
+    ports:
+      - "4000:4000"
+    volumes:
+      - propeller-tigerbeetle-data:/data
+    cap_add:
+      - IPC_LOCK
+    security_opt:
+      - seccomp:unconfined
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 4000 || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+    networks: [propeller]
+
+  # ─────────────── services/api (public REST) ───────────────
+  api:
+    profiles: [apps]
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile.nestjs
+      args:
+        APP_DIR: api
+        PORT: 3001
+    container_name: propeller-api
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - LOG_LEVEL=debug
+      - DATABASE_URL=mongodb://mongo:27017/propeller
+      - TB_ADDRESSES=tigerbeetle:4000
+      - FLO_ADDR=flo:9000
+    depends_on:
+      flo: { condition: service_healthy }
+      mongo: { condition: service_healthy }
+      tigerbeetle: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:3001/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+    networks: [propeller]
+
+  # ─────────────── services/gateway (dashboard backend) ───────────────
+  gateway:
+    profiles: [apps]
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile.nestjs
+      args:
+        APP_DIR: gateway
+        PORT: 3002
+    container_name: propeller-gateway
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=development
+      - PORT=3002
+      - LOG_LEVEL=debug
+      - DATABASE_URL=mongodb://mongo:27017/propeller
+      - TB_ADDRESSES=tigerbeetle:4000
+      - FLO_ADDR=flo:9000
+    depends_on:
+      flo: { condition: service_healthy }
+      mongo: { condition: service_healthy }
+      tigerbeetle: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:3002/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+    networks: [propeller]
+
+  # ─────────────── services/office (admin backend) ───────────────
+  office:
+    profiles: [apps]
+    build:
+      context: .
+      dockerfile: infra/docker/Dockerfile.nestjs
+      args:
+        APP_DIR: office
+        PORT: 3003
+    container_name: propeller-office
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=development
+      - PORT=3003
+      - LOG_LEVEL=debug
+      - DATABASE_URL=mongodb://mongo:27017/propeller
+      - TB_ADDRESSES=tigerbeetle:4000
+      - FLO_ADDR=flo:9000
+    depends_on:
+      flo: { condition: service_healthy }
+      mongo: { condition: service_healthy }
+      tigerbeetle: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:3003/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+    networks: [propeller]
+
+  # ─────────────── apps/web (Vite dev) ───────────────
+  web:
+    profiles: [apps]
+    build:
+      context: ./apps/web
+      dockerfile: ../../infra/docker/Dockerfile.vite
+    container_name: propeller-web
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    networks: [propeller]
+
+  # ─────────────── apps/admin (Vite dev) ───────────────
+  admin:
+    profiles: [apps]
+    build:
+      context: .
+      dockerfile: apps/admin/Dockerfile
+    container_name: propeller-admin
+    ports:
+      - "3005:3005"
+    restart: unless-stopped
+    networks: [propeller]
+
+  # ─────────────── apps/docs (Scalar static) ───────────────
+  docs:
+    profiles: [apps]
+    build:
+      context: .
+      dockerfile: apps/docs/Dockerfile
+    container_name: propeller-docs
+    ports:
+      - "3004:80"
+    restart: unless-stopped
+    networks: [propeller]
+
+  # ─────────────── Caddy (local edge) ───────────────
+  caddy:
+    profiles: [apps]
+    image: caddy:2-alpine
+    container_name: propeller-caddy
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./infra/Caddyfile.local:/etc/caddy/Caddyfile:ro
+      - propeller-caddy-data:/data
+      - propeller-caddy-config:/config
+    depends_on:
+      flo: { condition: service_healthy }
+    restart: unless-stopped
+    networks: [propeller]
+
+volumes:
+  propeller-flo-data:
+  propeller-mongo-data:
+  propeller-tigerbeetle-data:
+  propeller-caddy-data:
+  propeller-caddy-config:
+
+networks:
+  propeller:
+    name: propeller

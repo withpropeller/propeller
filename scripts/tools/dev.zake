@@ -1,0 +1,260 @@
+# Zakefile for Propeller
+# Local development and build automation.
+#
+# `zake <target>` runs a target. Sub-targets are dot-namespaced.
+
+# ============================================================================
+# Dev (full stack via docker compose)
+# ============================================================================
+
+## Start full local stack (infra + apps)
+dev:
+    script:
+        docker compose up
+
+## Start full stack in background
+dev.detached:
+    script:
+        docker compose up -d
+
+# ── Infra-only targets ──
+
+## Start Flo runtime only
+dev.flo:
+    script:
+        docker compose up -d flo
+
+## Start MongoDB only
+dev.mongo:
+    script:
+        docker compose up -d mongo
+
+## Start TigerBeetle only
+dev.tigerbeetle:
+    script:
+        docker compose up -d tigerbeetle
+
+## Start Caddy only
+dev.caddy:
+    script:
+        docker compose up -d caddy
+
+## Start infra only (flo + mongo + tigerbeetle), no apps
+dev.infra:
+    script:
+        docker compose --profile infra up -d
+
+# ── Per-app dev (host bun/yarn, faster reload than docker) ──
+
+## Run services/api locally with hot reload
+dev.api:
+    script:
+        cd services/api && bun run start:dev
+
+## Run services/gateway locally with hot reload
+dev.services:
+    script:
+        cd services/gateway && bun run start:dev
+
+## Run services/office locally with hot reload
+dev.office:
+    script:
+        cd services/office && bun run start:dev
+
+## Run apps/web (Vite dev server) locally
+dev.dashboard:
+    script:
+        cd apps/web && bun run dev
+
+## Run apps/admin (Vite dev server) locally
+dev.admin:
+    script:
+        cd apps/admin && bun run dev
+
+# ============================================================================
+# Build
+# ============================================================================
+
+## Build all docker images
+build:
+    script:
+        docker compose build
+
+## Build libs/core (required before per-app local builds)
+build.libs:
+    script:
+        cd libs/core && bun run build
+
+## Build services/api
+build.api:
+    requires: build.libs
+    script:
+        cd services/api && bun run build
+
+## Build services/gateway
+build.services:
+    requires: build.libs
+    script:
+        cd services/gateway && bun run build
+
+## Build services/office
+build.office:
+    requires: build.libs
+    script:
+        cd services/office && bun run build
+
+## Build apps/web
+build.dashboard:
+    script:
+        cd apps/web && bun run build
+
+## Build apps/admin
+build.admin:
+    script:
+        cd apps/admin && bun run build
+
+## Build apps/landing
+build.landing:
+    script:
+        cd apps/landing && bun run build
+
+# ============================================================================
+# Test / Typecheck
+# ============================================================================
+
+## Run all tests
+test:
+    requires: test.libs test.api test.services test.office
+
+test.libs:
+    script:
+        cd libs/core && bunx vitest run
+
+test.api:
+    script:
+        cd services/api && bunx vitest run
+
+test.services:
+    script:
+        cd services/gateway && bunx vitest run
+
+test.office:
+    script:
+        cd services/office && bunx vitest run
+
+## Typecheck everything
+typecheck:
+    script:
+        cd libs/core && bunx tsc --noEmit
+        cd services/api && bunx tsc --noEmit
+        cd services/gateway && bunx tsc --noEmit
+        cd services/office && bunx tsc --noEmit
+        cd apps/web && bunx tsc --noEmit
+        cd apps/admin && bunx tsc --noEmit
+        cd apps/landing && bunx tsc --noEmit
+
+# ============================================================================
+# Lint / Format
+# ============================================================================
+
+## biome check (lint + format check)
+lint:
+    script:
+        bunx biome check .
+
+## biome check --write
+lint.fix:
+    script:
+        bunx biome check --write .
+
+## biome format --write
+format:
+    script:
+        bunx biome format --write .
+
+## biome format read-only
+format.check:
+    script:
+        bunx biome format .
+
+# ============================================================================
+# Logs
+# ============================================================================
+
+## Tail all docker compose logs
+logs:
+    script:
+        docker compose logs -f --tail=50
+
+logs.api:
+    script:
+        docker logs propeller-api -f --tail=100
+
+logs.services:
+    script:
+        docker logs propeller-services -f --tail=100
+
+logs.office:
+    script:
+        docker logs propeller-office -f --tail=100
+
+logs.dashboard:
+    script:
+        docker logs propeller-dashboard -f --tail=100
+
+logs.admin:
+    script:
+        docker logs propeller-admin -f --tail=100
+
+logs.flo:
+    script:
+        docker logs propeller-flo -f --tail=100
+
+logs.mongo:
+    script:
+        docker logs propeller-mongo -f --tail=100
+
+logs.tigerbeetle:
+    script:
+        docker logs propeller-tigerbeetle -f --tail=100
+
+logs.caddy:
+    script:
+        docker logs propeller-caddy -f --tail=100
+
+# ============================================================================
+# Health
+# ============================================================================
+
+## Check health of every service in the local stack
+health:
+    script:
+        @echo "=== Flo ===" && curl -sf http://localhost:9002/health && echo "ok" || echo "DOWN"
+        @echo "=== Mongo ===" && docker compose exec -T mongo mongosh --quiet --eval "db.adminCommand('ping').ok" || echo "DOWN"
+        @echo "=== TigerBeetle ===" && nc -z localhost 4000 && echo "ok" || echo "DOWN"
+        @echo "=== Caddy ===" && curl -sf http://localhost:8080 > /dev/null && echo "ok" || echo "DOWN"
+        @echo "=== apps/api ===" && curl -sf http://localhost:3001/healthz || echo "DOWN"
+        @echo "=== apps/services ===" && curl -sf http://localhost:3002/healthz || echo "DOWN"
+        @echo "=== apps/office ===" && curl -sf http://localhost:3003/healthz || echo "DOWN"
+        @echo "=== apps/dashboard ===" && curl -sf http://localhost:3000 > /dev/null && echo "ok" || echo "DOWN"
+        @echo "=== apps/admin ===" && curl -sf http://localhost:3005 > /dev/null && echo "ok" || echo "DOWN"
+        @echo "=== apps/docs ===" && curl -sf http://localhost:3004 > /dev/null && echo "ok" || echo "DOWN"
+
+# ============================================================================
+# Compose helpers
+# ============================================================================
+
+## docker compose ps
+ps:
+    script:
+        docker compose ps
+
+## docker compose down (keep volumes)
+stop:
+    script:
+        docker compose down
+
+## docker compose down -v (destroys local data)
+clean:
+    script:
+        docker compose down -v

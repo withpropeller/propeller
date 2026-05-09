@@ -1,0 +1,58 @@
+# Shared multi-stage Dockerfile for Propeller NestJS services (Bun runtime)
+#
+# Build arguments:
+#   APP_DIR       — path under services/ (e.g. api, gateway)
+#   PORT          — exposed port (e.g. 3001, 3002, 3003)
+#   LIBS_DIR      — path to shared libs (default: libs/core)
+#
+# Usage:
+#   docker build \
+#     -f infra/docker/Dockerfile.nestjs \
+#     --build-arg APP_DIR=api \
+#     --build-arg PORT=3001 \
+#     -t propeller-api .
+#
+# ------------------------------------------------------------------------------
+
+FROM oven/bun:1-alpine AS deps
+ARG APP_DIR
+ARG LIBS_DIR=libs/core
+WORKDIR /repo
+
+# ── Install shared lib deps + build ──
+COPY ${LIBS_DIR}/package.json ${LIBS_DIR}/bun.lock* ./${LIBS_DIR}/
+WORKDIR /repo/${LIBS_DIR}
+RUN bun install --frozen-lockfile --silent
+COPY ${LIBS_DIR} ./
+RUN bun run build
+
+# ── Install app deps ──
+WORKDIR /repo/services/${APP_DIR}
+COPY services/${APP_DIR}/package.json services/${APP_DIR}/bun.lock* ./
+RUN bun install --frozen-lockfile --silent
+
+# ------------------------------------------------------------------------------
+
+FROM oven/bun:1-alpine AS builder
+ARG APP_DIR
+ARG LIBS_DIR=libs/core
+WORKDIR /repo
+COPY --from=deps /repo/${LIBS_DIR} ./${LIBS_DIR}
+COPY --from=deps /repo/services/${APP_DIR}/node_modules ./services/${APP_DIR}/node_modules
+COPY tsconfig.base.json ./
+COPY services/${APP_DIR} ./services/${APP_DIR}
+WORKDIR /repo/services/${APP_DIR}
+RUN bun run build
+
+# ------------------------------------------------------------------------------
+
+FROM oven/bun:1-alpine
+ARG APP_DIR
+ARG PORT
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=builder /repo/services/${APP_DIR}/dist ./dist
+COPY --from=builder /repo/services/${APP_DIR}/node_modules ./node_modules
+COPY --from=builder /repo/services/${APP_DIR}/package.json ./
+EXPOSE ${PORT}
+CMD ["bun", "dist/main.js"]

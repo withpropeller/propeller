@@ -1,0 +1,30 @@
+service:
+  name: office
+  image: "ghcr.io/propeller/office:{{ values:app.tag }}"
+  scale: "{{ values:office.scale }}"
+  ports:
+    - "{{ values:office.port }}:3003"
+  env:
+    NODE_ENV: production
+    PORT: "3003"
+    LOG_LEVEL: "{{ values:logLevel }}"
+  envFrom:
+    - configRef: propeller-config
+    - secretRef: propeller-core
+    - secretRef: propeller-office
+  health:
+    liveness:
+      type: http
+      path: /healthz
+      port: 3003
+      interval: 10
+      timeout: 3
+  dependencies:
+    - flo
+  resources:
+    cpu:
+      request: "100m"
+      limit: "{{ values:office.cpuLimit }}"
+    memory:
+      request: "256Mi"
+      limit: "{{ values:office.memLimit }}"
