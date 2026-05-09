@@ -41,7 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Need full history for merge-base
+          fetch-depth: 0
 
       - name: Detect changed components
         id: detect
@@ -51,51 +51,36 @@ jobs:
         run: |
           # Manual dispatch — deploy exactly what the user asked for
           if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
-            echo "components=[\"$INPUT_COMPONENT\"]" >> $GITHUB_OUTPUT
+            echo "components=[\"$INPUT_COMPONENT\"]" >> "$GITHUB_OUTPUT"
             echo "Manual deploy: $INPUT_COMPONENT"
             exit 0
           fi
 
-          # Auto — diff against the merge-base, not just HEAD^
+          # Auto — diff against the merge-base for multi-commit pushes
           BASE=$(git merge-base HEAD origin/master 2>/dev/null || git merge-base HEAD origin/main 2>/dev/null || echo "HEAD^")
           CHANGED_FILES=$(git diff --name-only "$BASE" HEAD)
           echo "Changed files (since $BASE):"
           echo "$CHANGED_FILES"
 
-          # Detect from deploy-config.yml
-          CHANGED=()
-          COMPONENTS=$(python3 -c "
-import yaml
-with open('.github/deploy-config.yml') as f:
-    c = yaml.safe_load(f)
-print('\n'.join(c['components'].keys()))
-")
-          for name in $COMPONENTS; do
-            PATTERNS=$(python3 -c "
-import yaml
-with open('.github/deploy-config.yml') as f:
-    c = yaml.safe_load(f)
-print('\n'.join(c['components']['$name'].get('paths',[])))
-")
-            for pattern in $PATTERNS; do
-              # Convert glob to grep pattern: apps/landing/** → ^apps/landing/
-              prefix="${pattern//\/\*\*/\/}"
-              if echo "$CHANGED_FILES" | grep -q "^$prefix"; then
-                CHANGED+=("$name")
-                echo "  → $name (matched $prefix)"
-                break
-              fi
-            done
-          done
+          # Simple detection: check if any path prefix for each component matches
+          CHANGED=""
+          # landing: apps/landing/ or infra/docker/Dockerfile.landing or infra/docker/nginx.landing.conf
+          if echo "$CHANGED_FILES" | grep -qE '^(apps/landing/|infra/docker/Dockerfile\.landing|infra/docker/nginx\.landing\.conf)'; then
+            CHANGED="$CHANGED landing"
+          fi
 
-          CHANGED=($(printf '%s\n' "${CHANGED[@]}" | sort -u))
-          if [ ${#CHANGED[@]} -eq 0 ]; then
-            echo "components=[]" >> $GITHUB_OUTPUT
+          # admin: apps/admin/ or infra/docker/Dockerfile.vite
+          if echo "$CHANGED_FILES" | grep -qE '^(apps/admin/|infra/docker/Dockerfile\.vite)'; then
+            CHANGED="$CHANGED admin"
+          fi
+
+          if [ -z "$CHANGED" ]; then
+            echo "components=[]" >> "$GITHUB_OUTPUT"
             echo "No components changed"
           else
-            JSON=$(printf '%s\n' "${CHANGED[@]}" | jq -R . | jq -sc .)
-            echo "components=$JSON" >> $GITHUB_OUTPUT
-            echo "Changed: ${CHANGED[@]}"
+            CHANGED_JSON=$(echo $CHANGED | tr ' ' '\n' | jq -R . | jq -sc .)
+            echo "components=$CHANGED_JSON" >> "$GITHUB_OUTPUT"
+            echo "Changed:$CHANGED"
           fi
 
   build:
