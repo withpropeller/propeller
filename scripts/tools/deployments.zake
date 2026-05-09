@@ -10,10 +10,10 @@ tag:
 ## Trigger manual deploy via deploy-component.yml
 deploy:
     arg: <environment> [string] "Environment: stg or prod"
-    arg: <component> [variadic] "Component(s) to deploy (e.g. landing api docs)"
+    arg: <components> [string...] "Component(s) to deploy (e.g. landing api docs)"
     flag: --branch|-b [string=""] "Git ref to deploy from (current branch if empty)"
     script:
-        let components = {{component}} | zake::str.join ","
+        let components = {{components}} | zake::str.join ","
         @
             case "{{environment}}" in
                 stg|prod) ;;
