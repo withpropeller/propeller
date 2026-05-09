@@ -1,0 +1,31 @@
+# Default values for allawee.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicas: 1
+version: v1
+
+# Service Specific Values
+image:
+    repository: {{{ deployment.REPOSITORY }}}
+
+## Application level settings
+app:
+    env:
+        #[security]
+        NODE_ENV: {{ deployment.ENV }}
+
+        #[swagger]
+        ENABLE_SWAGGER: true
+
+        #[domains]
+        APP_HOST: api-{{ deployment.ENV }}.allawee.com
+
+        #[storage]
+        S3_DOCUMENT_STORE_BUCKET: cc-document-store-{{ deployment.ENV }}
+
+volumes:
+    - name: keypairs-secret
+      secret:
+        secretName: keypairs-secret
+        mountPath: /etc/secrets

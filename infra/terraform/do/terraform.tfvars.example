@@ -1,0 +1,29 @@
+# ─── DigitalOcean ─────────────────────────────────────────────────
+# Generate a personal access token at:
+#   https://cloud.digitalocean.com/account/api/tokens
+do_token    = "dop_v1_xxxx"
+
+region       = "lon1"
+droplet_size = "s-2vcpu-4gb"     # 2 vCPU, 4 GB RAM
+ssh_key_name = "my-laptop"
+
+# ─── Rune ─────────────────────────────────────────────────────────
+node_role     = "edge"           # edge (binds :80/:443 + ACME) or worker
+acme_email    = "ops@example.com"
+environment   = "dev"
+rune_version  = "v0.0.1-dev.22"
+cluster_cidr  = "10.96.0.0/16"
+
+# ─── Bootstrap (auto-admin after cloud-init) ──────────────────────
+bootstrap = true
+
+# ─── Firewall ────────────────────────────────────────────────────
+ssh_allowed_cidrs = ["0.0.0.0/0", "::/0"]  # Tighten for prod
+api_allowed_cidrs  = ["0.0.0.0/0", "::/0"]  # Tighten for prod
+
+# ─── Production ──────────────────────────────────────────────────
+enable_backups    = false
+enable_monitoring = true
+project_id        = ""
+tags              = []
+

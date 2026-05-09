@@ -1,0 +1,31 @@
+service:
+  name: core
+  image: "ghcr.io/propeller/core:{{ values:app.tag }}"
+  scale: 1
+  ports: []
+  env:
+    PORT: "4001"
+    FLO_ADDR: "flo:9000"
+    LOG_LEVEL: "{{ values:logLevel }}"
+    TB_ADDRESSES: "{{ values:core.tbAddresses }}"
+    PAYSTACK_ENABLED: "{{ values:core.paystackEnabled }}"
+    PAYKKA_ENABLED: "{{ values:core.paykkaEnabled }}"
+    DOJAH_ENABLED: "{{ values:core.dojahEnabled }}"
+    GLOBALSTACK_ENABLED: "{{ values:core.globalstackEnabled }}"
+  envFrom:
+    - secretRef: propeller-core
+    - secretRef: propeller-providers
+  health:
+    liveness:
+      type: http
+      path: /health
+      port: 4001
+      interval: 10
+      timeout: 3
+  resources:
+    cpu:
+      request: "200m"
+      limit: "1000m"
+    memory:
+      request: "128Mi"
+      limit: "512Mi"

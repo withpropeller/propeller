@@ -1,0 +1,30 @@
+service:
+  name: services
+  image: "ghcr.io/propeller/services:{{ values:app.tag }}"
+  scale: "{{ values:services.scale }}"
+  ports:
+    - "{{ values:services.port }}:3002"
+  env:
+    NODE_ENV: production
+    PORT: "3002"
+    LOG_LEVEL: "{{ values:logLevel }}"
+  envFrom:
+    - configRef: propeller-config
+    - secretRef: propeller-core
+    - secretRef: propeller-services
+  health:
+    liveness:
+      type: http
+      path: /healthz
+      port: 3002
+      interval: 10
+      timeout: 3
+  dependencies:
+    - flo
+  resources:
+    cpu:
+      request: "100m"
+      limit: "{{ values:services.cpuLimit }}"
+    memory:
+      request: "256Mi"
+      limit: "{{ values:services.memLimit }}"

@@ -1,0 +1,24 @@
+<p style="font-size: 16px; font-weight: 600; color: #0F1556; margin-bottom: 8px;">Payout completed</p>
+<p style="color: #6b6560; font-size: 13px; margin-top: 0; margin-bottom: 20px;">USDC has been delivered to your destination.</p>
+
+<p>Hello {{.firstName}},</p>
+
+<p>Your payout has been completed. USDC has been delivered to your destination.</p>
+
+<table>
+  <tr><th>Amount (NGN)</th><td>{{.amountNgn}} NGN</td></tr>
+  <tr><th>Amount (USDC)</th><td>{{.amountUsdc}} USDC</td></tr>
+  <tr><th>Rate</th><td>{{.rate}}</td></tr>
+  <tr><th>Destination</th><td>{{.chain}}: {{.addressPreview}}</td></tr>
+  <tr><th>Transaction hash</th><td style="font-family: monospace; font-size: 12px; word-break: break-all;">{{.txHash}}</td></tr>
+  <tr><th>Payout ID</th><td>{{.payoutId}}</td></tr>
+</table>
+
+<p>View the full details in your <a href="https://dashboard.withpropeller.com">Propeller dashboard</a>.</p>
+
+<p style="color: #6b6560;">Questions? Reach us at <a href="mailto:support@withpropeller.com">support@withpropeller.com</a>.</p>
+
+<p>
+  Delivered,<br />
+  <span style="font-weight: 600;">The Propeller Team</span>
+</p>

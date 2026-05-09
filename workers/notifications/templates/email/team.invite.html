@@ -1,0 +1,23 @@
+<p style="font-size: 16px; font-weight: 600; color: #0F1556; margin-bottom: 8px;">You've been invited to {{.businessName}}</p>
+<p style="color: #6b6560; font-size: 13px; margin-top: 0; margin-bottom: 20px;">Join your team on Propeller.</p>
+
+<p>Hello {{.firstName}},</p>
+
+<p>{{.adminFullName}} ({{.adminEmail}}) has invited you to join <strong>{{.businessName}}</strong> on Propeller.</p>
+
+{{if .customMessage }}
+<div class="info-box">
+  {{.customMessage}}
+</div>
+{{end}}
+
+<p style="text-align: center;">
+  <a href="{{.authLink}}" class="btn">Accept invitation</a>
+</p>
+
+<p style="color: #6b6560;">If you did not expect this invitation, you can safely ignore it. Questions? Reach us at <a href="mailto:support@withpropeller.com">support@withpropeller.com</a>.</p>
+
+<p>
+  Thanks,<br />
+  <span style="font-weight: 600;">The Propeller Team</span>
+</p>

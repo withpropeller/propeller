@@ -1,0 +1,239 @@
+name: PR Check
+
+on:
+  pull_request:
+    branches: [main, dev]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ──────────────────────────────────────────────────────────────
+  # Lint + format (entire repo)
+  # ──────────────────────────────────────────────────────────────
+  lint:
+    runs-on: ubuntu-latest
+    name: Lint
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 1.3.10
+
+      - name: biome check
+        run: bunx biome check .
+
+  # ──────────────────────────────────────────────────────────────
+  # Shared library: build + test (blocks backends)
+  # ──────────────────────────────────────────────────────────────
+  libs-core:
+    runs-on: ubuntu-latest
+    name: libs / core
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 1.3.10
+
+      - name: Install
+        working-directory: libs/core
+        run: bun install --frozen-lockfile
+
+      - name: Build
+        working-directory: libs/core
+        run: bun run build
+
+      - name: Test
+        working-directory: libs/core
+        run: bun run test
+
+  # ──────────────────────────────────────────────────────────────
+  # Backends (Bun runtime)
+  # ──────────────────────────────────────────────────────────────
+  backends:
+    runs-on: ubuntu-latest
+    needs: [libs-core]
+    name: backend / ${{ matrix.app }}
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [api, services, office]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 1.3.10
+
+      # libs/core must be built before any backend can resolve file: deps
+      - name: Build libs/core
+        working-directory: libs/core
+        run: bun install --frozen-lockfile && bun run build
+
+      - name: Install
+        working-directory: apps/${{ matrix.app }}
+        run: bun install --frozen-lockfile
+
+      - name: Typecheck
+        working-directory: apps/${{ matrix.app }}
+        run: bunx tsc --noEmit
+
+      - name: Test
+        working-directory: apps/${{ matrix.app }}
+        run: bunx vitest run
+
+      - name: Build
+        working-directory: apps/${{ matrix.app }}
+        run: bun run build
+
+  # ──────────────────────────────────────────────────────────────
+  # Frontends (auto-detect package manager: Bun > Yarn > npm)
+  #
+  # To migrate a frontend to Bun:
+  #   rm node_modules yarn.lock package-lock.json && bun install
+  # The CI will automatically pick Bun for that app.
+  # ──────────────────────────────────────────────────────────────
+  frontends:
+    runs-on: ubuntu-latest
+    name: frontend / ${{ matrix.app }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - app: dashboard
+            port: 3000
+          - app: admin
+            port: 3005
+          - app: landing
+            port: ''
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect package manager
+        id: pkg
+        working-directory: apps/${{ matrix.app }}
+        run: |
+          if [ -f bun.lock ]; then
+            echo "manager=bun" >> "$GITHUB_OUTPUT"
+          elif [ -f yarn.lock ]; then
+            echo "manager=yarn" >> "$GITHUB_OUTPUT"
+          else
+            echo "manager=npm" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup Bun
+        if: steps.pkg.outputs.manager == 'bun'
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 1.3.10
+
+      - name: Setup Node
+        if: steps.pkg.outputs.manager != 'bun'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install
+        working-directory: apps/${{ matrix.app }}
+        run: |
+          case "${{ steps.pkg.outputs.manager }}" in
+            bun)  bun install --frozen-lockfile ;;
+            yarn) yarn install --frozen-lockfile ;;
+            npm)  npm ci ;;
+          esac
+
+      - name: Typecheck
+        working-directory: apps/${{ matrix.app }}
+        run: |
+          if [ -f package.json ] && grep -q '"typecheck"' package.json; then
+            case "${{ steps.pkg.outputs.manager }}" in
+              bun)  bun run typecheck ;;
+              yarn) yarn typecheck ;;
+              npm)  npm run typecheck ;;
+            esac
+          fi
+
+      - name: Test
+        working-directory: apps/${{ matrix.app }}
+        run: |
+          if [ -f package.json ] && grep -q '"test"' package.json; then
+            case "${{ steps.pkg.outputs.manager }}" in
+              bun)  bun run test ;;
+              yarn) yarn test ;;
+              npm)  npm run test ;;
+            esac
+          fi
+
+      - name: Build
+        working-directory: apps/${{ matrix.app }}
+        run: |
+          case "${{ steps.pkg.outputs.manager }}" in
+            bun)  bun run build ;;
+            yarn) yarn build ;;
+            npm)  npm run build ;;
+          esac
+
+  # ──────────────────────────────────────────────────────────────
+  # Docker image build verification (all services)
+  # ──────────────────────────────────────────────────────────────
+  docker-backends:
+    runs-on: ubuntu-latest
+    needs: [backends]
+    name: docker / ${{ matrix.app }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - app: api
+            port: 3001
+          - app: services
+            port: 3002
+          - app: office
+            port: 3003
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        run: |
+          docker build \
+            -f infra/docker/Dockerfile.bun \
+            --build-arg APP_DIR=${{ matrix.app }} \
+            --build-arg PORT=${{ matrix.port }} \
+            -t propeller-${{ matrix.app }} .
+
+  docker-frontends:
+    runs-on: ubuntu-latest
+    name: docker / ${{ matrix.app }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - app: dashboard
+            dockerfile: apps/dashboard/Dockerfile
+          - app: admin
+            dockerfile: apps/admin/Dockerfile
+          - app: docs
+            dockerfile: apps/docs/Dockerfile
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build frontend image
+        run: docker build -f ${{ matrix.dockerfile }} -t propeller-${{ matrix.app }} apps/${{ matrix.app }}

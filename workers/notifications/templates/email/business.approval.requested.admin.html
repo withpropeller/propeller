@@ -1,0 +1,17 @@
+<p style="font-size: 16px; font-weight: 600; color: #0F1556; margin-bottom: 8px;">New approval request</p>
+<p style="color: #6b6560; font-size: 13px; margin-top: 0; margin-bottom: 20px;">{{.businessName}} requires admin review.</p>
+
+<p>A new approval request has been submitted for <strong>{{.businessName}}</strong>.</p>
+
+<table>
+  <tr><th>Business</th><td>{{.businessName}}</td></tr>
+  <tr><th>Type</th><td>{{.approvalType}}</td></tr>
+  <tr><th>Submitted by</th><td>{{.firstName}} {{.lastName}} ({{.email}})</td></tr>
+  <tr><th>Submitted at</th><td>{{.createdAt}}</td></tr>
+</table>
+
+<p>Review this request in the <a href="https://admin.withpropeller.com">Propeller admin dashboard</a>.</p>
+
+<p>
+  <span style="font-weight: 600;">Propeller Admin</span>
+</p>

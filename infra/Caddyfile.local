@@ -1,0 +1,36 @@
+# Local dev Caddyfile — http://localhost:8080
+#
+# In dev, apps are reachable directly on their own ports.
+# Caddy provides a unified entry mostly for backend routes; vite
+# dev servers (dashboard, admin) are simpler to hit directly on
+# their own ports because of how they serve assets.
+
+:8080 {
+    # ── Backends ──
+    handle_path /api/* {
+        reverse_proxy api:3001
+    }
+
+    handle_path /services/* {
+        reverse_proxy services:3002
+    }
+
+    handle_path /office/* {
+        reverse_proxy office:3003
+    }
+
+    # ── Docs ──
+    handle_path /docs/* {
+        reverse_proxy docs:80
+    }
+
+    # ── Flo dashboard pass-through ──
+    handle_path /flo/* {
+        reverse_proxy flo:9002
+    }
+
+    # ── Default landing ──
+    handle {
+        respond "Propeller local — try /api/healthz, /services/healthz, /office/healthz, /docs, or http://localhost:9002 for the Flo dashboard. Vite dev: http://localhost:3000 (dashboard), http://localhost:3005 (admin)." 200
+    }
+}

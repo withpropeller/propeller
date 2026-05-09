@@ -1,0 +1,48 @@
+{
+  "name": "@propeller/core",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Propeller shared core library — auth, crypto, exceptions, helpers, interfaces",
+  "license": "UNLICENSED",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
+    "prepare": "bun run build",
+    "test": "bunx vitest run",
+    "test:watch": "bunx vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "bs58": "^6.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "date-fns": "^3.6.0",
+    "google-libphonenumber": "^3.2.34",
+    "json-pick-keys": "^0.1.4",
+    "lodash": "^4.17.21",
+    "nanoid": "^3.3.7"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^10.0.0",
+    "@nestjs/mongoose": "^10.0.0",
+    "mongoose": "^8.0.0",
+    "rxjs": "^7.8.0"
+  },
+  "devDependencies": {
+    "@nestjs/common": "^10.0.0",
+    "@types/google-libphonenumber": "^7.4.30",
+    "@types/lodash": "^4.17.0",
+    "@types/node": "^20.0.0",
+    "mongoose": "^8.0.0",
+    "rxjs": "^7.8.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  }
+}

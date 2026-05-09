@@ -1,0 +1,72 @@
+# ──────────────────────────────────────────────────────────────
+# Off-Ramp Workflow — Globalstack USDC Payout
+# ──────────────────────────────────────────────────────────────
+# Triggered when payout.requested hits the payout-events stream.
+#
+# Steps:
+#   1. route-payout      — determine delivery network
+#   2. reserve-funds     — business_collected → business_payout_pending
+#   3. deliver-payout    — call Globalstack placeOrder
+#   4. settle-payout     — on webhook settlement, close legs
+#   5. fail-payout       — on failure, reverse reserve
+#
+# Deploy: flo workflow sync infra/flo-workflows/ -n propeller
+# ──────────────────────────────────────────────────────────────
+
+kind: Workflow
+name: offramp-usdc
+namespace: propeller
+trigger:
+  stream: payout-events
+  condition: "json:type=payout.requested"
+
+steps:
+  - name: route
+    action: route-payout
+    input:
+      businessId: ${{ $.businessId }}
+      amount: ${{ $.amount }}
+      currency: ${{ $.currency }}
+
+  - name: reserve-funds
+    action: debit-ledger
+    input:
+      accountType: ${{ concat "business_collected:" $.businessId }}
+      amount: ${{ $.amount }}
+      transferId: ${{ concat $.requestId ":reserve" }}
+      contraAccount: ${{ concat "business_payout_pending:" $.businessId }}
+      businessId: ${{ $.businessId }}
+
+  - name: get-quote
+    action: get-fx-quote
+    input:
+      sourceCurrency: "NGN"
+      targetCurrency: "USDC"
+      sourceAmount: ${{ $.amount }}
+
+  - name: deliver
+    action: deliver-payout
+    input:
+      businessId: ${{ $.businessId }}
+      quoteId: ${{ $.quoteId }}
+      amount: ${{ $.amount }}
+      destinationAccount: ${{ $.destinationAccount }}
+      destinationBankCode: ${{ $.destinationBankCode }}
+      idempotencyKey: ${{ concat $.requestId ":order" }}
+
+  # The workflow then waits for the payout.settled or payout.failed webhook
+  # (those are handled by stream workers that signal the workflow)
+
+  - name: await-settlement
+    type: await
+    events:
+      - payout.settled
+      - payout.failed
+    timeout: 3600 # 1 hour max
+
+  - name: route-settlement
+    action: route-settlement-outcome
+    input:
+      settlementEvent: ${{ $.awaitSettlementEvent }}
+      businessId: ${{ $.businessId }}
+      requestId: ${{ $.requestId }}

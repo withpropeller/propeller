@@ -1,0 +1,46 @@
+# Dev values — for staging-like local Rune deploys.
+# Production values live in values/prod.yaml.
+
+app:
+  tag: dev
+
+registry: ghcr.io/withpropeller/propeller
+logLevel: debug
+
+flo:
+  tag: latest
+  clientPort: 9000
+  metricsPort: 9001
+  dashboardPort: 9002
+  cpuLimit: "1000m"
+  memLimit: "1Gi"
+
+api:
+  scale: 1
+  port: 3001
+  publicUrl: "https://api.dev.propeller.xyz"
+  cpuLimit: "500m"
+  memLimit: "512Mi"
+
+services:
+  scale: 1
+  port: 3002
+  cpuLimit: "500m"
+  memLimit: "512Mi"
+
+office:
+  scale: 1
+  port: 3003
+  cpuLimit: "500m"
+  memLimit: "512Mi"
+
+landing:
+  scale: 1
+  port: 80
+  cpuLimit: "100m"
+  memLimit: "64Mi"
+
+caddy:
+  scale: 1
+  cpuLimit: "200m"
+  memLimit: "128Mi"

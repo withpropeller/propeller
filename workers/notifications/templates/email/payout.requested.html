@@ -1,0 +1,33 @@
+<p style="font-size: 16px; font-weight: 600; color: #0F1556; margin-bottom: 8px;">Payout requested</p>
+<p style="color: #6b6560; font-size: 13px; margin-top: 0; margin-bottom: 20px;">Your payout to USDC has been initiated.</p>
+
+<p>Hello {{.firstName}},</p>
+
+<p>Your payout request has been received and is being processed.</p>
+
+<table>
+  <tr><th>Amount (NGN)</th><td>{{.amountNgn}} NGN</td></tr>
+  <tr><th>Destination</th><td>{{.chain}}: {{.addressPreview}}</td></tr>
+  <tr><th>Status</th><td>{{.status}}</td></tr>
+  <tr><th>Payout ID</th><td>{{.payoutId}}</td></tr>
+</table>
+
+<div class="info-box">
+  <h4>What happens next</h4>
+  <ul style="margin: 10px 0; padding-left: 20px;">
+    {{if .approvalRequired}}
+    <li>This payout requires admin approval due to its amount. We'll notify you once approved.</li>
+    {{end}}
+    <li>Once processed, we'll fetch the best available FX rate and execute the conversion</li>
+    <li>You'll receive a confirmation when USDC has been delivered to your destination</li>
+  </ul>
+</div>
+
+<p>Track this payout in your <a href="https://dashboard.withpropeller.com">Propeller dashboard</a>.</p>
+
+<p style="color: #6b6560;">Questions? Reach us at <a href="mailto:support@withpropeller.com">support@withpropeller.com</a>.</p>
+
+<p>
+  Processing,<br />
+  <span style="font-weight: 600;">The Propeller Team</span>
+</p>

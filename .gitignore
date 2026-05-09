@@ -1,0 +1,84 @@
+# Reference materials — kept locally for context, not part of Propeller
+other_issuing_project/
+other_hypercone_project/
+servicesold
+*.pdf
+paystack-doc.md
+
+# Node
+node_modules/
+dist/
+build/
+.next/
+*.log
+.npm
+.yarn-integrity
+.yarn/cache
+.yarn/install-state.gz
+.pnp.*
+
+# Local env (production secrets live in Rune, never on disk)
+.env
+.env.local
+*.env
+!*.env.template
+!*.env.example
+
+# Secrets + keys
+*.pem
+!**/fixtures/**/*.pem
+*.token
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Go binaries
+workers/compliance/compliance
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build artifacts
+*.tsbuildinfo
+coverage/
+.turbo/
+.cache/
+
+# Test
+*.lcov
+
+# Rune CLI config (per-developer)
+.rune/
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+.terraform.lock.hcl
+*.tfvars
+!*.tfvars.example
+
+# Secrets — defensive; nothing sensitive should ever be committed
+*.pem
+*.key
+secrets/
+admin.token
+
+# Allow PEM/key fixtures inside test directories
+!**/fixtures/**/*.pem
+!**/fixtures/**/*.key
+!**/test/fixtures/**
+
+
+_docs/infra/terraform/do/terraform.tfvars
+infra/terraform/do/terraform.tfstate*
+infra/terraform/do/.terraform.lock.hcl
+infra/terraform/do/.terraform/
+rune-admin.token
+*.token
+_docs/

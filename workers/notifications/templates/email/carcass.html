@@ -1,0 +1,132 @@
+<html>
+
+<head>
+  <title>Propeller</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      font-family: 'Inter', system-ui, sans-serif;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+
+    a {
+      color: #3E59F3;
+      text-decoration: none;
+    }
+
+    a.btn {
+      display: inline-block;
+      border: none;
+      border-radius: 8px;
+      background-color: #3E59F3;
+      color: #ffffff;
+      font-weight: 600;
+      padding: 14px 28px;
+      margin: 16px 0;
+      text-decoration: none;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    table th,
+    table td {
+      padding: 14px 16px;
+      text-align: left;
+    }
+
+    table th {
+      font-weight: 600;
+      font-size: 13px;
+      color: #6b6560;
+      text-transform: uppercase;
+      letter-spacing: 0.35px;
+    }
+
+    table td {
+      font-size: 14px;
+      border-bottom: 1px solid #ebe6df;
+    }
+
+    div.info-box {
+      background-color: #faf8f5;
+      border: 1px solid #ebe6df;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 16px;
+      font-size: 14px;
+    }
+
+    div.info-box h4 {
+      margin-top: 0;
+      font-size: 13px;
+      color: #6b6560;
+      text-transform: uppercase;
+      letter-spacing: 0.35px;
+    }
+
+    .highlight {
+      background: linear-gradient(135deg, #e85d4a, #8b5cf6);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: 700;
+      color: #0F1556;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container" style="margin: 0 auto; font-size: 14px; background-color: #f5f2ee;">
+
+    <div style="padding: 40px 0 46px;">
+
+      <!--Header Container-->
+      <div style="background-color: #ffffff; padding: 32px 28px; max-width: 640px; margin: 0 auto; border-radius: 12px;">
+
+        <!--Header-->
+        <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #ebe6df;">
+          <span class="logo">Propeller</span>
+        </div>
+
+        <!--Inner Body-->
+        <div style="padding: 0 0 32px 0;">
+
+          {{ .contentBody }}
+
+        </div>
+
+        <!--Footer-->
+        <div style="border-top: 1px solid #ebe6df; padding-top: 24px;">
+          <div style="font-size: 13px; color: #6b6560; margin-bottom: 16px;">
+            <p style="color: #6b6560;">If you were not expecting this email, you can safely ignore it.<br />
+            Need help? Reach our support team at <a href="mailto:support@withpropeller.com" style="color: #3E59F3;">support@withpropeller.com</a></p>
+          </div>
+
+          <div style="text-align: center; margin-top: 20px;">
+            <a href="https://twitter.com/withpropeller" style="margin: 0 10px; color: #6b6560;">Twitter</a>
+            <span style="color: #ddd5cb;">·</span>
+            <a href="https://linkedin.com/company/withpropeller" style="margin: 0 10px; color: #6b6560;">LinkedIn</a>
+          </div>
+
+          <p style="font-size: 12px; color: #9e9690; text-align: center; margin-top: 16px;">
+            Propeller &mdash; Sell to Africa. Get paid without the headache.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,64 @@
+## Tag and push a release
+tag:
+    arg: <ref> [string] "Release tag (e.g., v0.1.7-beta.91.58)"
+    script:
+        @git add .
+        @git commit -m "pushing {{ref}}"
+        @git tag -a {{ref}} -m "pushing {{ref}}"
+        @git push origin {{ref}}
+
+## Trigger GHCR image build via GitHub Actions
+deploy:
+    arg: <environment> [string] "Environment: dev, stg, or prod"
+    arg: <component> [string?] "Component to build (auto-detected from pwd if not specified)"
+    flag: --branch|-b [string=""] "Git ref to build from (auto-detect if empty)"
+    script:
+        let detected_component = {{component}} ?? zake::path.last("2")
+        @
+            case "{{environment}}" in
+                dev|stg|prod) ;;
+                *) echo "Error: Environment must be dev, stg, or prod"; exit 1 ;;
+            esac
+
+            COMPONENT="{{detected_component}}"
+            if [ -z "$COMPONENT" ]; then
+                echo "Error: Component must be specified or script must be run from component directory"
+                exit 1
+            fi
+
+            BRANCH="{{branch}}"
+            if [ -z "$BRANCH" ]; then
+                BRANCH=$(git symbolic-ref -q HEAD | sed 's|refs/heads/||' || echo "HEAD")
+            fi
+
+            echo "🔨 Building $COMPONENT for {{environment}} from $BRANCH..."
+            gh workflow run deploy.yml \
+                -f environment={{environment}} \
+                -f component=$COMPONENT \
+                --ref "$BRANCH"
+
+            echo ""
+            echo "✅ Build triggered. Watch progress at:"
+            echo "   https://github.com/withpropeller/propeller/actions"
+
+## Cast to Rune server (run for fresh deploys)
+cast:
+    arg: <environment> [string] "Environment: dev, stg, or prod"
+    script:
+        @
+            case "{{environment}}" in
+                dev|stg|prod) ;;
+                *) echo "Error: Environment must be dev, stg, or prod"; exit 1 ;;
+            esac
+
+            echo "🚀 Deploying to {{environment}} namespace..."
+            echo ""
+
+            rune create namespace {{environment}} 2>/dev/null || true
+            rune cast infra/runeset/ \
+                -f infra/runeset/values/{{environment}}.yaml \
+                -n {{environment}} \
+                --create-namespace
+
+            echo ""
+            echo "✅ Deployed to {{environment}}"

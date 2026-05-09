@@ -1,0 +1,64 @@
+# ──────────────────────────────────────────────────────────────
+# On-Ramp Workflow — Paystack NGN collection
+# ──────────────────────────────────────────────────────────────
+# Triggered when payment.received hits the payment-events stream.
+#
+# Steps:
+#   1. receive-payment  — credit paystack_suspense
+#   2. split-fees       — debit suspense → fees + propeller_revenue
+#   3. collect-business — debit suspense → business_collected
+#   4. payment-collected — emit event for UI
+#
+# Deploy: flo workflow sync infra/flo-workflows/ -n propeller
+# ──────────────────────────────────────────────────────────────
+
+kind: Workflow
+name: onramp-ngn
+namespace: propeller
+trigger:
+  stream: payment-events
+  condition: "json:type=payment.received"
+
+steps:
+  - name: credit-suspense
+    action: credit-ledger
+    input:
+      accountType: "paystack_suspense"
+      amount: ${{ $.amount }}
+      transferId: ${{ $.reference }}
+      businessId: ${{ $.businessId }}
+
+  - name: split-fees
+    action: debit-ledger
+    input:
+      accountType: "paystack_suspense"
+      amount: ${{ multiply $.amount 0.015 }}
+      transferId: ${{ concat $.reference ":fees" }}
+      contraAccount: "paystack_fees"
+      businessId: ${{ $.businessId }}
+
+  - name: propeller-revenue
+    action: debit-ledger
+    input:
+      accountType: "paystack_suspense"
+      amount: ${{ multiply $.amount 0.005 }}
+      transferId: ${{ concat $.reference ":revenue" }}
+      contraAccount: "propeller_revenue"
+      businessId: ${{ $.businessId }}
+
+  - name: credit-business
+    action: credit-ledger
+    input:
+      accountType: ${{ concat "business_collected:" $.businessId }}
+      amount: ${{ subtract $.amount (add (multiply $.amount 0.015) (multiply $.amount 0.005)) }}
+      transferId: ${{ concat $.reference ":collect" }}
+      businessId: ${{ $.businessId }}
+
+  - name: emit-collected
+    action: emit-event
+    input:
+      event: payment.collected
+      businessId: ${{ $.businessId }}
+      reference: ${{ $.reference }}
+      grossAmount: ${{ $.amount }}
+      netAmount: ${{ $.netAmount }}

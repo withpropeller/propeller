@@ -1,0 +1,84 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+package isv;
+
+option go_package = "./proto";
+
+// Tenant enum representing the tenant environment.
+enum Tenant {
+    SANDBOX = 0; // Default value.
+    LIVE = 1;
+}
+
+service ISVService {
+    rpc createBalance (CreateBalanceDto) returns (GrpcResponseData) {}
+    rpc getBalance (GetBalanceDto) returns (GrpcResponseData) {}
+    rpc updateOverdraft (UpdateOverdraftDto) returns (GrpcResponseData) {}
+    rpc creditFromReserve (CreditFromReserveDto) returns (GrpcResponseData) {}
+    rpc debitToReserve (DebitToReserveDto) returns (GrpcResponseData) {}
+    rpc transferBalance (TransferBalanceDto) returns (GrpcResponseData) {}
+}
+
+message GetBalanceDto {
+    Tenant tenant = 1;
+    string id = 2;
+    optional int64 limit = 3;
+}
+
+
+message CreateBalanceDto {
+    Tenant tenant = 1;
+    string currency = 2;
+    string pi = 3;
+    string piRef = 4;
+    optional string business = 5;
+    optional int64 overdraftLimit = 6;
+}
+
+message UpdateOverdraftDto {
+    Tenant tenant = 1;
+    string id = 2;
+    int64 overdraftLimit = 3;
+}
+
+message TransferBalanceDto {
+    Tenant tenant = 1;
+    string debitBalance = 2;
+    string creditBalance = 3;
+    string sourceId = 4;
+    string sourceRef = 5;
+    int64 amount = 6;
+}
+
+message CreditFromReserveDto {
+    Tenant tenant = 1;
+    string balanceId = 2;
+    string sourceId = 3;
+    string sourceRef = 4;
+	int64 amount = 5;
+    repeated SplitReserveDto reserveSplit = 6;
+}
+
+message DebitToReserveDto {
+    Tenant tenant = 1;
+    string balanceId = 2;
+    string sourceId = 3;
+    string sourceRef = 4;
+    int64 amount = 5;
+    bool ignoreInsufficiency = 6;
+    repeated SplitReserveDto reserveSplit = 7;
+}
+
+
+message SplitReserveDto {
+    string slug = 1;
+    int64 amount = 2;
+}
+
+message GrpcResponseData {
+    string code = 1;
+    optional google.protobuf.Struct data = 2;
+    optional string error = 3;
+}

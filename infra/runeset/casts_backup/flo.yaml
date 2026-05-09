@@ -1,0 +1,25 @@
+service:
+  name: flo
+  image: "ghcr.io/floruntime/flo:{{ values:flo.tag }}"
+  scale: 1
+  ports:
+    - "{{ values:flo.clientPort }}:9000"
+    - "{{ values:flo.metricsPort }}:9001"
+    - "{{ values:flo.dashboardPort }}:9002"
+  volumes:
+    - /var/lib/propeller/flo:/data/flo
+    - /etc/propeller/flo.toml:/etc/flo/flo.toml
+  health:
+    liveness:
+      type: http
+      path: /health
+      port: 9002
+      interval: 5
+      timeout: 3
+  resources:
+    cpu:
+      request: "500m"
+      limit: "{{ values:flo.cpuLimit }}"
+    memory:
+      request: "512Mi"
+      limit: "{{ values:flo.memLimit }}"

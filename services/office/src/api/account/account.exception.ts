@@ -1,0 +1,33 @@
+/*
+ * @license
+ * Copyright (c) 2020. KolaCredit
+ *
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ */
+
+import { GrpcResponseData } from '@common/grpc/grpc.response.data';
+import { CustomException } from '@core/exceptions';
+import { Utils } from '@core/helpers';
+import { HttpStatus } from '@nestjs/common';
+import { AccountErrors } from './account.enums';
+
+export class AccountException extends CustomException {
+    constructor(
+        err: any,
+        code: string,
+        status: number = HttpStatus.UNPROCESSABLE_ENTITY,
+        message = 'Account Exception',
+        body?: any,
+    ) {
+        super(err, code, status, message, body);
+    }
+
+    public static ISV_SERVICE_ERROR(res: GrpcResponseData<any>) {
+        return new this(Utils.toSentenceCase(res.error), res.code);
+    }
+
+    public static get DepositChannelNotFound() {
+        return new this('Deposit channel not found', AccountErrors.DepositChannelNotFound, HttpStatus.NOT_FOUND);
+    }
+}

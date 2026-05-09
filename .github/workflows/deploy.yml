@@ -1,0 +1,167 @@
+name: Deploy to GHCR
+
+on:
+  push:
+    paths:
+      - 'apps/**'
+      - 'services/**'
+      - 'workers/**'
+      - 'libs/**'
+      - 'infra/docker/**'
+      - '.github/deploy-config.yml'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+    inputs:
+      component:
+        description: 'Component to build'
+        required: true
+        type: choice
+        options:
+          - landing
+      environment:
+        description: 'Target environment'
+        required: true
+        type: choice
+        default: 'dev'
+        options:
+          - dev
+          - stg
+          - prod
+
+concurrency:
+  group: deploy-${{ github.ref }}-${{ github.event.inputs.component || github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  detect:
+    name: Detect changed components
+    runs-on: ubuntu-latest
+    outputs:
+      components: ${{ steps.detect.outputs.components }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for merge-base
+
+      - name: Detect changed components
+        id: detect
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_COMPONENT: ${{ inputs.component }}
+        run: |
+          # Manual dispatch — deploy exactly what the user asked for
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "components=[\"$INPUT_COMPONENT\"]" >> $GITHUB_OUTPUT
+            echo "Manual deploy: $INPUT_COMPONENT"
+            exit 0
+          fi
+
+          # Auto — diff against the merge-base, not just HEAD^
+          BASE=$(git merge-base HEAD origin/master 2>/dev/null || git merge-base HEAD origin/main 2>/dev/null || echo "HEAD^")
+          CHANGED_FILES=$(git diff --name-only "$BASE" HEAD)
+          echo "Changed files (since $BASE):"
+          echo "$CHANGED_FILES"
+
+          # Detect from deploy-config.yml
+          CHANGED=()
+          COMPONENTS=$(python3 -c "
+import yaml
+with open('.github/deploy-config.yml') as f:
+    c = yaml.safe_load(f)
+print('\n'.join(c['components'].keys()))
+")
+          for name in $COMPONENTS; do
+            PATTERNS=$(python3 -c "
+import yaml
+with open('.github/deploy-config.yml') as f:
+    c = yaml.safe_load(f)
+print('\n'.join(c['components']['$name'].get('paths',[])))
+")
+            for pattern in $PATTERNS; do
+              # Convert glob to grep pattern: apps/landing/** → ^apps/landing/
+              prefix="${pattern//\/\*\*/\/}"
+              if echo "$CHANGED_FILES" | grep -q "^$prefix"; then
+                CHANGED+=("$name")
+                echo "  → $name (matched $prefix)"
+                break
+              fi
+            done
+          done
+
+          CHANGED=($(printf '%s\n' "${CHANGED[@]}" | sort -u))
+          if [ ${#CHANGED[@]} -eq 0 ]; then
+            echo "components=[]" >> $GITHUB_OUTPUT
+            echo "No components changed"
+          else
+            JSON=$(printf '%s\n' "${CHANGED[@]}" | jq -R . | jq -sc .)
+            echo "components=$JSON" >> $GITHUB_OUTPUT
+            echo "Changed: ${CHANGED[@]}"
+          fi
+
+  build:
+    name: Build ${{ matrix.component }}
+    runs-on: ubuntu-latest
+    needs: detect
+    if: needs.detect.outputs.components != '[]' && needs.detect.outputs.components != ''
+    strategy:
+      fail-fast: false
+      matrix:
+        component: ${{ fromJson(needs.detect.outputs.components) }}
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Read component config
+        id: cfg
+        run: |
+          import yaml
+          with open(".github/deploy-config.yml") as f:
+              config = yaml.safe_load(f)
+
+          g = config["global"]
+          c = config["components"]["${{ matrix.component }}"]
+
+          with open("${{ github.output }}", "a") as out:
+              out.write(f"registry={g['registry']}\n")
+              out.write(f"repo={g['repo']}\n")
+              out.write(f"context={c['context']}\n")
+              out.write(f"dockerfile={c['dockerfile']}\n")
+
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ steps.cfg.outputs.repo }}/${{ matrix.component }}
+          tags: |
+            type=sha,format=short
+            type=raw,value=${{ inputs.environment || 'dev' }}
+            type=raw,value=${{ inputs.environment || 'dev' }}-${{ github.run_id }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ steps.cfg.outputs.context }}
+          file: ${{ steps.cfg.outputs.dockerfile }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

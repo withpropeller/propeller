@@ -1,0 +1,1 @@
+export const SECURITY_TOKEN_EXPIRY_SECONDS = 3 * 24 * 3600;

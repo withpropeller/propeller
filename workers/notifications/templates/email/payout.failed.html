@@ -1,0 +1,25 @@
+<p style="font-size: 16px; font-weight: 600; color: #e85d4a; margin-bottom: 8px;">Payout failed</p>
+<p style="color: #6b6560; font-size: 13px; margin-top: 0; margin-bottom: 20px;">Your payout could not be completed.</p>
+
+<p>Hello {{.firstName}},</p>
+
+<p>Your payout request could not be completed.</p>
+
+<table>
+  <tr><th>Amount (NGN)</th><td>{{.amountNgn}} NGN</td></tr>
+  <tr><th>Payout ID</th><td>{{.payoutId}}</td></tr>
+</table>
+
+<div class="info-box">
+  <h4>Reason</h4>
+  <p>{{.reason}}</p>
+</div>
+
+<p>The NGN amount has been returned to your available balance. You can retry the payout from your <a href="https://dashboard.withpropeller.com">Propeller dashboard</a>.</p>
+
+<p style="color: #6b6560;">Questions? Reach us at <a href="mailto:support@withpropeller.com">support@withpropeller.com</a>.</p>
+
+<p>
+  Thanks,<br />
+  <span style="font-weight: 600;">The Propeller Team</span>
+</p>
