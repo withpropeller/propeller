@@ -223,7 +223,7 @@ jobs:
       - uses: runestack/rune-cast-action@v1
         if: steps.cfg.outputs.has_cast == 'true'
         with:
-          server: ${{ vars.RUNED_HOST }}
+          server: ${{ secrets.RUNED_HOST }}
           token: ${{ secrets.RUNE_TOKEN }}
           source: ${{ steps.cfg.outputs.cast_file }}
           namespace: ${{ needs.detect.outputs.environment }}
