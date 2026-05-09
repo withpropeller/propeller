@@ -40,25 +40,8 @@ deploy:
             echo ""
             echo "✅ Build triggered. Watch progress at:"
             echo "   https://github.com/withpropeller/propeller/actions"
-
-## Cast to Rune server (run for fresh deploys)
-cast:
-    arg: <environment> [string] "Environment: dev, stg, or prod"
-    script:
-        @
-            case "{{environment}}" in
-                dev|stg|prod) ;;
-                *) echo "Error: Environment must be dev, stg, or prod"; exit 1 ;;
-            esac
-
-            echo "🚀 Deploying to {{environment}} namespace..."
             echo ""
-
-            rune create namespace {{environment}} 2>/dev/null || true
-            rune cast infra/runeset/ \
-                -f infra/runeset/values/{{environment}}.yaml \
-                -n {{environment}} \
-                --create-namespace
-
+            echo "The workflow will:"
+            echo "  1. Build & push Docker image to GHCR"
+            echo "  2. Cast to Rune via runestack/rune-cast-action"
             echo ""
-            echo "✅ Deployed to {{environment}}"

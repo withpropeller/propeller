@@ -1,0 +1,38 @@
+# Staging values — pre-production mirror.
+
+app:
+  tag: stg
+
+registry: ghcr.io/withpropeller/propeller
+logLevel: info
+
+landing:
+  host: stg.withpropeller.com
+  scale: 1
+  cpuLimit: "500m"
+  memLimit: "128Mi"
+
+api:
+  scale: 1
+  port: 3001
+  publicUrl: "https://api.stg.withpropeller.com"
+  cpuLimit: "500m"
+  memLimit: "512Mi"
+
+services:
+  scale: 1
+  port: 3002
+  cpuLimit: "500m"
+  memLimit: "512Mi"
+
+office:
+  scale: 1
+  port: 3003
+  cpuLimit: "500m"
+  memLimit: "512Mi"
+
+webhook:
+  scale: 1
+  port: 3004
+  cpuLimit: "200m"
+  memLimit: "128Mi"

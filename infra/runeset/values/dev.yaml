@@ -35,6 +35,7 @@ office:
   memLimit: "512Mi"
 
 landing:
+  host: dev.withpropeller.com
   scale: 1
   port: 80
   cpuLimit: "100m"

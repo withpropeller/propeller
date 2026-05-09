@@ -7,7 +7,7 @@ service:
     - name: http
       port: 80
   expose:
-    host: withpropeller.com
+    host: "{{ values:landing.host }}"
     port: http
     tls:
       mode: auto

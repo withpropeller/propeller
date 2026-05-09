@@ -13,6 +13,12 @@ flo:
   cpuLimit: "2000m"
   memLimit: "2Gi"
 
+landing:
+  host: withpropeller.com
+  scale: 1
+  cpuLimit: "500m"
+  memLimit: "128Mi"
+
 api:
   scale: 2
   port: 3001
