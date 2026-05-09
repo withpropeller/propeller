@@ -1,5 +1,10 @@
+output "reserved_ip" {
+  description = "Reserved (elastic) IPv4 — survives droplet destroys"
+  value       = digitalocean_reserved_ip.rune.ip_address
+}
+
 output "droplet_ipv4" {
-  description = "Public IPv4 address of the Rune droplet"
+  description = "Ephemeral IPv4 of the Droplet (prefer reserved_ip for DNS)"
   value       = module.rune.ipv4_address
 }
 
@@ -9,18 +14,18 @@ output "droplet_ipv6" {
 }
 
 output "grpc_endpoint" {
-  description = "Rune gRPC endpoint (for CLI login)"
-  value       = module.rune.grpc_endpoint
+  description = "Rune gRPC endpoint (for CLI login — uses reserved IP)"
+  value       = "${digitalocean_reserved_ip.rune.ip_address}:7863"
 }
 
 output "http_endpoint" {
-  description = "Rune HTTP endpoint"
-  value       = module.rune.http_endpoint
+  description = "Rune HTTP endpoint (uses reserved IP)"
+  value       = "http://${digitalocean_reserved_ip.rune.ip_address}:7861"
 }
 
 output "rune_login_command" {
-  description = "Ready-to-paste rune login command"
-  value       = module.rune.rune_login_command
+  description = "Ready-to-paste rune login command (uses reserved IP)"
+  value       = "rune login rune-dev --server ${digitalocean_reserved_ip.rune.ip_address}:7863 --token-file ${abspath("rune-admin.token")} --default-namespace dev"
 }
 
 output "droplet_name" {

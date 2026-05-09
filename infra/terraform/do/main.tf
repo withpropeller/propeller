@@ -1,3 +1,14 @@
+# ── Reserved IP ──────────────────────────────────────────────────
+# Survives droplet destroys — DNS points here once, never changes.
+resource "digitalocean_reserved_ip" "rune" {
+  region = var.region
+}
+
+resource "digitalocean_reserved_ip_assignment" "rune" {
+  ip_address = digitalocean_reserved_ip.rune.ip_address
+  droplet_id = module.rune.droplet_id
+}
+
 module "rune" {
   source  = "runestack/rune/digitalocean"
   version = "0.0.2"
