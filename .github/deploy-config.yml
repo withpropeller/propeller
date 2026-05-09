@@ -1,76 +1,37 @@
-# Deployment Configuration for Propeller
+# CI deploy config — the deploy.yml workflow reads this for each component.
 #
-# Each component defines how it's built and cast via Rune.
-# The deploy.yml workflow reads this to decide:
-#   1. What Docker image to build & push to GHCR
-#   2. Whether it needs a rune cast (static components don't)
-#   3. How to cast it (values file, etc.)
+# Fields consumed by CI:
+#   context    – Docker build context (relative to repo root)
+#   dockerfile – Path to the Dockerfile
+#   cast       – Rune cast YAML (relative to repo root). Omit for cast-less deploys.
 #
-# Deployment flow:
-#   Push to dev/main → deploy.yml detects changed components → builds → pushes to GHCR
-#   You run `rune cast infra/runeset/ -f infra/runeset/values/dev.yaml` from your laptop
-#
-# When Rune gets registry-watch/auto-redeploy, the rune cast step becomes automatic.
+# Everything else (port, scale, env vars, health checks, resources, etc.)
+# lives in the Rune cast + values files in infra/runeset/.
 
 global:
   registry: ghcr.io
   repo: withpropeller/propeller
 
 components:
-  # ── Apps ───────────────────────────────────────────────────────
 
   landing:
-    type: app
-    runtime: static            # nginx serves built assets
-    port: 80
-    replicas: 1
     dockerfile: infra/docker/Dockerfile.landing
     context: .
-    cast: infra/runeset/casts/landing.yaml
-    description: "Marketing landing page"
-    paths:                     # Which files trigger a rebuild
-      - apps/landing/**
-      - infra/docker/Dockerfile.landing
-      - infra/docker/nginx.landing.conf
+    cast: infra/runeset/casts/external-service.yaml
 
   # TODO — uncomment when you add Dockerfiles for these
   #
   # admin:
-  #   type: app
-  #   runtime: static
-  #   port: 80
-  #   replicas: 1
   #   dockerfile: infra/docker/Dockerfile.vite
   #   context: apps/admin
-  #   cast: infra/runeset/casts/admin.yaml
-  #   description: "Admin dashboard"
-  #   paths:
-  #     - apps/admin/**
-  #     - infra/docker/Dockerfile.vite
+  #   cast: infra/runeset/casts/external-service.yaml
   #
   # docs:
-  #   type: app
-  #   runtime: static
-  #   port: 80
-  #   replicas: 1
   #   dockerfile: apps/docs/Dockerfile
   #   context: apps/docs
-  #   cast: infra/runeset/casts/docs.yaml
-  #   description: "Documentation site"
-  #   paths:
-  #     - apps/docs/**
+  #   cast: infra/runeset/casts/external-service.yaml
   #
   # api:
-  #   type: service
-  #   runtime: nestjs
-  #   port: 3001
-  #   replicas: 1
   #   dockerfile: infra/docker/Dockerfile.nestjs
   #   context: apps/api
   #   cast: infra/runeset/casts/api.yaml
-  #   description: "Public REST API"
-  #   paths:
-  #     - apps/api/**
-  #     - services/api/**
-  #     - libs/core/**
-  #     - infra/docker/Dockerfile.nestjs

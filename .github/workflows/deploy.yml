@@ -152,7 +152,7 @@ jobs:
   cast:
     name: Cast ${{ matrix.component }}
     runs-on: ubuntu-latest
-    needs: build
+    needs: [detect, build]
     if: github.event_name == 'workflow_dispatch'
     strategy:
       fail-fast: false
@@ -161,11 +161,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Read component config
+        id: cfg
+        shell: python
+        run: |
+          import yaml, os
+          with open(".github/deploy-config.yml") as f:
+              config = yaml.safe_load(f)
+          cast = config["components"]["${{ matrix.component }}"].get("cast", "")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write(f"cast={cast}\n")
+              out.write(f"has_cast={'true' if cast else 'false'}\n")
+
       - uses: runestack/rune-cast-action@v1
+        if: steps.cfg.outputs.has_cast == 'true'
         with:
           server: ${{ vars.RUNED_HOST }}
           token: ${{ secrets.RUNE_TOKEN }}
-          source: infra/runeset/casts/external-service.yaml
+          source: ${{ steps.cfg.outputs.cast }}
           values: infra/runeset/values/${{ inputs.environment }}.yaml
           namespace: ${{ inputs.environment }}
           create-namespace: true
