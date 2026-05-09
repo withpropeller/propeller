@@ -13,7 +13,7 @@ deploy:
     arg: <components> [string...] "Component(s) to deploy (e.g. landing api docs)"
     flag: --branch|-b [string=""] "Git ref to deploy from (current branch if empty)"
     script:
-        let components = {{components}} | zake::str.join ","
+        let components = zake::str.replace("{{components}}", " ", ",")
         @
             case "{{environment}}" in
                 stg|prod) ;;
@@ -40,4 +40,3 @@ deploy:
             echo ""
             echo "✅ Deploy triggered. Watch progress at:"
             echo "   https://github.com/withpropeller/propeller/actions"
-
