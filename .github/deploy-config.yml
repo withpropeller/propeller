@@ -4,6 +4,7 @@
 #   context    – Docker build context (relative to repo root)
 #   dockerfile – Path to the Dockerfile
 #   cast       – Rune cast YAML (relative to repo root). Omit for cast-less deploys.
+#   paths      – Glob patterns that trigger a rebuild on push (auto-detect)
 #
 # Everything else (port, scale, env vars, health checks, resources, etc.)
 # lives in the Rune cast + values files in infra/runeset/.
@@ -12,12 +13,21 @@ global:
   registry: ghcr.io
   repo: withpropeller/propeller
 
+# Branch → environment mapping for auto-deploy
+environments:
+  dev: dev
+  main: stg
+
 components:
 
   landing:
     dockerfile: infra/docker/Dockerfile.landing
     context: .
     cast: infra/runeset/casts/external-service.yaml
+    paths:
+      - apps/landing/**
+      - infra/docker/Dockerfile.landing
+      - infra/docker/nginx.landing.conf
 
   # TODO — uncomment when you add Dockerfiles for these
   #
@@ -25,13 +35,23 @@ components:
   #   dockerfile: infra/docker/Dockerfile.vite
   #   context: apps/admin
   #   cast: infra/runeset/casts/external-service.yaml
+  #   paths:
+  #     - apps/admin/**
+  #     - infra/docker/Dockerfile.vite
   #
   # docs:
   #   dockerfile: apps/docs/Dockerfile
   #   context: apps/docs
   #   cast: infra/runeset/casts/external-service.yaml
+  #   paths:
+  #     - apps/docs/**
   #
   # api:
   #   dockerfile: infra/docker/Dockerfile.nestjs
   #   context: apps/api
   #   cast: infra/runeset/casts/api.yaml
+  #   paths:
+  #     - apps/api/**
+  #     - services/api/**
+  #     - libs/core/**
+  #     - infra/docker/Dockerfile.nestjs

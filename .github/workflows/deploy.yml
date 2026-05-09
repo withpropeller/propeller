@@ -1,7 +1,13 @@
-name: Deploy to GHCR
+name: Deploy (auto)
+
+# Auto-deploy on push to dev / main.
+# Detects changed components from deploy-config.yml paths, builds + casts.
+#
+# For manual deploys see deploy-component.yml
 
 on:
   push:
+    branches: [dev, main]
     paths:
       - 'apps/**'
       - 'services/**'
@@ -10,25 +16,9 @@ on:
       - 'infra/docker/**'
       - '.github/deploy-config.yml'
       - '.github/workflows/deploy.yml'
-  workflow_dispatch:
-    inputs:
-      component:
-        description: 'Component to build'
-        required: true
-        type: choice
-        options:
-          - landing
-      environment:
-        description: 'Target environment'
-        required: true
-        type: choice
-        default: 'stg'
-        options:
-          - stg
-          - prod
 
 concurrency:
-  group: deploy-${{ github.ref }}-${{ github.event.inputs.component || github.sha }}
+  group: auto-deploy-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -37,6 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       components: ${{ steps.detect.outputs.components }}
+      environment: ${{ steps.detect.outputs.environment }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -45,42 +36,53 @@ jobs:
       - name: Detect changed components
         id: detect
         env:
-          EVENT_NAME: ${{ github.event_name }}
-          INPUT_COMPONENT: ${{ inputs.component }}
+          BRANCH: ${{ github.ref_name }}
+        shell: python
         run: |
-          # Manual dispatch — deploy exactly what the user asked for
-          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
-            echo "components=[\"$INPUT_COMPONENT\"]" >> "$GITHUB_OUTPUT"
-            echo "Manual deploy: $INPUT_COMPONENT"
-            exit 0
-          fi
+          import yaml, os, fnmatch, subprocess, json
 
-          # Auto — diff against the merge-base for multi-commit pushes
-          BASE=$(git merge-base HEAD origin/master 2>/dev/null || git merge-base HEAD origin/main 2>/dev/null || echo "HEAD^")
-          CHANGED_FILES=$(git diff --name-only "$BASE" HEAD)
-          echo "Changed files (since $BASE):"
-          echo "$CHANGED_FILES"
+          with open('.github/deploy-config.yml') as f:
+              config = yaml.safe_load(f)
 
-          # Simple detection: check if any path prefix for each component matches
-          CHANGED=""
-          # landing: apps/landing/ or infra/docker/Dockerfile.landing or infra/docker/nginx.landing.conf
-          if echo "$CHANGED_FILES" | grep -qE '^(apps/landing/|infra/docker/Dockerfile\.landing|infra/docker/nginx\.landing\.conf)'; then
-            CHANGED="$CHANGED landing"
-          fi
+          # Resolve environment from branch
+          env_map = config.get('environments', {})
+          environment = env_map.get(os.environ['BRANCH'], os.environ['BRANCH'])
 
-          # admin: apps/admin/ or infra/docker/Dockerfile.vite
-          if echo "$CHANGED_FILES" | grep -qE '^(apps/admin/|infra/docker/Dockerfile\.vite)'; then
-            CHANGED="$CHANGED admin"
-          fi
+          # Get changed files
+          try:
+              base = subprocess.check_output(
+                  ['git', 'merge-base', 'HEAD', f'origin/{os.environ["BRANCH"]}'],
+                  text=True
+              ).strip()
+          except Exception:
+              base = 'HEAD^'
+          changed = subprocess.check_output(
+              ['git', 'diff', '--name-only', base, 'HEAD'],
+              text=True
+          ).splitlines()
 
-          if [ -z "$CHANGED" ]; then
-            echo "components=[]" >> "$GITHUB_OUTPUT"
-            echo "No components changed"
-          else
-            CHANGED_JSON=$(echo $CHANGED | tr ' ' '\n' | jq -R . | jq -sc .)
-            echo "components=$CHANGED_JSON" >> "$GITHUB_OUTPUT"
-            echo "Changed:$CHANGED"
-          fi
+          detected = []
+          for name in sorted(config.get('components', {}).keys()):
+              comp = config['components'][name]
+              paths = comp.get('paths', [])
+              if not paths:
+                  continue
+              for cf in changed:
+                  for pat in paths:
+                      if fnmatch.fnmatch(cf, pat):
+                          detected.append(name)
+                          break
+                  else:
+                      continue
+                  break
+
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
+              out.write(f'environment={environment}\n')
+              out.write(f'components={json.dumps(detected)}\n')
+
+          print(f'branch={os.environ["BRANCH"]} → environment={environment}')
+          print(f'changed files: {changed}')
+          print(f'detected: {detected}')
 
   build:
     name: Build ${{ matrix.component }}
@@ -98,22 +100,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
       - name: Read component config
         id: cfg
+        shell: python
         run: |
-          import yaml
-          with open(".github/deploy-config.yml") as f:
+          import yaml, os
+          with open('.github/deploy-config.yml') as f:
               config = yaml.safe_load(f)
-
-          g = config["global"]
-          c = config["components"]["${{ matrix.component }}"]
-
-          with open("${{ github.output }}", "a") as out:
+          g = config['global']
+          c = config['components']['${{ matrix.component }}']
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
               out.write(f"registry={g['registry']}\n")
               out.write(f"repo={g['repo']}\n")
               out.write(f"context={c['context']}\n")
@@ -136,7 +132,7 @@ jobs:
           images: ghcr.io/${{ steps.cfg.outputs.repo }}/${{ matrix.component }}
           tags: |
             type=sha,format=short
-            type=raw,value=${{ inputs.environment }}
+            type=raw,value=${{ needs.detect.outputs.environment }}
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -153,7 +149,7 @@ jobs:
     name: Cast ${{ matrix.component }}
     runs-on: ubuntu-latest
     needs: [detect, build]
-    if: github.event_name == 'workflow_dispatch'
+    if: needs.detect.outputs.components != '[]' && needs.detect.outputs.components != ''
     strategy:
       fail-fast: false
       matrix:
@@ -166,10 +162,10 @@ jobs:
         shell: python
         run: |
           import yaml, os
-          with open(".github/deploy-config.yml") as f:
+          with open('.github/deploy-config.yml') as f:
               config = yaml.safe_load(f)
-          cast = config["components"]["${{ matrix.component }}"].get("cast", "")
-          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+          cast = config['components']['${{ matrix.component }}'].get('cast', '')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
               out.write(f"cast={cast}\n")
               out.write(f"has_cast={'true' if cast else 'false'}\n")
 
@@ -179,6 +175,6 @@ jobs:
           server: ${{ vars.RUNED_HOST }}
           token: ${{ secrets.RUNE_TOKEN }}
           source: ${{ steps.cfg.outputs.cast }}
-          values: infra/runeset/values/${{ inputs.environment }}.yaml
-          namespace: ${{ inputs.environment }}
+          values: infra/runeset/values/${{ needs.detect.outputs.environment }}.yaml
+          namespace: ${{ needs.detect.outputs.environment }}
           create-namespace: true
