@@ -150,11 +150,12 @@ jobs:
           flat = flatten(values)
 
           # Promote active component's keys to the "component." prefix
-          # so {{ values:component.scale }} resolves regardless of component name
-          if component in values:
-              comp_values = values[component]
-              if isinstance(comp_values, dict):
-                  for k, v in flatten(comp_values, 'component.').items():
+          # so {{ values:component.scale }} resolves regardless of component name.
+          # Values are nested as <component>.component.<key>, e.g. web.component.scale.
+          if component in values and 'component' in values[component]:
+              comp_vals = values[component]['component']
+              if isinstance(comp_vals, dict):
+                  for k, v in flatten(comp_vals, 'component.').items():
                       flat[k] = flat.get(k, v)  # don't override existing flat keys
 
           # Fill registry from global config if values file omits it
