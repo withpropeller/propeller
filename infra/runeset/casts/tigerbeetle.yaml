@@ -1,0 +1,37 @@
+# TigerBeetle — financial accounting database.
+# Apply:  rune cast infra/runeset/casts/tigerbeetle.yaml -n prod
+
+service:
+  name: tigerbeetle
+  image: "ghcr.io/withpropeller/propeller/tigerbeetle:prod"
+  imagePull: missing
+  scale: 1
+  ports:
+    - name: tb
+      port: 4000
+  env:
+    TB_ADDRESSES: "0.0.0.0:4000"
+  command: /bin/sh
+  args:
+    - -c
+    - test -f /data/0_0.tigerbeetle || /tigerbeetle format --cluster=0 --replica=0 --replica-count=1 /data/0_0.tigerbeetle; exec /tigerbeetle start --addresses=0.0.0.0:4000 /data/0_0.tigerbeetle
+  volumes:
+    - name: tb-data
+      mountPath: /data
+      claimTemplate:
+        storageClassName: local
+        size: "10Gi"
+        accessMode: ReadWriteOnce
+  health:
+    liveness:
+      type: tcp
+      port: 4000
+      intervalSeconds: 10
+      timeoutSeconds: 5
+  resources:
+    cpu:
+      request: "100m"
+      limit: "1000m"
+    memory:
+      request: "256Mi"
+      limit: "1Gi"

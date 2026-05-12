@@ -1,0 +1,32 @@
+# Flo event bus — runs on Rune cluster.
+# Apply:  rune cast infra/runeset/casts/flo.yaml -n prod
+
+service:
+  name: flo
+  image: "ghcr.io/floruntime/flo:0.1.0-dev.2"
+  imagePull: always
+  scale: 1
+  ports:
+    - name: client
+      port: 9000
+    - name: metrics
+      port: 9001
+    - name: dashboard
+      port: 9002
+  command: /usr/local/bin/flo
+  args:
+    - server
+    - start
+  health:
+    liveness:
+      type: tcp
+      port: 9000
+      intervalSeconds: 10
+      timeoutSeconds: 5
+  resources:
+    cpu:
+      request: "100m"
+      limit: "2000m"
+    memory:
+      request: "256Mi"
+      limit: "2Gi"

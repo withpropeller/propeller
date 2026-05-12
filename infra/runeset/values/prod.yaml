@@ -5,13 +5,43 @@ app:
 
 logLevel: info
 
+# ── Registry override ────────────────────────────────────────────
+registry: ghcr.io/withpropeller/propeller
+
+# ── Infrastructure components ────────────────────────────────────
+
+mongo:
+  component:
+    name: mongo
+    volumeSize: 20Gi
+    cpuRequest: "100m"
+    cpuLimit: "2000m"
+    memRequest: "512Mi"
+    memLimit: "2Gi"
+
+tigerbeetle:
+  component:
+    name: tigerbeetle
+    volumeSize: 10Gi
+    cpuRequest: "100m"
+    cpuLimit: "1000m"
+    memRequest: "256Mi"
+    memLimit: "1Gi"
+
 flo:
+  component:
+    name: flo
+    volumeSize: 10Gi
+    cpuRequest: "100m"
+    cpuLimit: "2000m"
+    memRequest: "256Mi"
+    memLimit: "2Gi"
   tag: ""  # pin in prod; never use latest
   clientPort: 9000
   metricsPort: 9001
   dashboardPort: 9002
-  cpuLimit: "2000m"
-  memLimit: "2Gi"
+
+# ── Public-facing components ─────────────────────────────────────
 
 landing:
   component:
@@ -23,25 +53,6 @@ landing:
     cpuLimit: "500m"
     memLimit: "128Mi"
 
-api:
-  scale: 2
-  port: 3001
-  publicUrl: "https://api.propeller.xyz"
-  cpuLimit: "1000m"
-  memLimit: "1Gi"
-
-services:
-  scale: 2
-  port: 3002
-  cpuLimit: "1000m"
-  memLimit: "1Gi"
-
-office:
-  scale: 1
-  port: 3003
-  cpuLimit: "500m"
-  memLimit: "512Mi"
-
 web:
   component:
     name: web
@@ -52,6 +63,15 @@ web:
     cpuLimit: "500m"
     memLimit: "256Mi"
 
+# ── Backend components ───────────────────────────────────────────
+
+api:
+  scale: 2
+  port: 3001
+  publicUrl: "https://api.propeller.xyz"
+  cpuLimit: "1000m"
+  memLimit: "1Gi"
+
 gateway:
   component:
     name: gateway
@@ -59,5 +79,46 @@ gateway:
     scale: 1
     port: 3002
     healthPath: /health
+    cpuRequest: "200m"
     cpuLimit: "1000m"
+    memRequest: "256Mi"
     memLimit: "1Gi"
+    mongoNamespace: prod    # where mongo service lives
+    floNamespace: prod       # where flo service lives
+  config:
+    REDIS_URI: "redis://redis.prod:6379"
+    MAIN_SITE_DOMAIN: "https://withpropeller.com"
+    INFRA_WEB_DOMAIN: "https://app.withpropeller.com"
+    AWS_REGION: "eu-west-1"
+    S3_DOCUMENT_STORE_BUCKET: "propeller-documents-prod"
+    PAYSTACK_URI: "https://api.paystack.co"
+    FLUTTERWAVE_CALLBACK_URL: "https://gateway.withpropeller.com/flw/callback"
+    PAYKKA_BASE_URL: ""
+    SHORTENER_SERVICE_GRPC_URL: "shortener.prod:50051"
+    ISV_SERVICE_GRPC_URL: "isv.prod:50052"
+    BROWSERLESS_WS_URL: "ws://browserless.prod:3005"
+    API_SERVICE_URL: "http://api.prod:3001"
+    SECURE_SERVICE_URL: "http://secure.prod:3004"
+    ENABLE_SWAGGER: "false"
+    JWT_SECRET_EXPIRY: "3h"
+    SLACK_EVENTS_CHANNEL: "#propeller-events"
+  secrets:
+    INFRA_JWT_SECRET: ""
+    INFRA_ENCRYPTION_PASSPHRASE: ""
+    MACHINE_KEY: ""
+    S3_SECRET_ACCESS_KEY: ""
+    S3_ACCESS_KEY_ID: ""
+    FLUTTERWAVE_SECRET_KEY: ""
+    PREMBLY_URI: ""
+    PROVIDUS_THIRD_PARTY_URI: ""
+    PAYKKA_API_KEY: ""
+    PAYKKA_PRIVATE_KEY_PEM: ""
+    PAYKKA_PUBLIC_KEY_PEM: ""
+    PAYKKA_KEY_ID: ""
+    SLACK_TOKEN: ""
+
+office:
+  scale: 1
+  port: 3003
+  cpuLimit: "500m"
+  memLimit: "512Mi"

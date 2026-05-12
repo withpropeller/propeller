@@ -1,0 +1,22 @@
+# Rune server configuration — Propeller Production
+# /etc/rune/runefile.toml
+
+data_dir = "/var/lib/rune"
+
+[node]
+role = "edge"
+
+[acme]
+email = "oreofeolurin@gmail.com"
+
+# ── Storage: v0.0.1-dev.36 ─────────────────────────────────────
+[storage]
+defaultStorageClass = "local"
+preserveOnDelete = true       # don't rm -rf local volumes on delete
+allowCreateMissing = false
+hostPathAllowlist = []
+
+# ── Docker registry (GHCR) ─────────────────────────────────────
+[[docker.registries]]
+name = "ghcr"
+registry = "ghcr.io"

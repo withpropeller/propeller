@@ -36,10 +36,10 @@ components:
     paths:
       - apps/web/**
       - infra/docker/Dockerfile.web
-   gateway:
+  gateway:
      dockerfile: infra/docker/Dockerfile.nestjs
      context: .
-     cast: infra/runeset/casts/external-service.yaml
+     cast: infra/runeset/casts/gateway.yaml
      build_args:
        APP_DIR: gateway
        PORT: "3002"
@@ -47,6 +47,14 @@ components:
        - services/gateway/**
        - libs/core/**
        - infra/docker/Dockerfile.nestjs
+
+  tigerbeetle:
+     dockerfile: infra/docker/Dockerfile.tigerbeetle
+     context: .
+     cast: infra/runeset/casts/tigerbeetle.yaml
+     paths:
+       - infra/docker/Dockerfile.tigerbeetle
+
   # TODO — uncomment when you add Dockerfiles for these
   #
   # admin:

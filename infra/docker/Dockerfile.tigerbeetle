@@ -1,0 +1,12 @@
+# TigerBeetle wrapper — adds /bin/sh so we can format-on-first-start.
+# The official ghcr.io/tigerbeetle/tigerbeetle image is FROM scratch (no shell).
+#
+# docker build -f infra/docker/Dockerfile.tigerbeetle -t ghcr.io/withpropeller/propeller/tigerbeetle:latest .
+# docker push ghcr.io/withpropeller/propeller/tigerbeetle:latest
+
+# Stage 1: grab a shell from Alpine
+FROM alpine:3.21 AS shell
+
+# Stage 2: add shell to the official tigerbeetle image
+FROM ghcr.io/tigerbeetle/tigerbeetle:latest
+COPY --from=shell /bin/sh /bin/sh

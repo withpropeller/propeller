@@ -1,0 +1,35 @@
+# Rune server configuration — Propeller Production
+# /etc/rune/runefile.yaml
+server:
+  grpc-addr: ":7863"
+  http-addr: ":7861"
+  data-dir: /var/lib/rune
+  log-level: info
+  log-format: text
+
+networking:
+  cluster_cidr: "10.96.0.0/16"
+
+node:
+  role: edge
+
+ingress:
+  http_addr: ":80"
+  https_addr: ":443"
+
+acme:
+  email: oreofeolurin@gmail.com
+
+# ── Storage (v0.0.1-dev.36) ────────────────────────────────────
+storage:
+  defaultStorageClass: local
+  localVolumeRoot: /var/lib/rune/volumes
+  hostPathAllowlist: []
+  allowCreateMissing: false
+  preserveOnDelete: true
+
+# ── Docker registry (GHCR) ─────────────────────────────────────
+docker:
+  registries:
+    - name: ghcr
+      registry: ghcr.io

@@ -1,0 +1,33 @@
+# MongoDB 7 — runs on Rune cluster with local persistent storage.
+# Apply:  rune cast infra/runeset/casts/mongo.yaml -n prod
+
+service:
+  name: mongo
+  image: "mongo:7"
+  imagePull: missing
+  scale: 1
+  ports:
+    - name: mongo
+      port: 27017
+  env:
+    MONGO_INITDB_DATABASE: propeller
+  volumes:
+    - name: mongo-data
+      mountPath: /data/db
+      claimTemplate:
+        storageClassName: local
+        size: "20Gi"
+        accessMode: ReadWriteOnce
+  health:
+    liveness:
+      type: exec
+      command: ["mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      intervalSeconds: 10
+      timeoutSeconds: 5
+  resources:
+    cpu:
+      request: "100m"
+      limit: "2000m"
+    memory:
+      request: "512Mi"
+      limit: "2Gi"
