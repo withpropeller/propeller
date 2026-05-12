@@ -51,3 +51,13 @@ web:
     healthPath: /
     cpuLimit: "500m"
     memLimit: "256Mi"
+
+gateway:
+  component:
+    name: gateway
+    host: gateway.withpropeller.com
+    scale: 1
+    port: 3002
+    healthPath: /health
+    cpuLimit: "1000m"
+    memLimit: "1Gi"

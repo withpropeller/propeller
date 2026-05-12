@@ -36,7 +36,17 @@ components:
     paths:
       - apps/web/**
       - infra/docker/Dockerfile.web
-
+   gateway:
+     dockerfile: infra/docker/Dockerfile.nestjs
+     context: .
+     cast: infra/runeset/casts/external-service.yaml
+     build_args:
+       APP_DIR: gateway
+       PORT: "3002"
+     paths:
+       - services/gateway/**
+       - libs/core/**
+       - infra/docker/Dockerfile.nestjs
   # TODO — uncomment when you add Dockerfiles for these
   #
   # admin:
