@@ -115,78 +115,10 @@ jobs:
 
       - name: Prepare cast file
         id: cfg
-        shell: python
-        run: |
-          import yaml, re, os
-
-          environment = '${{ inputs.environment }}'
-          component   = '${{ matrix.component }}'
-
-          with open('.github/deploy-config.yml') as f:
-              config = yaml.safe_load(f)
-
-          global_cfg = config['global']
-          cast_file  = config['components'][component].get('cast', '')
-
-          if not cast_file:
-              with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
-                  out.write('has_cast=false\n')
-              raise SystemExit(0)
-
-          values_file = f'infra/runeset/values/{environment}.yaml'
-          with open(values_file) as f:
-              values = yaml.safe_load(f) or {}
-
-          def flatten(d, prefix=''):
-              result = {}
-              for k, v in d.items():
-                  key = f'{prefix}.{k}' if prefix else k
-                  if isinstance(v, dict):
-                      result.update(flatten(v, key))
-                  else:
-                      result[key] = v
-              return result
-
-          flat = flatten(values)
-
-          # Promote active component's keys to the "component." prefix
-          # so {{ values:component.scale }} resolves regardless of component name.
-          # Values are nested as <component>.component.<key>, e.g. web.component.scale.
-          print(f'DEBUG: component={component}, values keys={list(values.keys())}')
-          if component in values and isinstance(values[component], dict):
-              comp_vals = values[component].get('component', values[component])
-              if isinstance(comp_vals, dict):
-                  print(f'DEBUG: promoting keys: {list(comp_vals.keys())}')
-                  for k, v in flatten(comp_vals, 'component.').items():
-                      flat[k] = v  # override always — we want component.* to be the active component
-          print(f'DEBUG: flat keys with component prefix: {[k for k in flat if k.startswith(\"component.\")]}')
-
-          # Fill registry from global config if values file omits it
-          if 'registry' not in flat:
-              flat['registry'] = f"{global_cfg['registry']}/{global_cfg['repo']}"
-
-          # Use environment name as image tag when values file leaves it blank
-          if not flat.get('app.tag'):
-              flat['app.tag'] = environment
-
-          with open(cast_file) as f:
-              content = f.read()
-
-          def replace(m):
-              key = m.group(1).strip()
-              return str(flat.get(key, m.group(0)))
-
-          processed = re.sub(r'\{\{\s*values:([\w.]+)\s*\}\}', replace, content)
-          out_path = '/tmp/processed-cast.yaml'
-          with open(out_path, 'w') as f:
-              f.write(processed)
-
-          print('Processed cast file:')
-          print(processed)
-
-          with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
-              out.write(f'cast_file={out_path}\n')
-              out.write('has_cast=true\n')
+        uses: ./.github/actions/cast-prep
+        with:
+          component: ${{ matrix.component }}
+          environment: ${{ inputs.environment }}
 
       - uses: runestack/rune-cast-action@v1
         if: steps.cfg.outputs.has_cast == 'true'

@@ -1,0 +1,25 @@
+name: 'Propeller Cast Prep'
+description: 'Load deploy-config.yml, merge values, and render a Rune cast YAML'
+author: 'Propeller Team'
+
+inputs:
+  component:
+    description: 'Component name from deploy-config.yml (e.g. landing, web)'
+    required: true
+  environment:
+    description: 'Target environment: dev, stg, prod'
+    required: true
+  config_file:
+    description: 'Path to deploy-config.yml'
+    required: false
+    default: '.github/deploy-config.yml'
+
+outputs:
+  cast_file:
+    description: 'Path to the templated cast YAML ready for rune cast'
+  has_cast:
+    description: "'true' if a cast was generated, 'false' otherwise"
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
