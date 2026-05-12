@@ -152,11 +152,14 @@ jobs:
           # Promote active component's keys to the "component." prefix
           # so {{ values:component.scale }} resolves regardless of component name.
           # Values are nested as <component>.component.<key>, e.g. web.component.scale.
-          if component in values and 'component' in values[component]:
-              comp_vals = values[component]['component']
+          print(f'DEBUG: component={component}, values keys={list(values.keys())}')
+          if component in values and isinstance(values[component], dict):
+              comp_vals = values[component].get('component', values[component])
               if isinstance(comp_vals, dict):
+                  print(f'DEBUG: promoting keys: {list(comp_vals.keys())}')
                   for k, v in flatten(comp_vals, 'component.').items():
-                      flat[k] = flat.get(k, v)  # don't override existing flat keys
+                      flat[k] = v  # override always — we want component.* to be the active component
+          print(f'DEBUG: flat keys with component prefix: {[k for k in flat if k.startswith(\"component.\")]}')
 
           # Fill registry from global config if values file omits it
           if 'registry' not in flat:
