@@ -149,6 +149,14 @@ jobs:
 
           flat = flatten(values)
 
+          # Promote active component's keys to the "component." prefix
+          # so {{ values:component.scale }} resolves regardless of component name
+          if component in values:
+              comp_values = values[component]
+              if isinstance(comp_values, dict):
+                  for k, v in flatten(comp_values, 'component.').items():
+                      flat[k] = flat.get(k, v)  # don't override existing flat keys
+
           # Fill registry from global config if values file omits it
           if 'registry' not in flat:
               flat['registry'] = f"{global_cfg['registry']}/{global_cfg['repo']}"
