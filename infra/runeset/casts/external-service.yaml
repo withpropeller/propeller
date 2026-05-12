@@ -1,13 +1,13 @@
 service:
-  name: landing
-  image: "{{ values:registry }}/landing:{{ values:app.tag }}"
+  name: "{{ values:component.name }}"
+  image: "{{ values:registry }}/{{ values:component.name }}:{{ values:app.tag }}"
   imagePull: missing
-  scale: {{ values:landing.scale }}
+  scale: {{ values:component.scale }}
   ports:
     - name: http
-      port: 80
+      port: {{ values:component.port }}
   expose:
-    host: "{{ values:landing.host }}"
+    host: "{{ values:component.host }}"
     port: http
     tls:
       mode: auto
@@ -17,14 +17,14 @@ service:
   health:
     liveness:
       type: http
-      path: /healthz
-      port: 80
+      path: "{{ values:component.healthPath }}"
+      port: {{ values:component.port }}
       intervalSeconds: 10
       timeoutSeconds: 3
   resources:
     cpu:
       request: "50m"
-      limit: "{{ values:landing.cpuLimit }}"
+      limit: "{{ values:component.cpuLimit }}"
     memory:
       request: "64Mi"
-      limit: "{{ values:landing.memLimit }}"
+      limit: "{{ values:component.memLimit }}"

@@ -98,3 +98,69 @@ variable "tags" {
   description = "Extra droplet tags"
   default     = []
 }
+
+variable "docker_registries" {
+  type = list(object({
+    name                  = string
+    registry              = string
+    auth_type             = optional(string, "")
+    username              = optional(string, "")
+    password              = optional(string, "")
+    token                 = optional(string, "")
+    region                = optional(string, "")
+    from_secret           = optional(string, "")
+    from_secret_namespace = optional(string, "")
+    bootstrap             = optional(bool, false)
+    manage                = optional(string, "create")
+    immutable             = optional(bool, false)
+    data                  = optional(map(string), {})
+  }))
+  description = "Docker registry credentials rendered into runefile.toml. Use from_secret + bootstrap to store credentials in an encrypted Rune Secret instead of inline plaintext."
+  default     = []
+  sensitive   = true
+}
+
+variable "runed_environment" {
+  type        = map(string)
+  description = "Env vars written to /etc/rune/runed.env (mode 0600). Use for $${VAR} references in docker_registries bootstrap data."
+  default     = {}
+  sensitive   = true
+}
+
+# ── Flo ─────────────────────────────────────────────────────────
+
+variable "flo_version" {
+  type        = string
+  description = "Flo release tag passed to install.sh. Pin in production."
+  default     = ""
+}
+
+variable "flo_droplet_size" {
+  type        = string
+  description = "Droplet size for the Flo node"
+  default     = "s-1vcpu-1gb"
+}
+
+variable "flo_dashboard_allowed_cidrs" {
+  type        = list(string)
+  description = "CIDRs allowed to reach the Flo dashboard (port 9002). Restrict in production."
+  default     = ["0.0.0.0/0", "::/0"]
+}
+
+variable "flo_volume_size" {
+  type        = number
+  description = "GB for the Flo data volume. 0 = root disk (ephemeral). Any positive value provisions a persistent DO Volume."
+  default     = 10
+}
+
+variable "flo_volume_name" {
+  type        = string
+  description = "Name for the Flo DO Volume. Empty = auto-derived from droplet name."
+  default     = "flo-data"
+}
+
+variable "flo_volume_filesystem_type" {
+  type        = string
+  description = "Filesystem for the Flo volume: ext4 or xfs."
+  default     = "ext4"
+}

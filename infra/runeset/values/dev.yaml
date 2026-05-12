@@ -35,11 +35,24 @@ office:
   memLimit: "512Mi"
 
 landing:
-  host: dev.withpropeller.com
-  scale: 1
-  port: 80
-  cpuLimit: "100m"
-  memLimit: "64Mi"
+  component:
+    name: landing
+    host: dev.withpropeller.com
+    scale: 1
+    port: 80
+    healthPath: /healthz
+    cpuLimit: "100m"
+    memLimit: "64Mi"
+
+web:
+  component:
+    name: web
+    host: app.dev.withpropeller.com
+    scale: 1
+    port: 3000
+    healthPath: /
+    cpuLimit: "500m"
+    memLimit: "256Mi"
 
 caddy:
   scale: 1

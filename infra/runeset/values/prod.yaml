@@ -14,10 +14,14 @@ flo:
   memLimit: "2Gi"
 
 landing:
-  host: withpropeller.com
-  scale: 1
-  cpuLimit: "500m"
-  memLimit: "128Mi"
+  component:
+    name: landing
+    host: withpropeller.com
+    scale: 1
+    port: 80
+    healthPath: /healthz
+    cpuLimit: "500m"
+    memLimit: "128Mi"
 
 api:
   scale: 2
@@ -37,3 +41,13 @@ office:
   port: 3003
   cpuLimit: "500m"
   memLimit: "512Mi"
+
+web:
+  component:
+    name: web
+    host: app.withpropeller.com
+    scale: 1
+    port: 3000
+    healthPath: /
+    cpuLimit: "500m"
+    memLimit: "256Mi"

@@ -2,3 +2,4 @@
 
 import "./scripts/tools/deployments.zake"
 import "./scripts/tools/dev.zake"
+import "./scripts/tools/secrets.zake"

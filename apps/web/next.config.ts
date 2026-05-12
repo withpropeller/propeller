@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 import path from "path";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   transpilePackages: ['@paystack/pax'],
   // Turbopack (used by `next dev` in Next.js 16+) has its own resolver and
   // doesn't need the webpack module resolution override below.

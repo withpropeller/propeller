@@ -29,6 +29,14 @@ components:
       - infra/docker/Dockerfile.landing
       - infra/docker/nginx.landing.conf
 
+  web:
+    dockerfile: infra/docker/Dockerfile.web
+    context: .
+    cast: infra/runeset/casts/external-service.yaml
+    paths:
+      - apps/web/**
+      - infra/docker/Dockerfile.web
+
   # TODO — uncomment when you add Dockerfiles for these
   #
   # admin:
