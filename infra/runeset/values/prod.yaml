@@ -8,7 +8,7 @@ logLevel: info
 # ── Registry override ────────────────────────────────────────────
 registry: ghcr.io/withpropeller/propeller
 
-# ── Infrastructure components ────────────────────────────────────
+# ── Infrastructure components (shared namespace) ─────────────────
 
 mongo:
   component:
@@ -18,15 +18,6 @@ mongo:
     cpuLimit: "2000m"
     memRequest: "512Mi"
     memLimit: "2Gi"
-
-tigerbeetle:
-  component:
-    name: tigerbeetle
-    volumeSize: 10Gi
-    cpuRequest: "100m"
-    cpuLimit: "1000m"
-    memRequest: "256Mi"
-    memLimit: "1Gi"
 
 flo:
   component:
@@ -63,6 +54,16 @@ web:
     cpuLimit: "500m"
     memLimit: "256Mi"
 
+docs:
+  component:
+    name: docs
+    host: docs.withpropeller.com
+    scale: 1
+    port: 3000
+    healthPath: /
+    cpuLimit: "500m"
+    memLimit: "256Mi"
+
 # ── Backend components ───────────────────────────────────────────
 
 api:
@@ -83,8 +84,8 @@ gateway:
     cpuLimit: "1000m"
     memRequest: "256Mi"
     memLimit: "1Gi"
-    mongoNamespace: prod    # where mongo service lives
-    floNamespace: prod       # where flo service lives
+    mongoNamespace: shared   # mongo lives in shared namespace
+    floNamespace: shared      # flo lives in shared namespace
   config:
     REDIS_URI: "redis://redis.prod:6379"
     MAIN_SITE_DOMAIN: "https://withpropeller.com"

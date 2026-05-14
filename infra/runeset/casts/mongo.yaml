@@ -1,5 +1,5 @@
-# MongoDB 7 — runs on Rune cluster with local persistent storage.
-# Apply:  rune cast infra/runeset/casts/mongo.yaml -n prod
+# MongoDB 7 — shared namespace so all environments use one instance.
+# Apply:  rune cast infra/runeset/casts/mongo.yaml -n shared --create-namespace
 
 service:
   name: mongo

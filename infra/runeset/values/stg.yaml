@@ -36,3 +36,13 @@ webhook:
   port: 3004
   cpuLimit: "200m"
   memLimit: "128Mi"
+
+docs:
+  component:
+    name: docs
+    host: docs.stg.withpropeller.com
+    scale: 1
+    port: 3000
+    healthPath: /
+    cpuLimit: "500m"
+    memLimit: "256Mi"

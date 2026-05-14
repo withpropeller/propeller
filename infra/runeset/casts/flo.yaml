@@ -1,5 +1,5 @@
-# Flo event bus — runs on Rune cluster.
-# Apply:  rune cast infra/runeset/casts/flo.yaml -n prod
+# Flo event bus — runs on Rune cluster in shared namespace.
+# Apply:  rune cast infra/runeset/casts/flo.yaml -n shared --create-namespace
 
 service:
   name: flo

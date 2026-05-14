@@ -64,13 +64,13 @@ components:
   #   paths:
   #     - apps/admin/**
   #     - infra/docker/Dockerfile.vite
-  #
-  # docs:
-  #   dockerfile: apps/docs/Dockerfile
-  #   context: apps/docs
-  #   cast: infra/runeset/casts/external-service.yaml
-  #   paths:
-  #     - apps/docs/**
+
+  docs:
+    dockerfile: apps/docs/Dockerfile
+    context: apps/docs
+    cast: infra/runeset/casts/external-service.yaml
+    paths:
+      - apps/docs/**
   #
   # api:
   #   dockerfile: infra/docker/Dockerfile.nestjs

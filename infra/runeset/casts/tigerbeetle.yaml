@@ -1,9 +1,9 @@
-# TigerBeetle — financial accounting database.
-# Apply:  rune cast infra/runeset/casts/tigerbeetle.yaml -n prod
+# TigerBeetle — financial accounting database in shared namespace.
+# Apply:  rune cast infra/runeset/casts/tigerbeetle.yaml -n shared
 
 service:
   name: tigerbeetle
-  image: "ghcr.io/withpropeller/propeller/tigerbeetle:prod"
+  image: "ghcr.io/tigerbeetle/tigerbeetle:latest"
   imagePull: missing
   scale: 1
   ports:
@@ -11,10 +11,12 @@ service:
       port: 4000
   env:
     TB_ADDRESSES: "0.0.0.0:4000"
-  command: /bin/sh
+  command: /tigerbeetle
   args:
-    - -c
-    - test -f /data/0_0.tigerbeetle || /tigerbeetle format --cluster=0 --replica=0 --replica-count=1 /data/0_0.tigerbeetle; exec /tigerbeetle start --addresses=0.0.0.0:4000 /data/0_0.tigerbeetle
+    - start
+    - --addresses=0.0.0.0:4000
+    - --cache-grid=256MiB
+    - /data/0_0.tigerbeetle
   volumes:
     - name: tb-data
       mountPath: /data
@@ -22,6 +24,19 @@ service:
         storageClassName: local
         size: "10Gi"
         accessMode: ReadWriteOnce
+  initSteps:
+    - name: format
+      image: "ghcr.io/tigerbeetle/tigerbeetle:latest"
+      command: /tigerbeetle
+      args:
+        - format
+        - --cluster=0
+        - --replica=0
+        - --replica-count=1
+        - /data/0_0.tigerbeetle
+  securityContext:
+    seccompProfile:
+      type: Unconfined
   health:
     liveness:
       type: tcp
@@ -33,5 +48,5 @@ service:
       request: "100m"
       limit: "1000m"
     memory:
-      request: "256Mi"
-      limit: "1Gi"
+      request: "1Gi"
+      limit: "2500Mi"

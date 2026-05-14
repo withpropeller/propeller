@@ -2,7 +2,7 @@ import createMDX from "@next/mdx";
 import remarkGfm from "remark-gfm";
 import rehypePrettyCode from "rehype-pretty-code";
 
-// Triggered by CI
+// Triggered by CI — fixed diff detection
 /** @type {import("next").NextConfig} */
 const nextConfig = {
   output: "standalone",

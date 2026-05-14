@@ -48,16 +48,9 @@ jobs:
           env_map = config.get('environments', {})
           environment = env_map.get(os.environ['BRANCH'], os.environ['BRANCH'])
 
-          # Get changed files
-          try:
-              base = subprocess.check_output(
-                  ['git', 'merge-base', 'HEAD', f'origin/{os.environ["BRANCH"]}'],
-                  text=True
-              ).strip()
-          except Exception:
-              base = 'HEAD^'
+          # Get changed files — on push, diff against the previous commit
           changed = subprocess.check_output(
-              ['git', 'diff', '--name-only', base, 'HEAD'],
+              ['git', 'diff', '--name-only', 'HEAD^', 'HEAD'],
               text=True
           ).splitlines()
 

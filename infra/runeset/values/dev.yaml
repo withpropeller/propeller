@@ -54,6 +54,16 @@ web:
     cpuLimit: "500m"
     memLimit: "256Mi"
 
+docs:
+  component:
+    name: docs
+    host: docs.dev.withpropeller.com
+    scale: 1
+    port: 3000
+    healthPath: /
+    cpuLimit: "500m"
+    memLimit: "256Mi"
+
 gateway:
   component:
     name: gateway

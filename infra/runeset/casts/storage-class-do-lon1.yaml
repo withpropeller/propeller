@@ -1,0 +1,13 @@
+# DigitalOcean Block Storage StorageClass — London region.
+#
+# Apply:
+#   rune storageclass create -f infra/runeset/casts/storage-class-do-lon1.yaml
+
+storageClass:
+  name: do-lon1
+  driver: do-volume
+  parameters:
+    region: lon1
+    fsType: ext4
+    apiToken: "secret:do-api-token.shared.rune/token"
+  reclaimPolicy: retain
