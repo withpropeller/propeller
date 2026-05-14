@@ -70,12 +70,16 @@ jobs:
               out.write(f"repo={g['repo']}\n")
               out.write(f"context={c['context']}\n")
               out.write(f"dockerfile={c['dockerfile']}\n")
-               args = c.get('build_args', {})
-               if args:
-                   out.write('build_args<<EOF\n')
-                   for k, v in args.items():
-                       out.write(f'{k}={v}\n')
-                   out.write('EOF\n')
+              args = c.get('build_args', {})
+              if args:
+                  out.write('build_args<<EOF\n')
+                  for k, v in args.items():
+                      out.write(f'{k}={v}\n')
+                  out.write('EOF\n')
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
         with:
           images: ghcr.io/${{ steps.cfg.outputs.repo }}/${{ matrix.component }}
           tags: |
@@ -90,7 +94,13 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-           build-args: ${{ steps.cfg.outputs.build_args }}
+          build-args: ${{ steps.cfg.outputs.build_args }}
+
+  cast:
+    name: Cast ${{ matrix.component }}
+    runs-on: ubuntu-latest
+    needs: [split, build]
+    if: needs.split.outputs.components != '[]' && needs.split.outputs.components != ''
     strategy:
       fail-fast: false
       matrix:
