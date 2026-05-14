@@ -1,7 +1,7 @@
 service:
   name: "{{ values:component.name }}"
   image: "{{ values:registry }}/{{ values:component.name }}:{{ values:app.tag }}"
-  imagePull: missing
+  imagePull: always
   scale: {{ values:component.scale }}
   ports:
     - name: http
