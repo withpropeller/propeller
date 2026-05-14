@@ -120,6 +120,10 @@ jobs:
                   for k, v in args.items():
                       out.write(f'{k}={v}\n')
                   out.write('EOF\n')
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
         with:
           images: ghcr.io/${{ steps.cfg.outputs.repo }}/${{ matrix.component }}
           tags: |
