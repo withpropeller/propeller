@@ -1,0 +1,68 @@
+---
+title: Compliance & KYC
+lede: >-
+  Propeller runs KYB, KYC, and sanctions screening on every transaction.
+  As MOR, compliance is our responsibility — not yours.
+last_updated: 14 May 2026
+crumbs:
+  - label: Docs
+    href: /
+  - label: Concepts
+  - label: Compliance & KYC
+toc:
+  - id: overview
+    label: Overview
+  - id: kyb
+    label: KYB — business verification
+  - id: kyc
+    label: KYC — payer verification
+  - id: sanctions
+    label: Sanctions screening
+  - id: regulatory
+    label: Regulatory framework
+---
+
+## Overview
+
+Propeller is **Merchant of Record (MOR)** — the legal counterparty to every
+transaction. This means compliance obligations sit with us, not with the
+merchant or super-merchant. Propeller handles:
+
+- **KYB** — business verification for every onboarded merchant.
+- **KYC** — identity verification for end-payers above NGN 500k.
+- **Sanctions screening** — OFAC, FATF, CBN, and EFCC lists.
+- **Transaction monitoring** — AML pattern detection.
+
+## KYB — business verification
+
+When a business is registered, Propeller runs KYB through **PayKKa**:
+
+- Business registration number (China: USCC).
+- Legal name and registered address.
+- Director/UBO identity verification.
+
+Businesses are created in `pending` status and transition to `active` once
+KYB clears. You can check status via `GET /v1/businesses/{id}`.
+
+## KYC — payer verification
+
+End-payers are verified through **Dojah** (Nigeria):
+
+- BVN (Bank Verification Number) lookup.
+- NIN (National Identity Number) — for transactions above NGN 5M.
+- Selfie liveness check for first-time payers.
+
+## Sanctions screening
+
+Every party is screened against:
+
+- **OFAC SDN** list (via ComplyAdvantage).
+- **FATF** high-risk jurisdictions.
+- **CBN/EFCC** domestic watchlists.
+- **Name-match** against the billed party on every invoice.
+
+## Regulatory framework
+
+Propeller operates under Nigerian regulation (CBN, EFCC, NDPC for data
+protection) and global standards (FATF, OFAC). Partners PayKKa and
+Globalstack carry China-side licensing obligations.

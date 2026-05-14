@@ -1,0 +1,48 @@
+---
+title: Status & uptime
+lede: >-
+  Propeller's current status, incident history, and SLA commitments.
+  Check status.withpropeller.com for real-time information.
+last_updated: 14 May 2026
+crumbs:
+  - label: Docs
+    href: /
+  - label: Operations
+  - label: Status & uptime
+toc:
+  - id: status-page
+    label: Status page
+  - id: sla
+    label: SLA
+  - id: incidents
+    label: Incident response
+---
+
+## Status page
+
+Real-time status and incident history are available at
+[status.withpropeller.com](https://status.withpropeller.com).
+
+Components tracked:
+- API (`api.withpropeller.com`)
+- Payment processing (Paystack integration)
+- Payout processing (Globalstack integration)
+- Dashboard and console
+
+## SLA
+
+Propeller targets **99.9% uptime** for the API. The SLA covers:
+- API availability (excluding scheduled maintenance).
+- Payment collection pipeline (excluding partner outages).
+- Payout processing within the daily batch window.
+
+Full SLA terms are in your contract.
+
+## Incident response
+
+- **Acknowledgement**: within 15 minutes of detection.
+- **Status update**: every 30 minutes during active incident.
+- **Post-mortem**: published within 5 business days for severity-1 incidents.
+
+Subscribe to status updates at [status.withpropeller.com](https://status.withpropeller.com)
+to receive notifications via email or webhook.

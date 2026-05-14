@@ -1,0 +1,57 @@
+---
+title: Payouts & settlement
+lede: >-
+  Propeller executes FX from NGN to USDC and settles to merchant
+  destination addresses. Payouts are batched daily.
+last_updated: 14 May 2026
+crumbs:
+  - label: Docs
+    href: /
+  - label: Concepts
+  - label: Payouts & settlement
+toc:
+  - id: overview
+    label: Overview
+  - id: fx-execution
+    label: FX execution
+  - id: settlement-batching
+    label: Settlement batching
+  - id: destination-types
+    label: Destination types
+---
+
+## Overview
+
+Once NGN payments are confirmed and cleared, Propeller executes the FX
+conversion and delivers USDC to the merchant's destination. The payout
+is a three-legged transfer: NGN debit, FX conversion, USDC credit.
+
+## FX execution
+
+Propeller uses **Globalstack** as the off-ramp provider. The FX rate is
+locked at the time of payout initiation (not at payment time). Propeller
+quotes a rate, debits NGN from the operational pool, and Globalstack
+delivers USDC on the other side.
+
+## Settlement batching
+
+Payouts are **batched daily** to optimize for FX rates and gas costs:
+
+- **Cutoff**: 16:00 WAT (West Africa Time).
+- **Execution**: Batches run at 17:00 WAT.
+- **Settlement**: USDC arrives at merchant destination within 1–2 hours of execution.
+
+Individual transfers can be tracked in the ledger with full audit trail.
+
+## Destination types
+
+Merchants can settle USDC to:
+
+| Type | Description |
+|------|-------------|
+| **EVM address** | Any Ethereum/Polygon/Arbitrum address. |
+| **Exchange deposit** | Binance, Bybit, or OKX deposit address. |
+| **TRC-20 address** | TRON network USDT (coming soon). |
+
+Propeller does not custody USDC — funds are delivered directly to the
+destination you specify at onboarding.

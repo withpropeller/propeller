@@ -1,0 +1,119 @@
+---
+title: Your first API call
+lede: >-
+  Three things to know before you call the Propeller API: the base URL,
+  how to authenticate, and what you get back.
+last_updated: 14 May 2026
+crumbs:
+  - label: Docs
+    href: /
+  - label: Get started
+  - label: First API call
+toc:
+  - id: base-url
+    label: Base URL
+  - id: authentication
+    label: Authentication
+  - id: your-first-request
+    label: Your first request
+  - id: response-shape
+    label: Response shape
+  - id: idempotency
+    label: Idempotency
+---
+
+## Base URL
+
+All endpoints live under `https://api.withpropeller.com/v1`. In sandbox mode,
+use the same URL — Propeller distinguishes sandbox vs. live by the API key
+prefix, not by hostname.
+
+## Authentication
+
+Bearer token in the `Authorization` header:
+
+```bash
+Authorization: Bearer $PROPELLER_KEY
+```
+
+Keys never appear in URLs or query params. See
+[Authentication](/authentication) for key management.
+
+## Your first request
+
+Create a business to get started:
+
+<CodeBlock snippets={[
+  {
+    lang: "curl",
+    code: `curl https://api.withpropeller.com/v1/businesses \\
+  -H "Authorization: Bearer $PROPELLER_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "name": "Acme Exports Ltd",
+    "country": "CN",
+    "settlement_address": "0x..."
+  }'`,
+  },
+  {
+    lang: "python",
+    code: `import os, requests
+
+resp = requests.post(
+    "https://api.withpropeller.com/v1/businesses",
+    headers={"Authorization": f"Bearer {os.environ['PROPELLER_KEY']}"},
+    json={
+        "name": "Acme Exports Ltd",
+        "country": "CN",
+        "settlement_address": "0x...",
+    },
+).json()
+print(resp["id"], resp["status"])`,
+  },
+]} />
+
+## Response shape
+
+All Propeller API responses are JSON. Successful responses return a top-level
+object with the resource data:
+
+```json
+{
+  "id": "biz_01J...",
+  "name": "Acme Exports Ltd",
+  "country": "CN",
+  "status": "pending",
+  "created_at": "2026-05-14T10:30:00Z"
+}
+```
+
+Errors return:
+
+```json
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "settlement_address is required"
+  }
+}
+```
+
+Every response includes an `X-Request-ID` header. Quote it when contacting
+support — it's the fastest way to trace a request.
+
+## Idempotency
+
+Use the `Idempotency-Key` header to safely retry requests. Propeller
+deduplicates requests by this key for 24 hours.
+
+```bash
+curl https://api.withpropeller.com/v1/businesses \
+  -H "Authorization: Bearer $PROPELLER_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: a-unique-string" \
+  -d '{"name": "Acme Exports Ltd", ...}'
+```
+
+If a request fails with a network error, retry with the same
+`Idempotency-Key` — Propeller will return the original response
+instead of processing the request twice.

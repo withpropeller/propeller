@@ -1,0 +1,81 @@
+---
+title: Businesses API
+lede: >-
+  Create, retrieve, update, and list businesses. The business resource
+  is the top-level entity in Propeller.
+last_updated: 14 May 2026
+crumbs:
+  - label: Docs
+    href: /
+  - label: API reference
+  - label: Businesses
+toc:
+  - id: create-business
+    label: Create a business
+  - id: retrieve-business
+    label: Retrieve a business
+  - id: list-businesses
+    label: List businesses
+  - id: update-business
+    label: Update a business
+---
+
+## Create a business
+
+`POST /v1/businesses`
+
+<CodeBlock snippets={[
+  {
+    lang: "curl",
+    code: `curl https://api.withpropeller.com/v1/businesses \\
+  -H "Authorization: Bearer $PROPELLER_KEY" \\
+  -H "Content-Type: application/json" \\
+  -H "Idempotency-Key: 7f1c3a9b-4e2d-4a1f-b3c5-8d9e0f1a2b3c" \\
+  -d '{
+    "name": "Acme Exports Ltd",
+    "country": "CN",
+    "registration_number": "91440101MA5D3XYZ8",
+    "settlement_address": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb1"
+  }'`,
+  },
+]} />
+
+**Parameters:**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `name` | string | ✓ | Legal business name |
+| `country` | string | ✓ | ISO 3166-1 alpha-2 country code |
+| `registration_number` | string | ✓ | Business registration number |
+| `settlement_address` | string | ✓ | USDC destination (EVM address) |
+
+**Response:** `201 Created`
+
+```json
+{
+  "id": "biz_01JQ2X...",
+  "name": "Acme Exports Ltd",
+  "country": "CN",
+  "status": "pending",
+  "created_at": "2026-05-14T10:30:00Z"
+}
+```
+
+## Retrieve a business
+
+`GET /v1/businesses/{id}`
+
+Returns the full business object including current KYB status.
+
+## List businesses
+
+`GET /v1/businesses`
+
+Query params: `?status=active&limit=20&cursor=biz_01J...`
+
+## Update a business
+
+`PATCH /v1/businesses/{id}`
+
+Update `settlement_address` or `name`. KYB-tied fields are immutable
+after creation.

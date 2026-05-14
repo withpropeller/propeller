@@ -1,0 +1,52 @@
+---
+title: Payment collection
+lede: >-
+  End-payers pay invoices in Naira via NIP bank transfer. Propeller
+  generates virtual accounts, confirms receipt, and credits the ledger.
+last_updated: 14 May 2026
+crumbs:
+  - label: Docs
+    href: /
+  - label: Concepts
+  - label: Payment collection
+toc:
+  - id: overview
+    label: Overview
+  - id: virtual-accounts
+    label: Virtual accounts
+  - id: payment-flow
+    label: Payment flow
+  - id: confirmation
+    label: Confirmation
+---
+
+## Overview
+
+Payments in Propeller are collected via **NIP bank transfers** (NIBSS
+Instant Payment). When a business issues an invoice, Propeller creates a
+dedicated virtual account. The end-payer transfers NGN to that account,
+and Propeller confirms receipt.
+
+## Virtual accounts
+
+Virtual accounts are provisioned through **Paystack**. Each payment request
+gets a unique account number. The end-payer sees:
+
+- Bank name
+- Account number
+- Account name (the merchant's business name)
+
+## Payment flow
+
+1. **Invoice created** → Propeller generates a payment link.
+2. **End-payer opens link** → sees payment details (amount, bank, account number).
+3. **End-payer transfers NGN** → via their bank app or USSD.
+4. **Paystack sends webhook** → Propeller receives `charge.success`.
+5. **Propeller confirms** → credits the merchant's ledger account.
+
+## Confirmation
+
+Propeller waits for Paystack's webhook confirmation before crediting the
+ledger. The settlement worker polls for confirmations and creates the
+corresponding TigerBeetle transfers. End-payers see a confirmation screen
+immediately after their bank transfer completes.

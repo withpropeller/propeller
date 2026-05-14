@@ -1,0 +1,66 @@
+---
+title: Webhooks API
+lede: >-
+  Subscribe to events, manage endpoints, and verify signatures.
+  Propeller delivers webhooks with HMAC signing and retries.
+last_updated: 14 May 2026
+crumbs:
+  - label: Docs
+    href: /
+  - label: API reference
+  - label: Webhooks
+toc:
+  - id: create-webhook
+    label: Create a webhook
+  - id: list-webhooks
+    label: List webhooks
+  - id: delete-webhook
+    label: Delete a webhook
+---
+
+## Create a webhook
+
+`POST /v1/webhooks`
+
+<CodeBlock snippets={[
+  {
+    lang: "curl",
+    code: `curl https://api.withpropeller.com/v1/webhooks \\
+  -H "Authorization: Bearer $PROPELLER_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "url": "https://your-app.com/webhooks/propeller",
+    "events": ["payment.completed", "payout.settled"]
+  }'`,
+  },
+]} />
+
+**Response:** `201 Created`
+
+```json
+{
+  "id": "wh_01J...",
+  "url": "https://your-app.com/webhooks/propeller",
+  "events": ["payment.completed", "payout.settled"],
+  "signing_secret": "whsec_abc123...",
+  "created_at": "2026-05-14T10:00:00Z"
+}
+```
+
+<Callout title="Important.">
+  The `signing_secret` is shown only once. Store it securely — you'll need
+  it to verify incoming webhook signatures.
+</Callout>
+
+## List webhooks
+
+`GET /v1/webhooks`
+
+Returns all configured webhook endpoints and their subscribed events.
+
+## Delete a webhook
+
+`DELETE /v1/webhooks/{id}`
+
+Removes the webhook endpoint. In-flight deliveries may still arrive for
+a few seconds after deletion.

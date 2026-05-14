@@ -1,0 +1,49 @@
+---
+title: Payments API
+lede: >-
+  List and retrieve payment records. Payments are the NGN bank transfers
+  that end-payers submit against invoices.
+last_updated: 14 May 2026
+crumbs:
+  - label: Docs
+    href: /
+  - label: API reference
+  - label: Payments
+toc:
+  - id: list-payments
+    label: List payments
+  - id: retrieve-payment
+    label: Retrieve a payment
+---
+
+## List payments
+
+`GET /v1/payments?business_id=biz_01J...&status=completed`
+
+Returns paginated list of payments. Filter by `business_id`, `invoice_id`,
+`status`, or date range.
+
+```json
+{
+  "data": [
+    {
+      "id": "pmt_01J...",
+      "invoice_id": "inv_01J...",
+      "business_id": "biz_01J...",
+      "amount": 500000,
+      "currency": "NGN",
+      "status": "completed",
+      "payer_name": "Adekunle Ojo",
+      "paid_at": "2026-05-14T15:30:00Z"
+    }
+  ],
+  "has_more": false
+}
+```
+
+## Retrieve a payment
+
+`GET /v1/payments/{id}`
+
+Returns full payment details including the virtual account that received
+the transfer and the corresponding ledger transfer IDs.

@@ -1,0 +1,54 @@
+---
+title: Webhooks
+lede: >-
+  Propeller delivers events via signed HTTP callbacks. Configure
+  endpoints, verify signatures, and monitor delivery status.
+last_updated: 14 May 2026
+crumbs:
+  - label: Docs
+    href: /
+  - label: Operations
+  - label: Webhooks
+toc:
+  - id: signing
+    label: Signing & verification
+  - id: retries
+    label: Delivery & retries
+  - id: monitoring
+    label: Monitoring
+---
+
+## Signing & verification
+
+Every webhook payload is signed with HMAC-SHA256. The signature appears
+in the `X-Propeller-Signature` header as:
+
+```
+X-Propeller-Signature: t=1715700000,v1=abc123def456...
+```
+
+`t` is the Unix timestamp of the attempt. `v1` is the hex-encoded HMAC
+of `{timestamp}.{payload}` using your webhook's signing secret.
+
+**Always verify the signature** before processing the payload. See the
+[Webhook integration guide](/guides/webhooks) for code examples.
+
+## Delivery & retries
+
+Propeller expects a `2xx` response within 10 seconds. Non-`2xx` responses
+or timeouts trigger retries with exponential backoff:
+
+| Attempt | Delay |
+|---------|-------|
+| 1st | 5 seconds |
+| 2nd | 25 seconds |
+| 3rd | 125 seconds |
+| 4th | 625 seconds |
+| 5th–15th | ~2 hours each |
+
+Webhooks that fail 15 times are disabled. You'll receive an email alert.
+
+## Monitoring
+
+Check webhook delivery status in the console under **Settings → Webhooks**.
+Each endpoint shows recent delivery attempts with status codes and latency.

@@ -1,0 +1,98 @@
+---
+title: Onboarding a business
+lede: >-
+  Register a business, complete KYB, and set up settlement. The business
+  API is the entry point for everything in Propeller.
+last_updated: 14 May 2026
+crumbs:
+  - label: Docs
+    href: /
+  - label: Guides
+  - label: Onboarding a business
+toc:
+  - id: overview
+    label: Overview
+  - id: create-a-business
+    label: Create a business
+  - id: kyb-process
+    label: KYB process
+  - id: settlement-setup
+    label: Settlement setup
+  - id: checking-status
+    label: Checking status
+---
+
+## Overview
+
+Businesses are the top-level entity in Propeller. Every invoice, payment,
+and payout belongs to a business. You can register a business directly
+(standalone merchant) or nest it under a super-merchant.
+
+## Create a business
+
+<CodeBlock snippets={[
+  {
+    lang: "curl",
+    code: `curl https://api.withpropeller.com/v1/businesses \\
+  -H "Authorization: Bearer $PROPELLER_KEY" \\
+  -H "Content-Type: application/json" \\
+  -H "Idempotency-Key: a-unique-key" \\
+  -d '{
+    "name": "Acme Exports Ltd",
+    "country": "CN",
+    "registration_number": "91440101MA5...",
+    "settlement_address": "0x..."
+  }'`,
+  },
+  {
+    lang: "python",
+    code: `resp = requests.post(
+    "https://api.withpropeller.com/v1/businesses",
+    headers={
+        "Authorization": f"Bearer {PROPELLER_KEY}",
+        "Idempotency-Key": str(uuid.uuid4()),
+    },
+    json={
+        "name": "Acme Exports Ltd",
+        "country": "CN",
+        "registration_number": "91440101MA5...",
+        "settlement_address": "0x...",
+    },
+)
+print(resp.json()["id"], resp.json()["status"])`,
+  },
+]} />
+
+The response includes a `business_id` and `status` (initially `pending`).
+
+## KYB process
+
+Once created, Propeller automatically initiates KYB via PayKKa:
+
+1. **Registration check** — validates the business registration number.
+2. **Director identity** — verifies the legal representative.
+3. **UBO check** — identifies ultimate beneficial owners.
+
+Typical turnaround: **2–4 business hours** for Chinese businesses, up to
+24 hours for others.
+
+## Settlement setup
+
+Set the `settlement_address` at creation time or update it later:
+
+```bash
+curl -X PATCH https://api.withpropeller.com/v1/businesses/biz_01J... \\
+  -H "Authorization: Bearer $PROPELLER_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{"settlement_address": "0x..."}'
+```
+
+## Checking status
+
+```bash
+curl https://api.withpropeller.com/v1/businesses/biz_01J... \\
+  -H "Authorization: Bearer $PROPELLER_KEY"
+```
+
+Statuses: `pending` → `active` | `rejected`. Propeller also sends a
+webhook (`business.activated`) when KYB completes.

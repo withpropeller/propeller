@@ -1,0 +1,74 @@
+---
+title: Authentication
+lede: >-
+  Propeller uses bearer-token authentication. Every request to
+  the API needs an `Authorization: Bearer` header with your API key.
+last_updated: 14 May 2026
+crumbs:
+  - label: Get started
+  - label: Authentication
+toc:
+  - id: get-a-key
+    label: Get a key
+  - id: make-a-request
+    label: Make a request
+  - id: key-prefixes
+    label: Key prefixes
+  - id: rotating-keys
+    label: Rotating keys
+---
+
+## Get a key
+
+Create a key from the [console](https://console.withpropeller.com). Keys are
+scoped to one organization. Propeller will only ever show the full key once —
+copy it out and store it in a secrets manager.
+
+<Callout title="Key prefixes.">
+  Sandbox keys start with `prop_sk_sandbox_`. Production keys start with
+  `prop_sk_live_`. Always use the sandbox key while integrating.
+</Callout>
+
+## Make a request
+
+Set `PROPELLER_KEY` in your environment and call any endpoint with the bearer
+header.
+
+<CodeBlock snippets={[
+  {
+    lang: "curl",
+    code: `curl https://api.withpropeller.com/v1/businesses \\
+  -H "Authorization: Bearer $PROPELLER_KEY" \\
+  -H "Content-Type: application/json"`,
+  },
+  {
+    lang: "python",
+    code: `import os, requests
+
+resp = requests.get(
+    "https://api.withpropeller.com/v1/businesses",
+    headers={"Authorization": f"Bearer {os.environ['PROPELLER_KEY']}"},
+)
+print(resp.json())`,
+  },
+  {
+    lang: "node",
+    code: `const resp = await fetch("https://api.withpropeller.com/v1/businesses", {
+  headers: {
+    Authorization: \`Bearer \${process.env.PROPELLER_KEY}\`,
+  },
+}).then(r => r.json());
+console.log(resp);`,
+  },
+]} />
+
+## Rotating keys
+
+You can have up to 5 active keys per organization. To rotate:
+
+1. Create a new key in the console.
+2. Deploy your app with the new key alongside the old one.
+3. Verify traffic is flowing through the new key.
+4. Revoke the old key in the console.
+
+Revoked keys stop working immediately. There's no grace period.

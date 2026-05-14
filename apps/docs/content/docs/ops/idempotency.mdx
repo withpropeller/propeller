@@ -1,0 +1,49 @@
+---
+title: Idempotency
+lede: >-
+  Propeller supports idempotency keys for safe retries. POST and PUT
+  requests deduplicate by key for 24 hours.
+last_updated: 14 May 2026
+crumbs:
+  - label: Docs
+    href: /
+  - label: Operations
+  - label: Idempotency
+toc:
+  - id: how-it-works
+    label: How it works
+  - id: key-format
+    label: Key format
+  - id: when-to-use
+    label: When to use
+---
+
+## How it works
+
+Include an `Idempotency-Key` header in `POST` and `PUT` requests:
+
+```bash
+curl ... -H "Idempotency-Key: 7f1c3a9b-4e2d-4a1f-b3c5-8d9e0f1a2b3c"
+```
+
+Propeller stores the response of each idempotent request for **24 hours**.
+If the same key is used again within that window, Propeller returns the
+original response (same status code, same body) without re-processing.
+
+## Key format
+
+Any string up to 255 characters. We recommend UUID v4.
+
+Keys are scoped to your organization — two different organizations can
+use the same key without collision.
+
+## When to use
+
+- **Network timeouts**: if your request times out, retry with the same key.
+- **500 errors**: if Propeller returns a `500`, retry with the same key.
+- **Payment/Creation operations**: always use idempotency keys for
+  `POST /v1/businesses`, `POST /v1/invoices`, and any write that should
+  not be duplicated.
+
+Do **not** reuse idempotency keys for different request bodies. A key is
+tied to the first request body it was sent with.

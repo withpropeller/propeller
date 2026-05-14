@@ -1,0 +1,99 @@
+---
+title: Quickstart
+lede: >-
+  Create a Propeller account, get an API key, and make your first API call
+  in under 2 minutes.
+last_updated: 14 May 2026
+crumbs:
+  - label: Docs
+    href: /
+  - label: Get started
+  - label: Quickstart
+toc:
+  - id: get-an-api-key
+    label: Get an API key
+  - id: export-your-key
+    label: Export your key
+  - id: make-a-request
+    label: Make a request
+  - id: where-next
+    label: Where next
+---
+
+## Get an API key
+
+Create an account at [console.withpropeller.com](https://console.withpropeller.com).
+Sandbox keys are available immediately with no KYC required — enough to explore
+the full API surface against test data.
+
+Once you're in the console: **Settings → API keys → New key**. Copy the key
+once — Propeller only shows it the one time.
+
+<Callout title="Heads-up.">
+  Propeller sandbox keys start with `prop_sk_sandbox_`. Production keys start
+  with `prop_sk_live_`.
+</Callout>
+
+## Export your key
+
+```bash
+export PROPELLER_KEY="prop_sk_sandbox_..."
+```
+
+## Make a request
+
+<CodeBlock snippets={[
+  {
+    lang: "curl",
+    code: `curl https://api.withpropeller.com/v1/businesses \\
+  -H "Authorization: Bearer $PROPELLER_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "name": "Acme Exports Ltd",
+    "country": "CN",
+    "settlement_address": "0x..."
+  }'`,
+  },
+  {
+    lang: "python",
+    code: `import os, requests
+
+resp = requests.post(
+    "https://api.withpropeller.com/v1/businesses",
+    headers={"Authorization": f"Bearer {os.environ['PROPELLER_KEY']}"},
+    json={
+        "name": "Acme Exports Ltd",
+        "country": "CN",
+        "settlement_address": "0x...",
+    },
+).json()
+print(resp["id"], resp["status"])`,
+  },
+  {
+    lang: "node",
+    code: `const resp = await fetch("https://api.withpropeller.com/v1/businesses", {
+  method: "POST",
+  headers: {
+    Authorization: \`Bearer \${process.env.PROPELLER_KEY}\`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    name: "Acme Exports Ltd",
+    country: "CN",
+    settlement_address: "0x...",
+  }),
+}).then(r => r.json());
+console.log(resp.id, resp.status);`,
+  },
+]} />
+
+You should see a JSON response with the business `id` and `status` (likely
+`"pending"` while KYB runs). That's it — you've created your first Propeller
+resource.
+
+## Where next
+
+- **Onboarding a business?** [Full onboarding guide →](/guides/onboarding)
+- **Collecting payments?** [Payment collection guide →](/guides/collecting-payments)
+- **Integrating webhooks?** [Webhook integration guide →](/guides/webhooks)
+- **Full API reference?** [API reference →](/api/businesses)

@@ -1,0 +1,60 @@
+---
+title: Rate limits
+lede: >-
+  Propeller enforces per-key rate limits. Responses include headers
+  so you can stay within bounds without parsing errors.
+last_updated: 14 May 2026
+crumbs:
+  - label: Docs
+    href: /
+  - label: Operations
+  - label: Rate limits
+toc:
+  - id: limits
+    label: Limits by plan
+  - id: headers
+    label: Rate limit headers
+  - id: handling-429
+    label: Handling 429 responses
+---
+
+## Limits by plan
+
+| Plan | Rate limit |
+|------|-----------|
+| Sandbox | 60 requests / minute |
+| Production | 600 requests / minute |
+
+Higher limits are available on request for enterprise accounts. Contact
+[support@withpropeller.com](mailto:support@withpropeller.com).
+
+## Rate limit headers
+
+Every response includes:
+
+| Header | Description |
+|--------|-------------|
+| `X-RateLimit-Limit` | Your rate limit (requests/minute) |
+| `X-RateLimit-Remaining` | Requests remaining in current window |
+| `X-RateLimit-Reset` | Unix timestamp when the window resets |
+
+## Handling 429 responses
+
+When you exceed the rate limit, Propeller returns `429 Too Many Requests`:
+
+```json
+{
+  "error": {
+    "code": "rate_limited",
+    "message": "Rate limit exceeded. Retry after 3 seconds."
+  }
+}
+```
+
+**Do this:**
+
+1. Read `X-RateLimit-Reset` to know when the window resets.
+2. Back off exponentially (start at 1s, cap at 60s).
+3. Reduce your request rate to stay under the limit.
+
+Propeller does **not** queue rate-limited requests — you must retry.

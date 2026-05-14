@@ -1,0 +1,53 @@
+---
+title: Ledger & accounts
+lede: >-
+  Propeller uses TigerBeetle for double-entry accounting. Every Naira
+  collected and USDC settled is tracked with deterministic transfer IDs.
+last_updated: 14 May 2026
+crumbs:
+  - label: Docs
+    href: /
+  - label: Concepts
+  - label: Ledger & accounts
+toc:
+  - id: overview
+    label: Overview
+  - id: account-types
+    label: Account types
+  - id: transfers
+    label: Transfers
+  - id: idempotency
+    label: Idempotency
+---
+
+## Overview
+
+Propeller's ledger is built on [TigerBeetle](https://tigerbeetle.com) — a
+financial accounting database designed for double-entry, high-throughput
+transaction processing. Every payment, FX conversion, and settlement is a
+transfer between two accounts.
+
+## Account types
+
+There are three account categories in the Propeller ledger:
+
+| Account type | Description |
+|-------------|-------------|
+| **Virtual accounts** | Per-payment NGN collection accounts. Created on the fly via Paystack. |
+| **Merchant accounts** | Per-business accounts tracking collectable NGN and settled USDC. |
+| **Propeller operational accounts** | Internal NGN pool, USDC float, fee accounts. |
+
+## Transfers
+
+Every movement of funds is represented as a transfer with:
+
+- A **deterministic ID** — derived from the business ID, invoice ID, and a sequence number. Replaying the same event produces the same transfer ID.
+- **Debit account** and **credit account** — always balanced (total debits = total credits).
+- **Ledger** and **code** — for categorizing transfers (e.g., `ledger=700` for payment credits, `ledger=800` for FX).
+
+## Idempotency
+
+Transfer IDs are deterministic. If a worker crashes and retries, the same
+transfer ID is computed and TigerBeetle returns `exists` — the transfer
+is not double-posted. This is the foundation of Propeller's at-least-once
+processing guarantees.

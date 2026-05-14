@@ -1,0 +1,117 @@
+---
+title: Propeller Docs
+lede: >-
+  Propeller is the Merchant of Record for the China–Africa payment corridor.
+  Collect Naira payments from Nigerian businesses, and Propeller handles
+  compliance, FX, and USDC settlement to your destination.
+last_updated: 14 May 2026
+crumbs:
+  - label: Docs
+  - label: Welcome
+toc:
+  - id: what-is-propeller
+    label: What is Propeller?
+  - id: quickstart
+    label: Quickstart
+  - id: api-reference
+    label: API reference
+  - id: help
+    label: Where to get help
+---
+
+## What is Propeller?
+
+Propeller is a regulated **payment corridor** between China and Africa.
+Nigerian businesses pay invoices in Naira via bank transfer. Propeller
+collects the NGN, runs compliance (KYC, KYB, sanctions screening),
+executes the FX, and settles USDC to your destination wallet or exchange.
+
+Propeller acts as **Merchant of Record (MOR)** — the legal counterparty
+to both sides of the transaction. You get a clean API: create a business,
+issue an invoice, and let Propeller handle the rest.
+
+<Paths>
+  <Path num={1} href="/guides/onboarding" arrow="Onboard →" title="Onboard a business">
+    Register a business via API or dashboard. KYB/KYC runs automatically.
+    Once approved, you can start collecting payments immediately.
+  </Path>
+  <Path num={2} href="/guides/collecting-payments" arrow="Collect →" title="Collect payments">
+    Generate a payment link for an invoice. End-payers pay via NIP bank
+    transfer. Propeller confirms receipt and credits the ledger.
+  </Path>
+  <Path num={3} href="/guides/payout-flow" arrow="Settle →" title="Settle in USDC">
+    Once funds clear, Propeller executes the FX and delivers USDC to your
+    destination. Settlement is batched daily with full audit trail.
+  </Path>
+</Paths>
+
+## Quickstart
+
+Get a sandbox API key from the [console](https://console.withpropeller.com),
+set `PROPELLER_KEY`, and create your first business:
+
+<CodeBlock snippets={[
+  {
+    lang: "curl",
+    code: `curl https://api.withpropeller.com/v1/businesses \\
+  -H "Authorization: Bearer $PROPELLER_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "name": "Acme Exports Ltd",
+    "country": "CN",
+    "settlement_address": "0x..."
+  }'`,
+  },
+  {
+    lang: "python",
+    code: `import requests
+
+resp = requests.post(
+    "https://api.withpropeller.com/v1/businesses",
+    headers={"Authorization": f"Bearer {PROPELLER_KEY}"},
+    json={
+        "name": "Acme Exports Ltd",
+        "country": "CN",
+        "settlement_address": "0x...",
+    },
+)
+print(resp.json())`,
+  },
+  {
+    lang: "node",
+    code: `const resp = await fetch("https://api.withpropeller.com/v1/businesses", {
+  method: "POST",
+  headers: {
+    Authorization: \`Bearer \${process.env.PROPELLER_KEY}\`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    name: "Acme Exports Ltd",
+    country: "CN",
+    settlement_address: "0x...",
+  }),
+});
+console.log(await resp.json());`,
+  },
+]} />
+
+## API reference
+
+Every endpoint is REST with JSON request/response bodies. Authenticate
+with a bearer token in the `Authorization` header.
+
+<ApiRefs items={[
+  { verb: "POST", ep: "/v1/businesses", desc: "Register", href: "//api/businesses" },
+  { verb: "GET", ep: "/v1/businesses/{id}", desc: "Retrieve", href: "//api/businesses" },
+  { verb: "POST", ep: "/v1/invoices", desc: "Create", href: "//api/invoices" },
+  { verb: "GET", ep: "/v1/payments", desc: "List", href: "//api/payments" },
+  { verb: "GET", ep: "/v1/payouts", desc: "Settlements", href: "//api/payouts" },
+  { verb: "POST", ep: "/v1/webhooks", desc: "Subscribe", href: "//api/webhooks" },
+]} />
+
+## Where to get help
+
+- **API reference** — every endpoint documented in the sidebar.
+- **Guides** — walkthroughs for common workflows (onboarding, payments, webhooks).
+- **Status** — check [status.withpropeller.com](https://status.withpropeller.com) for uptime.
+- **Support** — email [support@withpropeller.com](mailto:support@withpropeller.com) for account or integration help.

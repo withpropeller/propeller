@@ -1,0 +1,56 @@
+---
+title: Reconciliation
+lede: >-
+  How to reconcile Propeller payouts against your own records.
+  Every transfer in the ledger is deterministic and traceable.
+last_updated: 14 May 2026
+crumbs:
+  - label: Docs
+    href: /
+  - label: Guides
+  - label: Reconciliation
+toc:
+  - id: overview
+    label: Overview
+  - id: daily-reconciliation
+    label: Daily reconciliation
+  - id: transfer-trace
+    label: Tracing a transfer
+  - id: discrepancies
+    label: Handling discrepancies
+---
+
+## Overview
+
+Propeller provides deterministic, immutable transfer records via TigerBeetle.
+Every NGN collected and USDC settled creates a transfer with a deterministic
+ID that can be independently computed.
+
+## Daily reconciliation
+
+Recommended workflow:
+
+1. **List payouts** for the day: `GET /v1/payouts?date=2026-05-14`.
+2. **For each payout**, get the source payment IDs.
+3. **Cross-reference** against your invoice system.
+4. **Verify on-chain** using the USDC tx hash.
+
+## Tracing a transfer
+
+Every transfer ID is computed from:
+
+```
+transfer_id = hash(business_id + invoice_id + sequence_number)
+```
+
+You can compute it independently to verify the ledger. Contact support if
+you need the full transfer log for a date range.
+
+## Handling discrepancies
+
+If a payment or payout doesn't match your records:
+
+1. Quote the `X-Request-ID` from the relevant API call.
+2. Email [support@withpropeller.com](mailto:support@withpropeller.com) with
+   the business ID, date, and expected vs. actual amounts.
+3. Propeller ops will pull the ledger and investigate within 4 business hours.

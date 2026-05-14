@@ -1,0 +1,71 @@
+---
+title: Errors & retries
+lede: >-
+  Propeller uses conventional HTTP status codes. Idempotency keys let
+  you safely retry without double-processing.
+last_updated: 14 May 2026
+crumbs:
+  - label: Docs
+    href: /
+  - label: Concepts
+  - label: Errors & retries
+toc:
+  - id: http-codes
+    label: HTTP status codes
+  - id: error-response
+    label: Error response format
+  - id: idempotency
+    label: Idempotency & retries
+  - id: rate-limits
+    label: Rate limits
+---
+
+## HTTP status codes
+
+| Code | Meaning |
+|------|---------|
+| `200` | Success |
+| `201` | Resource created |
+| `400` | Bad request — check the `error` object for details |
+| `401` | Invalid or missing API key |
+| `403` | Key doesn't have permission for this resource |
+| `404` | Resource not found |
+| `409` | Conflict — resource already exists (check idempotency) |
+| `429` | Rate limited — back off and retry |
+| `500` | Internal server error — retry with idempotency key |
+
+## Error response format
+
+```json
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "settlement_address must be a valid EVM address",
+    "details": {
+      "field": "settlement_address"
+    }
+  }
+}
+```
+
+## Idempotency & retries
+
+For `POST` and `PUT` requests, always include an `Idempotency-Key` header:
+
+```bash
+curl ... -H "Idempotency-Key: 7f1c3a9b-..."
+```
+
+Propeller deduplicates by idempotency key for **24 hours**. If your request
+times out or gets a `500`, retry with the same key — you'll get the original
+response, not a duplicate resource.
+
+## Rate limits
+
+See [Rate limits](/ops/rate-limits) for the full policy. In brief:
+
+- **Sandbox**: 60 requests/minute per key.
+- **Production**: 600 requests/minute per key (higher on request).
+
+Rate limit headers are included on every response:
+`X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`.

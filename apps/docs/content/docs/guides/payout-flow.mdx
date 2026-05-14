@@ -1,0 +1,75 @@
+---
+title: Payout flow
+lede: >-
+  Track NGN-to-USDC conversion and settlement from the ledger.
+  Payouts are batched daily with full audit trail.
+last_updated: 14 May 2026
+crumbs:
+  - label: Docs
+    href: /
+  - label: Guides
+  - label: Payout flow
+toc:
+  - id: overview
+    label: Overview
+  - id: viewing-payouts
+    label: Viewing payouts
+  - id: payout-lifecycle
+    label: Payout lifecycle
+  - id: reconciliation
+    label: Reconciliation
+---
+
+## Overview
+
+Payouts in Propeller are automatic — you don't trigger them. Once payments
+clear, Propeller:
+
+1. Accumulates cleared NGN for the business.
+2. Executes FX (NGN → USDC) via Globalstack at the daily batch (17:00 WAT).
+3. Delivers USDC to the business's settlement address.
+
+## Viewing payouts
+
+```bash
+curl https://api.withpropeller.com/v1/payouts?business_id=biz_01J... \\
+  -H "Authorization: Bearer $PROPELLER_KEY"
+```
+
+Response:
+
+```json
+{
+  "data": [
+    {
+      "id": "pay_01J...",
+      "business_id": "biz_01J...",
+      "amount_ngn": 500000,
+      "amount_usdc": 315.72,
+      "rate": 1583.45,
+      "status": "completed",
+      "tx_hash": "0x...",
+      "created_at": "2026-05-14T17:30:00Z"
+    }
+  ]
+}
+```
+
+## Payout lifecycle
+
+| Status | Description |
+|--------|-------------|
+| `pending` | NGN received, awaiting daily batch. |
+| `processing` | FX execution in progress. |
+| `settled` | USDC delivered, tx hash available. |
+| `failed` | Settlement failed — Propeller ops investigates. |
+
+## Reconciliation
+
+Each payout has:
+
+- Source payment IDs (the NGN payments it aggregated).
+- FX rate used.
+- USDC transaction hash (for on-chain verification).
+
+Use `GET /v1/payouts/{id}` for the full breakdown.

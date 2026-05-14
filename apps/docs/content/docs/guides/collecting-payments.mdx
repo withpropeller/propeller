@@ -1,0 +1,101 @@
+---
+title: Collecting payments
+lede: >-
+  Create an invoice, share the payment link, and Propeller collects
+  NGN via NIP bank transfer.
+last_updated: 14 May 2026
+crumbs:
+  - label: Docs
+    href: /
+  - label: Guides
+  - label: Collecting payments
+toc:
+  - id: overview
+    label: Overview
+  - id: create-an-invoice
+    label: Create an invoice
+  - id: payment-link
+    label: Payment link
+  - id: end-payer-flow
+    label: End-payer flow
+  - id: confirmation-webhooks
+    label: Confirmation webhooks
+---
+
+## Overview
+
+Payment collection in Propeller is a three-step flow:
+
+1. **Create an invoice** — specify the amount, currency (NGN), and payer details.
+2. **Share the payment link** — the end-payer opens it and sees bank transfer details.
+3. **Propeller confirms** — you get a webhook when the payment clears.
+
+## Create an invoice
+
+<CodeBlock snippets={[
+  {
+    lang: "curl",
+    code: `curl https://api.withpropeller.com/v1/invoices \\
+  -H "Authorization: Bearer $PROPELLER_KEY" \\
+  -H "Content-Type: application/json" \\
+  -H "Idempotency-Key: inv-001" \\
+  -d '{
+    "business_id": "biz_01J...",
+    "amount": 500000,
+    "currency": "NGN",
+    "description": "Q2 2026 export services",
+    "payer_name": "Adekunle Ojo",
+    "payer_email": "ade@example.com"
+  }'`,
+  },
+]} />
+
+The response includes:
+
+```json
+{
+  "id": "inv_01J...",
+  "payment_url": "https://withpropeller.com/pay/inv_01J...",
+  "status": "pending",
+  "virtual_account": {
+    "bank": "Wema Bank",
+    "account_number": "8012345678",
+    "account_name": "Acme Exports Ltd"
+  }
+}
+```
+
+## Payment link
+
+Share `payment_url` with the end-payer. The page shows:
+
+- Invoice amount in NGN.
+- Bank transfer details (bank, account number, account name).
+- A reference code for the transfer narration.
+
+No Propeller account is needed for the end-payer.
+
+## End-payer flow
+
+1. End-payer opens the link.
+2. Completes KYC (BVN + selfie for first-time payers above NGN 500k).
+3. Transfers NGN via their bank app using the provided account number.
+4. Sees a confirmation screen once Propeller detects the transfer.
+
+## Confirmation webhooks
+
+When payment clears, Propeller sends a `payment.completed` webhook:
+
+```json
+{
+  "event": "payment.completed",
+  "data": {
+    "invoice_id": "inv_01J...",
+    "amount": 500000,
+    "currency": "NGN",
+    "paid_at": "2026-05-14T15:30:00Z"
+  }
+}
+```
+
+[Webhook integration guide →](/guides/webhooks)

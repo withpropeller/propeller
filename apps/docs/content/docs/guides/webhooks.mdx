@@ -1,0 +1,106 @@
+---
+title: Webhook integration
+lede: >-
+  Subscribe to Propeller events and keep your system in sync.
+  Webhooks are signed with HMAC for verification.
+last_updated: 14 May 2026
+crumbs:
+  - label: Docs
+    href: /
+  - label: Guides
+  - label: Webhook integration
+toc:
+  - id: overview
+    label: Overview
+  - id: subscribe
+    label: Subscribing
+  - id: events
+    label: Available events
+  - id: verifying-signatures
+    label: Verifying signatures
+  - id: retries
+    label: Retries
+---
+
+## Overview
+
+Propeller sends webhooks for lifecycle events: business activation, payment
+completion, payout settlement. You subscribe to events and Propeller POSTs
+JSON payloads to your endpoint.
+
+## Subscribing
+
+```bash
+curl https://api.withpropeller.com/v1/webhooks \\
+  -H "Authorization: Bearer $PROPELLER_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "url": "https://your-app.com/webhooks/propeller",
+    "events": ["payment.completed", "payout.settled", "business.activated"]
+  }'
+```
+
+Response includes a `signing_secret` — store it securely.
+
+## Available events
+
+| Event | Description |
+|-------|-------------|
+| `business.activated` | KYB passed, business is live. |
+| `business.rejected` | KYB failed, check reason. |
+| `payment.completed` | NGN payment confirmed. |
+| `payment.failed` | Payment couldn't be processed. |
+| `payout.settled` | USDC delivered to destination. |
+| `payout.failed` | Settlement failed. |
+
+## Verifying signatures
+
+Every webhook includes a `X-Propeller-Signature` header:
+
+```
+X-Propeller-Signature: t=1715700000,v1=abc123...
+```
+
+<CodeBlock snippets={[
+  {
+    lang: "python",
+    code: `import hmac, hashlib, time
+
+def verify_signature(payload: bytes, signature: str, secret: str) -> bool:
+    ts, sig = signature.split(",", 1)
+    ts = ts.split("=")[1]
+    sig = sig.split("=")[1]
+    expected = hmac.new(
+        secret.encode(),
+        f"{ts}.{payload.decode()}".encode(),
+        hashlib.sha256,
+    ).hexdigest()
+    return hmac.compare_digest(expected, sig) and \
+           abs(time.time() - int(ts)) < 300`,
+  },
+  {
+    lang: "node",
+    code: `import { createHmac, timingSafeEqual } from "node:crypto";
+
+function verifySignature(payload: Buffer, signature: string, secret: string) {
+  const [ts, sig] = signature.split(",").map(s => s.split("=")[1]);
+  const expected = createHmac("sha256", secret)
+    .update(\`\${ts}.\${payload.toString()}\`)
+    .digest("hex");
+  return timingSafeEqual(Buffer.from(expected), Buffer.from(sig))
+    && Math.abs(Date.now() / 1000 - parseInt(ts)) < 300;
+}`,
+  },
+]} />
+
+## Retries
+
+Propeller retries failed webhooks with exponential backoff:
+
+- 1st retry: 5 seconds
+- 2nd retry: 25 seconds
+- 3rd retry: 125 seconds
+- 4th retry: 625 seconds
+- Then every ~2 hours for up to 3 days.
+
+Return `2xx` to acknowledge. Non-`2xx` responses count as failures.
