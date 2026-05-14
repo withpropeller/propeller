@@ -36,7 +36,7 @@ export default function HeroSection() {
               Get paid!
             </span>{' '}
             without
-            the headache.
+            the headache!.
           </motion.h1>
 
           <motion.p
