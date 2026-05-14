@@ -33,10 +33,10 @@ export default function HeroSection() {
           >
             Sell to Africa. {' '}
             <span className="bg-gradient-to-r from-[#e85d4a] via-[#c75b9b] to-[#8b5cf6] bg-clip-text text-transparent">
-              Get paid!
+              Get paid
             </span>{' '}
             without
-            the headache!.
+            the headache.
           </motion.h1>
 
           <motion.p
