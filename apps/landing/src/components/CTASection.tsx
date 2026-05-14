@@ -35,13 +35,13 @@ export default function CTASection() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <a
-              href="#"
+              href="https://app.withpropeller.com"
               className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-[#e85d4a] to-[#8b5cf6] hover:opacity-90 rounded-sharp transition-opacity"
             >
               Get API Keys
             </a>
             <a
-              href="#"
+              href="https://app.withpropeller.com"
               className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white border border-white/30 hover:border-white/60 rounded-sharp transition-colors bg-white/10 backdrop-blur-sm"
             >
               Talk to Sales

@@ -5,7 +5,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-6 gap-8 md:gap-6">
           {/* Logo & social */}
           <div className="col-span-2">
-            <a href="#" className="flex items-center mb-6">
+            <a href="/" className="flex items-center mb-6">
               <img
                 src="./propeller-logo-dark.svg"
                 alt="Propeller"
@@ -59,7 +59,11 @@ export default function Footer() {
             <ul className="flex flex-col gap-2.5">
               {['Documentation', 'API Reference', 'API Demonstration'].map((item) => (
                 <li key={item}>
-                  <a href="#" className="text-xs text-warm-muted hover:text-warm-text transition-colors">
+                  <a href={
+                    item === 'Documentation' ? 'https://docs.withpropeller.com' :
+                    item === 'API Reference' ? 'https://docs.withpropeller.com/api' :
+                    '#'
+                  } className="text-xs text-warm-muted hover:text-warm-text transition-colors">
                     {item}
                   </a>
                 </li>

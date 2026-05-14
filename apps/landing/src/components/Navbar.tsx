@@ -5,7 +5,7 @@ const navLinks = [
   { label: 'Solutions', href: '#solutions' },
   { label: 'Developers', href: '#developers' },
   { label: 'Testimonials', href: '#testimonials' },
-  { label: 'Docs', href: '#footer' },
+  { label: 'Docs', href: 'https://docs.withpropeller.com' },
 ]
 
 export default function Navbar() {
@@ -29,7 +29,7 @@ export default function Navbar() {
       <div className="max-w-cinema mx-auto px-6 md:px-12 lg:px-20">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <a href="#" className="flex items-center">
+          <a href="/" className="flex items-center">
             <img
               src="./propeller-logo-dark.svg"
               alt="Propeller"
@@ -53,7 +53,7 @@ export default function Navbar() {
           {/* CTA + hamburger */}
           <div className="flex items-center gap-4">
             <a
-              href="#"
+              href="https://app.withpropeller.com"
               className="hidden md:inline-flex items-center px-5 py-2 text-sm font-semibold text-white bg-gradient-to-r from-[#e85d4a] to-[#8b5cf6] hover:opacity-90 rounded-sharp transition-opacity"
             >
               Get Started
@@ -84,7 +84,7 @@ export default function Navbar() {
               </a>
             ))}
             <a
-              href="#"
+              href="https://app.withpropeller.com"
               className="mt-2 inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-[#e85d4a] to-[#8b5cf6] rounded-sharp"
             >
               Get Started
