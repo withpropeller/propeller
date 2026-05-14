@@ -15,7 +15,7 @@ resource "digitalocean_reserved_ip_assignment" "rune" {
 
 module "rune" {
   source  = "runestack/rune/digitalocean"
-  version = "0.0.5"
+  version = "0.0.8"
 
   # ── Required ───────────────────────────────────────────────
   ssh_key_ids = [data.digitalocean_ssh_key.main.id]
