@@ -31445,7 +31445,7 @@ async function run() {
         const registry = `${globalCfg.registry}/${globalCfg.repo}`;
         const imageName = `${registry}/${component}`;
         const shortSha = sha ? sha.slice(0, 7) : '';
-        const imageTag = shortSha ? `sha-${shortSha}` : environment;
+        const imageTag = shortSha ? `${environment}-${shortSha}` : environment;
         // ── Build outputs ───────────────────────────────────────────────
         const hasBuild = !!compSpec.dockerfile;
         core.setOutput('has_build', hasBuild ? 'true' : 'false');
