@@ -12,6 +12,9 @@ inputs:
   sha:
     description: 'Git SHA to tag the image with (defaults to GITHUB_SHA)'
     required: false
+  ref:
+    description: 'Git ref / branch name for the image tag prefix (defaults to GITHUB_REF_NAME)'
+    required: false
   config_file:
     description: 'Path to deploy-config.yml'
     required: false

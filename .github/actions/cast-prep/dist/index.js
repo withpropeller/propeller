@@ -31434,6 +31434,7 @@ async function run() {
         const environment = core.getInput('environment', { required: true });
         const configFile = core.getInput('config_file') || '.github/deploy-config.yml';
         const sha = core.getInput('sha') || process.env.GITHUB_SHA || '';
+        const ref = core.getInput('ref') || process.env.GITHUB_REF_NAME || '';
         core.info(`Preparing ${component} → ${environment}`);
         const deployConfig = load(external_fs_.readFileSync(external_path_.resolve(configFile), 'utf-8'));
         const globalCfg = deployConfig.global;
@@ -31445,7 +31446,15 @@ async function run() {
         const registry = `${globalCfg.registry}/${globalCfg.repo}`;
         const imageName = `${registry}/${component}`;
         const shortSha = sha ? sha.slice(0, 7) : '';
-        const imageTag = shortSha ? `${environment}-${shortSha}` : environment;
+        const safeRef = ref
+            .toLowerCase()
+            .replace(/[^a-z0-9_.-]/g, '-')
+            .replace(/^[.-]+/, '');
+        const imageTag = shortSha
+            ? safeRef
+                ? `${safeRef}-${shortSha}`
+                : `${environment}-${shortSha}`
+            : environment;
         // ── Build outputs ───────────────────────────────────────────────
         const hasBuild = !!compSpec.dockerfile;
         core.setOutput('has_build', hasBuild ? 'true' : 'false');

@@ -97,6 +97,7 @@ jobs:
           component: ${{ matrix.component }}
           environment: ${{ needs.detect.outputs.environment }}
           sha: ${{ github.sha }}
+          ref: ${{ github.ref_name }}
 
       - name: Set up Docker Buildx
         if: steps.prep.outputs.has_build == 'true'
