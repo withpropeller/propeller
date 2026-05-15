@@ -36,7 +36,7 @@ cluster.forward.mongo:
 ## Forward flo dashboard to localhost:9002 (browse to http://localhost:9002)
 cluster.forward.flo:
     script:
-        rune port-forward -d flo 9002 -n shared
+        rune port-forward -d flo 9000 9002 -n shared
 
 ## Forward tigerbeetle to localhost:4000 (TCP)
 cluster.forward.tigerbeetle:

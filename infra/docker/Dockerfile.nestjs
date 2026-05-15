@@ -20,16 +20,20 @@ ARG LIBS_DIR=libs/core
 WORKDIR /repo
 
 # ── Install shared lib deps + build ──
+# --ignore-scripts: libs/core has a `prepare` script that runs `tsc`; src/ isn't
+# COPYed yet, so let the explicit `bun run build` below handle the build.
+# tsconfig.base.json is required because libs/core/tsconfig.json extends it.
+COPY tsconfig.base.json ./
 COPY ${LIBS_DIR}/package.json ${LIBS_DIR}/bun.lock* ./${LIBS_DIR}/
 WORKDIR /repo/${LIBS_DIR}
-RUN bun install --frozen-lockfile --silent
+RUN bun install --frozen-lockfile --ignore-scripts --silent
 COPY ${LIBS_DIR} ./
 RUN bun run build
 
 # ── Install app deps ──
 WORKDIR /repo/services/${APP_DIR}
 COPY services/${APP_DIR}/package.json services/${APP_DIR}/bun.lock* ./
-RUN bun install --frozen-lockfile --silent
+RUN bun install --frozen-lockfile --ignore-scripts --silent
 
 # ------------------------------------------------------------------------------
 

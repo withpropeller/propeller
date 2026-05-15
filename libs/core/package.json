@@ -24,6 +24,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "date-fns": "^3.6.0",
+    "dotenv": "^17.4.2",
     "google-libphonenumber": "^3.2.34",
     "json-pick-keys": "^0.1.4",
     "lodash": "^4.17.21",
@@ -32,6 +33,7 @@
   "peerDependencies": {
     "@nestjs/common": "^10.0.0",
     "@nestjs/mongoose": "^10.0.0",
+    "fastify": "^4.0.0",
     "mongoose": "^8.0.0",
     "rxjs": "^7.8.0"
   },
@@ -40,6 +42,7 @@
     "@types/google-libphonenumber": "^7.4.30",
     "@types/lodash": "^4.17.0",
     "@types/node": "^20.0.0",
+    "fastify": "^4.0.0",
     "mongoose": "^8.0.0",
     "rxjs": "^7.8.0",
     "typescript": "^5.4.0",
