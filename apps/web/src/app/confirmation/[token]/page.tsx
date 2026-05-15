@@ -111,7 +111,7 @@ export default function ConfirmEmailPage() {
           </p>
         )}
         <Link href="/auth/login" className="block mt-6">
-          <Button variant="outline" size="lg" className="w-full">
+          <Button variant="secondary" size="lg" className="w-full">
             Back to sign in
           </Button>
         </Link>
