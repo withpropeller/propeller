@@ -10,7 +10,8 @@ service:
     host: "{{ values:component.host }}"
     port: http
     tls:
-      mode: auto
+      mode: manual
+      secret: shared/cf-origin-cert
   env:
     NODE_ENV: production
 
