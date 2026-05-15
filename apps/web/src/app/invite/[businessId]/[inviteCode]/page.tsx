@@ -3,13 +3,17 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { TextInput, Button, Alert, AlertDescription, AlertTitle } from '@/lib/pax'
 import { Check } from 'lucide-react'
+import { Alert, Button, Input, Label, PasswordInput } from '@/components/propeller'
 import { AuthShell } from '@/components/auth/AuthShell'
-import { PasswordInput } from '@/components/auth/PasswordInput'
 import { PasswordStrength } from '@/components/auth/PasswordStrength'
 import { useGetInvitation, useAcceptInvite } from '@/hooks/useSignup'
 import { API_STATUS } from '@/lib/constants'
+
+type InvitationDetails = {
+  stateToken?: string
+  user?: { email?: string; businessName?: string }
+}
 
 export default function InvitePage() {
   const params = useParams()
@@ -18,7 +22,7 @@ export default function InvitePage() {
 
   const [done, setDone] = useState(false)
   const [invalidToken, setInvalidToken] = useState(false)
-  const [invitationDetails, setInvitationDetails] = useState<any>(null)
+  const [invitationDetails, setInvitationDetails] = useState<InvitationDetails | null>(null)
   const [stateToken, setStateToken] = useState('')
   const [formData, setFormData] = useState({
     firstName: '',
@@ -36,8 +40,8 @@ export default function InvitePage() {
       return
     }
     getInvitationMutation.mutate(undefined, {
-      onSuccess: (res: any) => {
-        const data = res?.data ?? res
+      onSuccess: (res) => {
+        const data = (res as { data?: InvitationDetails })?.data ?? (res as InvitationDetails)
         if (!data) {
           setInvalidToken(true)
           return
@@ -67,10 +71,11 @@ export default function InvitePage() {
         stateToken,
       },
       {
-        onSuccess: (res: any) => {
-          if (res?.code === API_STATUS.SUCCESS || !res?.code) setDone(true)
+        onSuccess: (res) => {
+          const code = (res as { code?: string })?.code
+          if (code === API_STATUS.SUCCESS || !code) setDone(true)
         },
-      }
+      },
     )
   }
 
@@ -83,20 +88,24 @@ export default function InvitePage() {
     return (
       <AuthShell altAction={null}>
         <div className="text-center">
-          <div className="w-14 h-14 bg-feedback-success-light rounded-full flex items-center justify-center mx-auto mb-6">
-            <Check className="text-feedback-success-main" size={28} />
+          <div className="size-14 bg-[#EAF9EF] border border-[#ACEBC0] rounded-full flex items-center justify-center mx-auto mb-6">
+            <Check className="text-[#17B04A]" size={26} />
           </div>
-          <h1 className="text-2xl font-semibold text-content-primary mb-3">You're all set</h1>
-          <p className="text-sm text-content-secondary mb-8 leading-relaxed">
-            Your account is active. Sign in to access{' '}
-            <span className="font-medium text-content-primary">
-              {businessName ?? 'your workspace'}
-            </span>
-            .
+          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-warm-light mb-3">
+            Account ready
           </p>
-          <Button asChild variant="default" className="w-full">
-            <Link href="/auth/login">Sign in</Link>
-          </Button>
+          <h1 className="text-[28px] leading-[1.1] tracking-tight text-warm-text font-normal mb-4">
+            You&rsquo;re all set
+          </h1>
+          <p className="text-[15px] text-warm-muted mb-8 leading-relaxed">
+            Your account is active. Sign in to access{' '}
+            <span className="font-medium text-warm-text">{businessName ?? 'your workspace'}</span>.
+          </p>
+          <Link href="/auth/login" className="block">
+            <Button size="lg" className="w-full">
+              Sign in
+            </Button>
+          </Link>
         </div>
       </AuthShell>
     )
@@ -105,16 +114,22 @@ export default function InvitePage() {
   if (invalidToken) {
     return (
       <AuthShell altAction={{ label: 'Sign in', href: '/auth/login' }}>
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl font-semibold text-content-primary leading-tight">
-            Invite isn't valid anymore
-            <br />
-            Ask your admin to resend it
+        <div className="mb-8">
+          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-warm-light mb-3">
+            Invite expired
+          </p>
+          <h1 className="text-[32px] leading-[1.1] tracking-tight text-warm-text font-normal mb-3">
+            This invite isn&rsquo;t valid anymore
           </h1>
+          <p className="text-[15px] text-warm-muted leading-relaxed">
+            Ask the admin who invited you to resend it.
+          </p>
         </div>
-        <Button asChild variant="default" className="w-full">
-          <Link href="/auth/login">Back to sign in</Link>
-        </Button>
+        <Link href="/auth/login" className="block">
+          <Button size="lg" className="w-full">
+            Back to sign in
+          </Button>
+        </Link>
       </AuthShell>
     )
   }
@@ -122,44 +137,43 @@ export default function InvitePage() {
   if (getInvitationMutation.isPending || !invitationDetails) {
     return (
       <AuthShell altAction={null}>
-        <p className="text-center text-sm text-content-tertiary">Loading invitation…</p>
+        <p className="text-center text-sm text-warm-muted">Loading invitation…</p>
       </AuthShell>
     )
   }
 
   return (
     <AuthShell altAction={{ label: 'Sign in', href: '/auth/login' }}>
-      <div className="mb-8 text-center">
-        <h1 className="text-2xl font-semibold text-content-primary leading-tight">
-          You've been invited
-          {businessName && (
+      <div className="mb-8">
+        <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-warm-light mb-3">
+          You&rsquo;ve been invited
+        </p>
+        <h1 className="text-[32px] leading-[1.1] tracking-tight text-warm-text font-normal mb-3">
+          {businessName ? (
             <>
-              <br />
-              <span className="font-normal text-content-secondary">to join {businessName}</span>
+              Join{' '}
+              <span className="font-medium text-propeller-blue-dark">{businessName}</span>
             </>
+          ) : (
+            <>Set up your account</>
           )}
         </h1>
+        <p className="text-[15px] text-warm-muted leading-relaxed">
+          Just a few details and you&rsquo;ll be in.
+        </p>
       </div>
 
       {acceptInviteMutation.isError && (
-        <Alert severity="danger" className="mb-6">
-          <AlertTitle>Couldn't accept invite</AlertTitle>
-          <AlertDescription>
-            {(acceptInviteMutation.error as any)?.message ?? 'Please try again.'}
-          </AlertDescription>
+        <Alert severity="danger" title="Couldn't accept invite" className="mb-5">
+          {(acceptInviteMutation.error as { message?: string } | null)?.message ?? 'Please try again.'}
         </Alert>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label
-              htmlFor="firstName"
-              className="block text-sm font-medium text-content-primary mb-1.5"
-            >
-              First name
-            </label>
-            <TextInput
+          <div className="space-y-1.5">
+            <Label htmlFor="firstName">First name</Label>
+            <Input
               id="firstName"
               placeholder="First name"
               value={formData.firstName}
@@ -168,14 +182,9 @@ export default function InvitePage() {
               required
             />
           </div>
-          <div>
-            <label
-              htmlFor="lastName"
-              className="block text-sm font-medium text-content-primary mb-1.5"
-            >
-              Last name
-            </label>
-            <TextInput
+          <div className="space-y-1.5">
+            <Label htmlFor="lastName">Last name</Label>
+            <Input
               id="lastName"
               placeholder="Last name"
               value={formData.lastName}
@@ -186,23 +195,13 @@ export default function InvitePage() {
           </div>
         </div>
 
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-content-primary mb-1.5"
-          >
-            Email
-          </label>
-          <TextInput id="email" type="email" value={formData.email} readOnly disabled />
+        <div className="space-y-1.5">
+          <Label htmlFor="email">Email</Label>
+          <Input id="email" type="email" value={formData.email} readOnly disabled />
         </div>
 
-        <div>
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-content-primary mb-1.5"
-          >
-            Password
-          </label>
+        <div className="space-y-1.5">
+          <Label htmlFor="password">Password</Label>
           <PasswordInput
             id="password"
             value={formData.password}
@@ -216,18 +215,21 @@ export default function InvitePage() {
 
         <Button
           type="submit"
-          variant="default"
+          size="lg"
           className="w-full mt-2"
-          disabled={!isFormValid || acceptInviteMutation.isPending}
+          disabled={!isFormValid}
           loading={acceptInviteMutation.isPending}
         >
           Accept invite
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-content-secondary">
+      <p className="mt-8 text-center text-sm text-warm-muted">
         Already have an account?{' '}
-        <Link href="/auth/login" className="font-medium link">
+        <Link
+          href="/auth/login"
+          className="font-semibold text-warm-text hover:text-propeller-blue transition-colors"
+        >
           Sign in
         </Link>
       </p>

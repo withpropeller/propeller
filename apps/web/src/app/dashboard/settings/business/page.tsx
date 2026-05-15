@@ -243,7 +243,7 @@ function EditInformationModal({
                 id="businessName"
                 value={form.businessName}
                 onChange={(e) => update('businessName', (e.target as HTMLInputElement).value)}
-                placeholder="e.g. Paystack Payments Ltd"
+                placeholder="e.g. Propeller Payments Ltd"
               />
               {errors.businessName && <FieldError errors={[{ message: errors.businessName }]} />}
             </Field>

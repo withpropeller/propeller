@@ -23,7 +23,7 @@ lint:
 # Download the OpenAPI spec locally (so codegen works offline / in CI)
 fetch-spec:
 	mkdir -p docs
-	curl -sSfL https://infrasrv-stg.allawee.com/openapi.json -o docs/openapi.json
+	curl -sSfL https://localhost:8000/openapi.json -o docs/openapi.json
 	@echo "✓ Spec saved to docs/openapi.json"
 
 # Run Orval codegen (requires spec at docs/openapi.json)

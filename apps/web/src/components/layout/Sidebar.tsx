@@ -276,8 +276,8 @@ export function Sidebar() {
       {/* Logo */}
       <div className="px-5 pt-6 pb-8 flex items-center justify-between gap-2 shrink-0">
         <img
-          src="/logo.svg"
-          alt="Paystack Issuing"
+          src="/propeller-logo-dark.svg"
+          alt="Propeller"
           className={`h-6 w-auto shrink-0 ${showOnMobileAndDesktop()}`}
         />
         <div

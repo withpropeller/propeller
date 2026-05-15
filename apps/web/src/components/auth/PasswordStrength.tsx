@@ -1,85 +1,48 @@
 'use client'
 
-export type PasswordStrengthValue = 'default' | 'weak' | 'moderate' | 'strong'
-
-export function getPasswordStrength(password: string): PasswordStrengthValue {
-  if (!password) return 'default'
-  if (password.length < 8) return 'weak'
-
-  let types = 0
-  if (/[a-z]/.test(password)) types++
-  if (/[A-Z]/.test(password)) types++
-  if (/\d/.test(password)) types++
-  if (/[!@#$%^&*~_+\-]/.test(password)) types++
-
-  if (types <= 1) return 'weak'
-  if (types === 2) return 'moderate'
-  return 'strong'
+export function scorePassword(pw: string): number {
+  if (!pw) return 0
+  let s = 0
+  if (pw.length >= 8) s++
+  if (/[a-z]/.test(pw)) s++
+  if (/[A-Z]/.test(pw)) s++
+  if (/\d/.test(pw)) s++
+  if (/[^A-Za-z0-9]/.test(pw)) s++
+  return Math.min(s, 4)
 }
 
-const STRENGTH_LABEL: Record<Exclude<PasswordStrengthValue, 'default'>, string> = {
-  weak: 'Weak',
-  moderate: 'Moderate',
-  strong: 'Strong',
-}
-
-const STRENGTH_LABEL_COLOR: Record<Exclude<PasswordStrengthValue, 'default'>, string> = {
-  weak: 'text-action-danger-main',
-  moderate: 'text-feedback-warning-main',
-  strong: 'text-feedback-success-main',
-}
+const COLORS = ['var(--color-line)', '#E43F6F', '#D9892B', '#3E59F3', '#1F8A5B']
+const LABELS = ['', 'Weak', 'Fair', 'Good', 'Strong']
 
 export function PasswordStrength({
   password,
   className,
-  showLabel = true,
 }: {
   password: string
   className?: string
-  showLabel?: boolean
 }) {
-  const strength = getPasswordStrength(password)
-
-  const seg1 =
-    strength === 'weak'
-      ? 'bg-action-danger-main'
-      : strength === 'moderate'
-        ? 'bg-feedback-warning-main'
-        : strength === 'strong'
-          ? 'bg-feedback-success-main'
-          : 'bg-surface-tertiary'
-
-  const seg2 =
-    strength === 'moderate'
-      ? 'bg-feedback-warning-main'
-      : strength === 'strong'
-        ? 'bg-feedback-success-main'
-        : 'bg-surface-tertiary'
-
-  const seg3 =
-    strength === 'strong' ? 'bg-feedback-success-main' : 'bg-surface-tertiary'
+  const score = scorePassword(password)
+  const color = COLORS[score]
 
   return (
-    <div className={className}>
-      <div
-        className="flex gap-1 w-full"
-        role="progressbar"
-        aria-label="Password strength"
-        aria-valuemin={0}
-        aria-valuemax={3}
-        aria-valuenow={
-          strength === 'default' ? 0 : strength === 'weak' ? 1 : strength === 'moderate' ? 2 : 3
-        }
-      >
-        <div className={`flex-1 h-1 rounded-sm transition-colors ${seg1}`} />
-        <div className={`flex-1 h-1 rounded-sm transition-colors ${seg2}`} />
-        <div className={`flex-1 h-1 rounded-sm transition-colors ${seg3}`} />
+    <div className={`flex flex-col gap-1.5 mt-1 ${className ?? ''}`}>
+      <div className="flex gap-1" role="progressbar" aria-valuemin={0} aria-valuemax={4} aria-valuenow={score}>
+        {[0, 1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className="flex-1 h-1 rounded-full transition-colors"
+            style={{ background: score > i ? color : 'var(--color-line)' }}
+          />
+        ))}
       </div>
-      {showLabel && strength !== 'default' && (
-        <p className={`mt-1.5 text-xs font-medium ${STRENGTH_LABEL_COLOR[strength]}`}>
-          {STRENGTH_LABEL[strength]}
-        </p>
-      )}
+      <div className="text-[12px] text-ink-soft">
+        {password
+          ? `Password strength: ${LABELS[score] || 'Weak'}`
+          : 'Use 8+ characters with a mix of letters and numbers'}
+      </div>
     </div>
   )
 }
+
+// Back-compat for any caller using the old export name
+export const getPasswordStrength = scorePassword

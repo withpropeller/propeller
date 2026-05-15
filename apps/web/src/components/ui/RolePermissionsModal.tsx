@@ -85,7 +85,7 @@ export function RolePermissionsModal({ onClose }: Props) {
         {/* Footer note */}
         <div className="px-5 py-3 border-t border-border-primary-light">
           <p className="text-xs text-content-tertiary">
-            Role permissions are set by Paystack. Contact support to discuss custom access levels.
+            Role permissions are set by Propeller. Contact support to discuss custom access levels.
           </p>
         </div>
       </ModalDialogContent>

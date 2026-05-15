@@ -3,10 +3,9 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { Button, Alert, AlertDescription, AlertTitle } from '@/lib/pax'
 import { Check } from 'lucide-react'
+import { Alert, Button, Label, PasswordInput } from '@/components/propeller'
 import { AuthShell } from '@/components/auth/AuthShell'
-import { PasswordInput } from '@/components/auth/PasswordInput'
 import { PasswordStrength } from '@/components/auth/PasswordStrength'
 import { useResetPassword } from '@/hooks/useAuth'
 import { API_STATUS } from '@/lib/constants'
@@ -33,7 +32,7 @@ export default function ResetPasswordPage() {
         onSuccess: (res) => {
           if (res.code === API_STATUS.SUCCESS || !res.code) setDone(true)
         },
-      }
+      },
     )
   }
 
@@ -47,18 +46,23 @@ export default function ResetPasswordPage() {
     return (
       <AuthShell altAction={null}>
         <div className="text-center">
-          <div className="w-14 h-14 bg-feedback-success-light rounded-full flex items-center justify-center mx-auto mb-6">
-            <Check className="text-feedback-success-main" size={28} />
+          <div className="size-14 bg-[#EAF9EF] border border-[#ACEBC0] rounded-full flex items-center justify-center mx-auto mb-6">
+            <Check className="text-[#17B04A]" size={26} />
           </div>
-          <h1 className="text-2xl font-semibold text-content-primary mb-3">
+          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-warm-light mb-3">
+            All set
+          </p>
+          <h1 className="text-[28px] leading-[1.1] tracking-tight text-warm-text font-normal mb-4">
             Password reset
           </h1>
-          <p className="text-sm text-content-secondary mb-8 leading-relaxed">
+          <p className="text-[15px] text-warm-muted mb-8 leading-relaxed">
             Your password has been updated. You can now sign in with your new password.
           </p>
-          <Button asChild variant="default" className="w-full">
-            <Link href="/auth/login">Back to sign in</Link>
-          </Button>
+          <Link href="/auth/login" className="block">
+            <Button size="lg" className="w-full">
+              Back to sign in
+            </Button>
+          </Link>
         </div>
       </AuthShell>
     )
@@ -66,29 +70,27 @@ export default function ResetPasswordPage() {
 
   return (
     <AuthShell altAction={{ label: 'Sign in', href: '/auth/login' }}>
-      <div className="mb-8 text-center">
-        <h1 className="text-2xl font-semibold text-content-primary leading-tight">
-          Create a new password
-          <br />
+      <div className="mb-8">
+        <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-warm-light mb-3">
+          New password
+        </p>
+        <h1 className="text-[32px] leading-[1.1] tracking-tight text-warm-text font-normal mb-3">
           Choose something secure
         </h1>
+        <p className="text-[15px] text-warm-muted leading-relaxed">
+          At least 8 characters. Use a mix of letters, numbers, and symbols.
+        </p>
       </div>
 
       {errorMessage && (
-        <Alert severity="danger" className="mb-6">
-          <AlertTitle>Reset failed</AlertTitle>
-          <AlertDescription>{errorMessage}</AlertDescription>
+        <Alert severity="danger" title="Reset failed" className="mb-5">
+          {errorMessage}
         </Alert>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-content-primary mb-1.5"
-          >
-            New password
-          </label>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="space-y-1.5">
+          <Label htmlFor="password">New password</Label>
           <PasswordInput
             id="password"
             value={password}
@@ -100,13 +102,8 @@ export default function ResetPasswordPage() {
           <PasswordStrength password={password} className="mt-3" />
         </div>
 
-        <div>
-          <label
-            htmlFor="confirm"
-            className="block text-sm font-medium text-content-primary mb-1.5"
-          >
-            Confirm password
-          </label>
+        <div className="space-y-1.5">
+          <Label htmlFor="confirm">Confirm password</Label>
           <PasswordInput
             id="confirm"
             value={confirm}
@@ -114,20 +111,18 @@ export default function ResetPasswordPage() {
             placeholder="••••••••"
             autoComplete="new-password"
             required
-            aria-invalid={mismatched || undefined}
+            error={mismatched}
           />
           {mismatched && (
-            <p className="mt-2 text-xs text-feedback-danger-main">
-              Passwords don't match.
-            </p>
+            <p className="mt-1.5 text-xs text-[#CE2121]">Passwords don&rsquo;t match.</p>
           )}
         </div>
 
         <Button
           type="submit"
-          variant="default"
+          size="lg"
           className="w-full mt-2"
-          disabled={resetMutation.isPending || !valid}
+          disabled={!valid}
           loading={resetMutation.isPending}
         >
           Reset password

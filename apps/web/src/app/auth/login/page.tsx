@@ -3,10 +3,9 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { TextInput, Alert, AlertDescription, AlertTitle, Button } from '@/lib/pax'
+import { ArrowRight } from 'lucide-react'
+import { Alert, Button, Checkbox, Input, Label, PasswordInput } from '@/components/propeller'
 import { AuthShell } from '@/components/auth/AuthShell'
-import { BottomIllustration } from '@/components/auth/BottomIllustration'
-import { PasswordInput } from '@/components/auth/PasswordInput'
 import { useLogin } from '@/hooks/useAuth'
 import { useResendConfirmation } from '@/hooks/useSignup'
 import { API_STATUS } from '@/lib/constants'
@@ -15,6 +14,7 @@ import { getAuthErrorMessage } from '@/lib/format'
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [remember, setRemember] = useState(true)
   const [resendSent, setResendSent] = useState(false)
 
   const router = useRouter()
@@ -23,69 +23,67 @@ export default function LoginPage() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-
-    loginMutation.mutate({ email, password }, {
-      onSuccess: (res) => {
-        if (res.code === API_STATUS.MFA_REQUIRED && res.data) {
-          const searchParams = new URLSearchParams({
-            email,
-            stateToken: (res.data as any).stateToken || '',
-          })
-          router.push(`/auth/mfa?${searchParams.toString()}`)
-        } else if (res.code === API_STATUS.SUCCESS) {
-          router.push('/')
-        }
+    loginMutation.mutate(
+      { email, password },
+      {
+        onSuccess: (res) => {
+          if (res.code === API_STATUS.MFA_REQUIRED && res.data) {
+            const searchParams = new URLSearchParams({
+              email,
+              stateToken: (res.data as { stateToken?: string }).stateToken ?? '',
+            })
+            router.push(`/auth/mfa?${searchParams.toString()}`)
+          } else if (res.code === API_STATUS.SUCCESS) {
+            router.push('/')
+          }
+        },
       },
-    })
+    )
   }
 
   const { isPending: processing, error: mutationError } = loginMutation
-  const loginData = loginMutation.data as any
+  const loginData = loginMutation.data as { code?: string; message?: string } | undefined
   const isPending =
-    (mutationError as any)?.code === API_STATUS.PENDING ||
+    (mutationError as { code?: string } | null)?.code === API_STATUS.PENDING ||
     loginData?.code === API_STATUS.PENDING
   const bodyError =
     loginData &&
     !isPending &&
-    loginData?.code !== API_STATUS.SUCCESS &&
-    loginData?.code !== API_STATUS.MFA_REQUIRED
-      ? loginData?.message || 'Login failed. Please try again.'
+    loginData.code !== API_STATUS.SUCCESS &&
+    loginData.code !== API_STATUS.MFA_REQUIRED
+      ? loginData.message || 'Login failed. Please try again.'
       : null
-  const errorMessage = isPending ? null : (getAuthErrorMessage(mutationError) ?? bodyError)
+  const errorMessage = isPending ? null : getAuthErrorMessage(mutationError) ?? bodyError
 
   useEffect(() => {
     if (isPending && !resendSent) {
-      resendMutation.mutate({ email }, {
-        onSuccess: () => setResendSent(true),
-      })
+      resendMutation.mutate({ email }, { onSuccess: () => setResendSent(true) })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPending])
 
   function handleResend() {
-    resendMutation.mutate({ email }, {
-      onSuccess: () => setResendSent(true),
-    })
+    resendMutation.mutate({ email }, { onSuccess: () => setResendSent(true) })
   }
 
   return (
-    <AuthShell
-      altAction={{ label: 'Sign up', href: '/signup' }}
-      bottomLayer={<BottomIllustration />}
-    >
-      <div className="mb-12 text-center">
-        <h1 className="text-2xl font-semibold text-content-primary leading-tight">
-          Welcome back
-          <br />
-          Sign in with your email
+    <AuthShell altAction={{ label: 'Create account', href: '/signup' }}>
+      <div className="mb-8">
+        <span className="text-[12px] font-semibold uppercase tracking-[0.12em] text-ink-soft">
+          Sign in
+        </span>
+        <h1 className="mt-2 mb-2 text-[36px] leading-[1.08] font-semibold tracking-[-0.025em] text-propeller-navy">
+          Welcome back.
         </h1>
+        <p className="text-[15px] text-ink-soft leading-[1.5]">
+          Sign in to your Propeller dashboard to manage payments, payouts, and reconciliation.
+        </p>
       </div>
 
-      {isPending && (
-        <Alert severity="warning" className="mb-6">
-          <AlertTitle>Email not confirmed</AlertTitle>
-          <AlertDescription>
-            Please check your inbox and confirm your email before signing in.{' '}
+      <form onSubmit={handleSubmit} className="flex flex-col gap-[18px]">
+        {isPending && (
+          <Alert severity="warning" title="Confirm your email">
+            Check your inbox to verify before signing in.{' '}
             {resendSent ? (
               <span className="font-medium">Confirmation email sent.</span>
             ) : (
@@ -93,77 +91,84 @@ export default function LoginPage() {
                 type="button"
                 onClick={handleResend}
                 disabled={resendMutation.isPending}
-                className="font-medium underline disabled:opacity-50"
+                className="font-semibold underline underline-offset-2 disabled:opacity-50"
               >
                 {resendMutation.isPending ? 'Sending…' : 'Resend email'}
               </button>
             )}
-          </AlertDescription>
-        </Alert>
-      )}
+          </Alert>
+        )}
 
-      {errorMessage && (
-        <Alert severity="danger" className="mb-6">
-          <AlertTitle>Login failed</AlertTitle>
-          <AlertDescription>{errorMessage}</AlertDescription>
-        </Alert>
-      )}
+        {errorMessage && (
+          <Alert severity="danger" title="Login failed">
+            {errorMessage}
+          </Alert>
+        )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-content-primary mb-1.5"
-          >
-            Email
-          </label>
-          <TextInput
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="email">Work email</Label>
+          <Input
             id="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="email@example.com"
+            placeholder="you@company.com"
             autoComplete="email"
             required
           />
         </div>
 
-        <div>
-          <div className="flex items-center justify-between mb-1.5">
-            <label htmlFor="password" className="block text-sm font-medium text-content-primary">
-              Password
-            </label>
-            <Link href="/auth/reset" className="text-sm font-medium link">
-              Forgot your password?
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="password">Password</Label>
+            <Link
+              href="/auth/reset"
+              className="text-[12px] font-medium text-propeller-blue no-underline hover:underline whitespace-nowrap"
+            >
+              Forgot password?
             </Link>
           </div>
           <PasswordInput
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
             autoComplete="current-password"
             required
           />
         </div>
 
+        <label className="flex items-start gap-2.5 mt-1 cursor-pointer select-none">
+          <Checkbox
+            checked={remember}
+            onCheckedChange={setRemember}
+            aria-label="Keep me signed in"
+          />
+          <span className="text-[13px] text-ink leading-[1.5] whitespace-nowrap">
+            Keep me signed in
+          </span>
+        </label>
+
         <Button
           type="submit"
-          variant="default"
-          className="w-full mt-2"
-          disabled={processing || !email || !password}
+          block
+          className="mt-2"
+          disabled={!email || !password}
           loading={processing}
+          iconRight={<ArrowRight size={14} strokeWidth={2.2} />}
         >
           Sign in
         </Button>
-      </form>
 
-      <p className="mt-6 text-center text-sm text-content-secondary">
-        Don't have an account?{' '}
-        <Link href="/signup" className="font-medium link">
-          Sign up
-        </Link>
-      </p>
+        <div className="mt-4 text-center text-[14px] text-ink-soft">
+          New to Propeller?{' '}
+          <Link
+            href="/signup"
+            className="text-propeller-blue font-semibold no-underline hover:underline"
+          >
+            Create an account
+          </Link>
+        </div>
+      </form>
     </AuthShell>
   )
 }

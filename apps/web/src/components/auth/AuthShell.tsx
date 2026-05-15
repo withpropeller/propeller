@@ -2,43 +2,74 @@
 
 import Link from 'next/link'
 import { ReactNode } from 'react'
-import { Button } from '@/lib/pax'
+import { ArrowLeft } from 'lucide-react'
+import { BrandPanel } from './BrandPanel'
 
 type AuthShellProps = {
   children: ReactNode
-  /** Text and href for the top-right action (e.g. "Sign up" on the login page). Pass null to hide. */
+  /** Render an inline back link top-right (instead of the alt-action). */
+  onBack?: () => void
+  /** Text and href for the top-right alt action (e.g. "Sign up"). Mutually exclusive with onBack. Pass null to hide. */
   altAction?: { label: string; href: string } | null
-  /** Decorative content anchored to the viewport bottom, behind the form. */
-  bottomLayer?: ReactNode
+  /** Hide the brand panel — used for confirmation states that want full focus. */
+  hideBrandPanel?: boolean
 }
 
-export function AuthShell({ children, altAction, bottomLayer }: AuthShellProps) {
+export function AuthShell({ children, onBack, altAction, hideBrandPanel }: AuthShellProps) {
   return (
-    <div className="relative min-h-screen flex flex-col bg-surface-primary overflow-hidden">
-      {/* Background wave — full-width bottom gradient; taller at edges, faded through middle */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 auth-wave"
-        style={{
-          background:
-            'radial-gradient(ellipse 40% 100% at 0% 100%, rgba(59, 130, 246, 0.22) 0%, rgba(59, 130, 246, 0.06) 40%, transparent 72%), radial-gradient(ellipse 40% 100% at 100% 100%, rgba(59, 130, 246, 0.22) 0%, rgba(59, 130, 246, 0.06) 40%, transparent 72%)',
-        }}
-      />
-      {bottomLayer}
-      <header className="relative z-10 flex items-center justify-between px-6 md:px-20 py-6">
-        <Link href="/" className="flex items-center" aria-label="Paystack Issuing home">
-          <img src="/logo.svg" alt="Paystack Issuing" className="h-6" />
-        </Link>
-        {altAction && (
-          <Button asChild variant="outline" color="secondary" size="sm">
-            <Link href={altAction.href}>{altAction.label}</Link>
-          </Button>
-        )}
-      </header>
+    <div
+      className={`min-h-screen bg-white ${
+        hideBrandPanel ? 'flex' : 'grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]'
+      }`}
+    >
+      {/* Form side */}
+      <div className="flex flex-col min-h-screen px-6 sm:px-10 md:px-12 pt-8 pb-12">
+        <div className="flex items-center justify-between mb-12 md:mb-20">
+          <Link href="/" className="flex items-center gap-2 text-propeller-navy no-underline">
+            <img src="/propeller-icon.svg" alt="" aria-hidden className="size-[22px]" />
+            <span className="font-semibold text-[18px] tracking-[-0.02em]">Propeller</span>
+          </Link>
 
-      <main className="relative z-10 flex-1 flex items-start justify-center px-6 pt-16 pb-12">
-        <div className="w-full max-w-[392px]">{children}</div>
-      </main>
+          {onBack ? (
+            <button
+              type="button"
+              onClick={onBack}
+              className="inline-flex items-center gap-2 text-ink-soft text-[13px] font-medium px-3 py-2 rounded-full transition-colors hover:text-ink"
+            >
+              <ArrowLeft size={14} />
+              Back
+            </button>
+          ) : altAction ? (
+            <Link
+              href={altAction.href}
+              className="text-ink-soft text-[13px] font-medium no-underline hover:text-ink transition-colors"
+            >
+              {altAction.label}
+            </Link>
+          ) : null}
+        </div>
+
+        <div className="flex-1 flex items-center">
+          <div className="w-full max-w-[420px] mx-auto">{children}</div>
+        </div>
+
+        <div className="flex items-center justify-between gap-4 pt-8 text-[12px] text-ink-soft whitespace-nowrap">
+          <div>&copy; {new Date().getFullYear()} Propeller Payments</div>
+          <div className="flex gap-[18px]">
+            <Link href="/legal/privacy" className="text-ink-soft no-underline hover:text-ink">
+              Privacy
+            </Link>
+            <Link href="/legal/terms" className="text-ink-soft no-underline hover:text-ink">
+              Terms
+            </Link>
+            <Link href="/status" className="text-ink-soft no-underline hover:text-ink">
+              Status
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {!hideBrandPanel && <BrandPanel />}
     </div>
   )
 }

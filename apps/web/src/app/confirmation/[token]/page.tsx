@@ -3,9 +3,10 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { Button } from '@/lib/pax'
 import { Check, XCircle, Loader2 } from 'lucide-react'
 import { useMutation } from '@tanstack/react-query'
+import { Button } from '@/components/propeller'
+import { AuthShell } from '@/components/auth/AuthShell'
 import { customInstance } from '@/lib/orvalClient'
 
 type Status = 'loading' | 'success' | 'error' | 'invalid'
@@ -33,79 +34,88 @@ export default function ConfirmEmailPage() {
 
     confirmMutation.mutate(token, {
       onSuccess: () => setStatus('success'),
-      onError: (err: any) => {
+      onError: (err: Error) => {
         setErrorMessage(err?.message ?? 'Something went wrong. Please try again.')
         setStatus('error')
       },
     })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-8 bg-surface-secondary">
-        <div className="w-full max-w-md text-center">
-          <Loader2 className="mx-auto mb-6 text-action-primary-main animate-spin" size={40} />
-          <h2 className="text-xl font-semibold text-content-primary mb-2">Confirming your email…</h2>
-          <p className="text-sm text-content-tertiary">Just a moment while we verify your account.</p>
+      <AuthShell altAction={null}>
+        <div className="text-center">
+          <Loader2 className="mx-auto mb-6 text-propeller-blue animate-spin" size={36} />
+          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-warm-light mb-3">
+            Verifying
+          </p>
+          <h1 className="text-[28px] leading-[1.1] tracking-tight text-warm-text font-normal mb-3">
+            Confirming your email…
+          </h1>
+          <p className="text-[15px] text-warm-muted leading-relaxed">
+            Just a moment while we verify your account.
+          </p>
         </div>
-      </div>
+      </AuthShell>
     )
   }
 
   if (status === 'success') {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-8 bg-surface-secondary">
-        <div className="w-full max-w-md text-center">
-          <div className="w-16 h-16 bg-feedback-success-light rounded-full flex items-center justify-center mx-auto mb-6">
-            <Check className="text-feedback-success-main" size={32} />
+      <AuthShell altAction={null}>
+        <div className="text-center">
+          <div className="size-16 bg-[#EAF9EF] border border-[#ACEBC0] rounded-full flex items-center justify-center mx-auto mb-6">
+            <Check className="text-[#17B04A]" size={28} />
           </div>
-          <h2 className="text-2xl font-bold text-content-primary mb-3">Email confirmed</h2>
-          <p className="text-content-tertiary mb-8 leading-relaxed">
+          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-warm-light mb-3">
+            All set
+          </p>
+          <h1 className="text-[28px] leading-[1.1] tracking-tight text-warm-text font-normal mb-4">
+            Email confirmed
+          </h1>
+          <p className="text-[15px] text-warm-muted mb-8 leading-relaxed">
             Your email has been verified. You can now sign in to your account.
           </p>
-          <Link href="/auth/login">
-            <Button variant="default" className="w-full">Go to Login</Button>
+          <Link href="/auth/login" className="block">
+            <Button size="lg" className="w-full">
+              Go to sign in
+            </Button>
           </Link>
         </div>
-      </div>
+      </AuthShell>
     )
   }
 
-  if (status === 'invalid') {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-8 bg-surface-secondary">
-        <div className="w-full max-w-md text-center">
-          <div className="w-16 h-16 bg-feedback-danger-light rounded-full flex items-center justify-center mx-auto mb-6">
-            <XCircle className="text-feedback-danger-main" size={32} />
-          </div>
-          <h2 className="text-2xl font-bold text-content-primary mb-3">Invalid link</h2>
-          <p className="text-content-tertiary mb-8 leading-relaxed">
-            This confirmation link is missing required information. Please use the link from your confirmation email.
-          </p>
-          <Link href="/auth/login">
-            <Button variant="outline" className="w-full">Back to Login</Button>
-          </Link>
-        </div>
-      </div>
-    )
-  }
-
+  const isInvalid = status === 'invalid'
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-8 bg-surface-secondary">
-      <div className="w-full max-w-md text-center">
-        <div className="w-16 h-16 bg-feedback-danger-light rounded-full flex items-center justify-center mx-auto mb-6">
-          <XCircle className="text-feedback-danger-main" size={32} />
+    <AuthShell altAction={null}>
+      <div className="text-center">
+        <div className="size-16 bg-[#FDEDED] border border-[#F4B3B3] rounded-full flex items-center justify-center mx-auto mb-6">
+          <XCircle className="text-[#CE2121]" size={28} />
         </div>
-        <h2 className="text-2xl font-bold text-content-primary mb-3">Confirmation failed</h2>
-        <p className="text-content-tertiary mb-8 leading-relaxed">{errorMessage}</p>
-        <p className="text-sm text-content-tertiary mb-6">
-          Confirmation links expire after a short time. Sign in and request a new one.
+        <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-warm-light mb-3">
+          {isInvalid ? 'Invalid link' : 'Failed'}
         </p>
-        <Link href="/auth/login">
-          <Button variant="outline" className="w-full">Back to Login</Button>
+        <h1 className="text-[28px] leading-[1.1] tracking-tight text-warm-text font-normal mb-4">
+          {isInvalid ? 'This link can’t be used' : 'Confirmation failed'}
+        </h1>
+        <p className="text-[15px] text-warm-muted mb-3 leading-relaxed">
+          {isInvalid
+            ? 'This confirmation link is missing required information. Please use the link from your confirmation email.'
+            : errorMessage}
+        </p>
+        {!isInvalid && (
+          <p className="text-sm text-warm-light mb-8">
+            Confirmation links expire after a short time. Sign in and request a new one.
+          </p>
+        )}
+        <Link href="/auth/login" className="block mt-6">
+          <Button variant="outline" size="lg" className="w-full">
+            Back to sign in
+          </Button>
         </Link>
       </div>
-    </div>
+    </AuthShell>
   )
 }

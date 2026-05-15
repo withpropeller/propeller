@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "@paystack/pax/theme.css";
+@import url("https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&family=JetBrains+Mono:wght@400;500;600&display=swap");
 
 /* Tell Tailwind v4 to scan Pax's built JS for class names.
    Without this, Tailwind only scans src/ and skips node_modules,
@@ -61,17 +62,17 @@ body {
   --burnt-orange-900:  #5C1E0C;
   --burnt-orange-1000: #3A1206;
 
-  /* stack */
-  --stack-100:  #EEF4FE;
-  --stack-200:  #D0E1FC;
-  --stack-300:  #B1CEF9;
-  --stack-400:  #73A9F4;
-  --stack-500:  #3C87F0;
-  --stack-600:  #0C68EB;
-  --stack-700:  #0A53A8;
-  --stack-800:  #083A78;
-  --stack-900:  #06254F;
-  --stack-1000: #03142F;
+  /* stack — Propeller brand blue (#3E59F3 = action/primary, matches landing + docs) */
+  --stack-100:  #EEF1FE;
+  --stack-200:  #D5DCFD;
+  --stack-300:  #B1BDFB;
+  --stack-400:  #7E92F8;
+  --stack-500:  #5C75F5;
+  --stack-600:  #3E59F3;
+  --stack-700:  #2738D6;
+  --stack-800:  #1F2AAA;
+  --stack-900:  #161E7E;
+  --stack-1000: #0F1556;
 
   /* deep sky */
   --deep-sky-100:  #EAF6FF;
@@ -141,7 +142,44 @@ body {
 ───────────────────────────────────────────────────────────── */
 @theme inline {
   /* focus */
-  --color-focus-ring: var(--deep-sky-600);
+  --color-focus-ring: var(--stack-600);
+
+  /* Propeller landing palette — cream surfaces + warm content tones */
+  --color-cream-50:  #faf8f5;
+  --color-cream-100: #f5f2ee;
+  --color-cream-200: #ebe6df;
+  --color-cream-300: #ddd5cb;
+
+  --color-warm-text:   #1a1a1a;
+  --color-warm-muted:  #6b6560;
+  --color-warm-light:  #9e9690;
+  --color-warm-border: #e2ddd6;
+
+  /* Brand gradient stops (orange → pink → violet) used on hero CTAs */
+  --color-brand-grad-start: #e85d4a;
+  --color-brand-grad-mid:   #c75b9b;
+  --color-brand-grad-end:   #8b5cf6;
+
+  /* Propeller brand blue + extended states (from design kit colors_and_type.css) */
+  --color-propeller-blue:       #3E59F3;
+  --color-propeller-blue-hover: #364ED4;
+  --color-propeller-blue-deep:  #2C3FAC;
+  --color-propeller-blue-tint:  #EDF0FF;
+  --color-propeller-blue-dark:  #0F1556; /* alias for navy used in earlier pages */
+
+  /* Propeller navy pillar */
+  --color-propeller-navy:   #0F1556;
+  --color-propeller-navy-2: #202E7E;
+  --color-propeller-navy-3: #283998;
+  --color-propeller-coral:  #E43F6F;
+
+  /* Neutral palette — auth surfaces use these (paper bg, mist cards, line borders) */
+  --color-paper:       #FAFAFB;
+  --color-mist:        #F2F3F7;
+  --color-line:        #E4E6EF;
+  --color-line-strong: #C9CCDC;
+  --color-ink:         #1B2042;
+  --color-ink-soft:    #6B7194;
 
   /* surface */
   --color-surface-primary:   var(--midnight-100);
@@ -291,8 +329,8 @@ body {
     --popover:                0  0% 100%;
     --popover-foreground:   212 32%  8%;
 
-    /* brand */
-    --primary:              142 79% 29%;   /* action/primary/main = forest-green/700 */
+    /* brand — Propeller blue (#3E59F3) */
+    --primary:              230 88% 60%;   /* action/primary/main = stack/600 = #3E59F3 */
     --primary-foreground:     0  0% 100%;
 
     --secondary:            220 14% 97%;   /* surface/secondary  = midnight/200  */
@@ -301,8 +339,8 @@ body {
     --muted:                220 15% 94%;   /* surface/tertiary   = midnight/300  */
     --muted-foreground:     212  6% 42%;   /* content/tertiary   = midnight/700  */
 
-    --accent:               137 57% 89%;   /* action/primary/light = forest-green/200 */
-    --accent-foreground:    142 79% 20%;   /* action/primary/dark  = forest-green/800 */
+    --accent:               228 92% 91%;   /* action/primary/light = stack/200 */
+    --accent-foreground:    230 70% 39%;   /* action/primary/dark  = stack/800 */
 
     /* status */
     --destructive:            0 73% 47%;   /* feedback/danger/main  = fire-red/600    */
@@ -317,19 +355,19 @@ body {
     /* chrome */
     --border:               220 15% 94%;   /* border/primary/light = midnight/300 */
     --input:                220 10% 86%;   /* border/primary/main  = midnight/400 */
-    --ring:                 210 100% 56%;  /* --color-focus-ring = #1E90FF        */
+    --ring:                 230 88% 60%;   /* --color-focus-ring = Propeller blue */
 
     --radius: 0.5rem;
 
     /* sidebar */
     --sidebar-background:           220 14% 97%;
     --sidebar-foreground:           210 10% 23%;  /* content/secondary = midnight/900 */
-    --sidebar-primary:              142 79% 29%;
-    --sidebar-primary-foreground:   142 79% 29%;
+    --sidebar-primary:              230 88% 60%;
+    --sidebar-primary-foreground:     0  0% 100%;
     --sidebar-accent:               220 15% 94%;
     --sidebar-accent-foreground:    212 32%  8%;
     --sidebar-border:               220 15% 94%;
-    --sidebar-ring:                 142 79% 29%;
+    --sidebar-ring:                 230 88% 60%;
     --sidebar-muted:                212  6% 42%;
   }
 }
@@ -344,7 +382,7 @@ body {
     color: var(--color-content-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum";
+    font-feature-settings: "ss01", "cv11";
   }
 
   :focus-visible {
