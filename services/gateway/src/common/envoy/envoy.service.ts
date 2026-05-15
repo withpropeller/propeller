@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { FloService, floEncode } from '@core/services/flo.service';
+import { FloService } from '@core/services/flo.service';
 import { EnvoyDeliveryStrategy, EnvoyEvent, EnvoyEventStream } from './envoy';
 
 // Streams that should be dispatched via Flo
@@ -55,10 +55,7 @@ export class EnvoyService {
             payload: event.payload,
         };
 
-        const result = await this.flo.client.stream.append(
-            floStreamName(event.streamName),
-            floEncode(envelope),
-        );
+        const result = await this.flo.client.stream.append(floStreamName(event.streamName), envelope);
         return `${result.id.timestampMs}-${result.id.sequence}`;
     }
 

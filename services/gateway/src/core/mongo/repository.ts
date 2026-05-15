@@ -200,8 +200,7 @@ export abstract class Repository<T> {
         const { select, projections, conditions, limit, sort, populate, reverseList } =
             MongoAPIPaging.getPagingConstraints(
                 query,
-                requiredConditions,
-                defaultConditions,
+                { ...defaultConditions, ...requiredConditions },
                 excludeExpand,
                 populateWithModel,
                 this.options,

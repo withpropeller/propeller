@@ -23,7 +23,7 @@ const EnvSchema = Joi.object({
     LOG_LEVEL: Joi.string().default('info'),
 
     // Mongo DBs
-    INFRA_MONGODB_URL: Joi.string(),
+    MONGODB_URL: Joi.string(),
 
     // Domains
     MAIN_SITE_DOMAIN: Joi.string(),
@@ -137,15 +137,15 @@ export class ConfigService {
     }
 
     get CORE_MONGODB_URI(): string {
-        return this.envConfig.INFRA_MONGODB_URL + '/core-db';
+        return this.envConfig.MONGODB_URL + '/core-db';
     }
 
     get LIVE_MONGODB_URI(): string {
-        return this.envConfig.INFRA_MONGODB_URL + '/live-db';
+        return this.envConfig.MONGODB_URL + '/live-db';
     }
 
     get SANDBOX_MONGODB_URI(): string {
-        return this.envConfig.INFRA_MONGODB_URL + '/sandbox-db';
+        return this.envConfig.MONGODB_URL + '/sandbox-db';
     }
 
     get REDIS_PORT(): string {

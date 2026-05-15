@@ -7,13 +7,7 @@ import { REQUEST } from '@nestjs/core';
 
 @Injectable({ scope: Scope.REQUEST, durable: true })
 export class CustomersService extends InfraApiService {
-    
-    constructor(
-        @Inject(REQUEST) request: TenantRequestPayload,
-        http: HttpService,
-        config: ConfigService,
-    ) {
-        super(http, request, config, '/customers')
+    constructor(@Inject(REQUEST) request: TenantRequestPayload, http: HttpService, config: ConfigService) {
+        super(http, request, config, '/customers');
     }
-
 }

@@ -6,6 +6,7 @@ import { Type } from 'class-transformer';
 import { AWSObjectURL } from '@common/models/aws-object';
 import { BusinessKYCStatus } from './business-kyc.enum';
 import { enumProp } from '@core/mongo';
+import { ApiProperty } from '@nestjs/swagger';
 
 export enum KYCNameTitle {
     Mr = 'mr',
@@ -147,8 +148,3 @@ export class BusinessKYC {
 }
 
 export const BusinessKYCSchema = SchemaFactory.createForClass(BusinessKYC);
-
-function ApiProperty(arg0: { description: string; default: BusinessKYCStatus; enum: typeof BusinessKYCStatus; }): (target: BusinessKYC, propertyKey: "status") => void {
-    throw new Error('Function not implemented.');
-}
-

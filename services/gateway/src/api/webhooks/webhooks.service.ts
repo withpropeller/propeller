@@ -7,11 +7,7 @@ import { HttpService } from '@nestjs/axios';
 
 @Injectable({ scope: Scope.REQUEST, durable: true })
 export class WebhookService extends InfraApiService {
-    constructor(
-        @Inject(REQUEST) request: TenantRequestPayload,
-        http: HttpService,
-        config: ConfigService,
-    ) {
+    constructor(@Inject(REQUEST) request: TenantRequestPayload, http: HttpService, config: ConfigService) {
         super(http, request, config, '/webhooks');
     }
 }

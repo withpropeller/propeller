@@ -7,13 +7,7 @@ import { ConfigService } from '@config/config.service';
 
 @Injectable({ scope: Scope.REQUEST, durable: true })
 export class PaymentService extends InfraApiService {
-    
-    constructor(
-        @Inject(REQUEST) request: TenantRequestPayload,
-        http: HttpService,
-        config: ConfigService,
-    ) {
-        super(http, request, config, '/payments')
+    constructor(@Inject(REQUEST) request: TenantRequestPayload, http: HttpService, config: ConfigService) {
+        super(http, request, config, '/payments');
     }
-
 }

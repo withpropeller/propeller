@@ -8,6 +8,7 @@
 
 export const DUPLICATE_UNIQUE_CONSTRAINT_CODE = '23505';
 export const MONGO_UNIQUE_CONSTRAINT_CODE = 11000;
+export const ATLAS_ERROR_CODE = 8000;
 export const MODEL_PREFIX_SEPARATOR = ".";
 
 export const EmailSenders = {

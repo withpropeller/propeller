@@ -14,6 +14,7 @@ import { JwtModule } from '@nestjs/jwt';
         ConfigModule,
         HttpModule,
         MongooseModule.forRootAsync({
+            imports: [ConfigModule],
             useFactory: (config: ConfigService) => {
                 return {
                     uri: config.CORE_MONGODB_URI,
@@ -23,6 +24,7 @@ import { JwtModule } from '@nestjs/jwt';
             inject: [ConfigService],
         }),
         MongooseModule.forRootAsync({
+            imports: [ConfigModule],
             useFactory: (config: ConfigService) => {
                 return {
                     uri: config.LIVE_MONGODB_URI,
@@ -32,6 +34,7 @@ import { JwtModule } from '@nestjs/jwt';
             inject: [ConfigService],
         }),
         MongooseModule.forRootAsync({
+            imports: [ConfigModule],
             useFactory: (config: ConfigService) => {
                 return {
                     uri: config.SANDBOX_MONGODB_URI,
@@ -40,8 +43,9 @@ import { JwtModule } from '@nestjs/jwt';
             connectionName: TenantDataSource.Sandbox,
             inject: [ConfigService],
         }),
-        CacheModule.register(),
+        CacheModule.register({ isGlobal: true }),
         JwtModule.registerAsync({
+            imports: [ConfigModule],
             useFactory: (config: ConfigService) => ({
                 secret: config.JWT_SECRET,
                 signOptions: { expiresIn: config.JWT_SECRET_EXPIRY },
@@ -49,7 +53,7 @@ import { JwtModule } from '@nestjs/jwt';
             inject: [ConfigService],
         }),
         LoggerModule.forRootAsync({
-            providers: [ConfigService],
+            imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: (config: ConfigService) => {
                 return {
@@ -60,5 +64,6 @@ import { JwtModule } from '@nestjs/jwt';
         RolesModule,
     ],
     providers: [],
+    exports: [JwtModule, HttpModule],
 })
 export class CoreModule {}

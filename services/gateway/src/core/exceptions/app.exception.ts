@@ -15,6 +15,11 @@ export class AppException extends CustomException {
         return new this(null, 'Bad Request', AppStatus.BadRequest, HttpStatus.BAD_REQUEST);
     }
 
+    /** @deprecated use BAD_REQUEST */
+    public static get BadRequest() {
+        return this.BAD_REQUEST;
+    }
+
     public static get RESOURCE_UNAVAILABLE() {
         return new this(null, 'Service Unavailable', AppStatus.ServiceUnavailable, HttpStatus.SERVICE_UNAVAILABLE);
     }

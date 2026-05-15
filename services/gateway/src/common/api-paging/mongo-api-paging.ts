@@ -1,8 +1,8 @@
 import { camelCase } from 'lodash';
 import { APIPagingDto } from './api-paging.dto';
-import { PopulateOptions, Types } from 'mongoose';
+import { ClientSession, PopulateOptions, Types } from 'mongoose';
 import { CursorDirection, PagingConstraint, Sort } from './find-and-count-all.interface';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, HttpException } from '@nestjs/common';
 import { Utils } from '@core/helpers';
 
 const BAD_FILTER_ERROR = "Incorrect format for 'filter' parameter.";
@@ -21,12 +21,18 @@ export interface MongoAPIPagingOptions {
 }
 
 export interface MongoAPIQueryOptions {
-    conditions: any;
+    conditions?: any;
     expand?: string | string[] | PopulateOptions | PopulateOptions[],
     excludeExpand?: string[],
+    expandPathPrefix?: string,
     populate?: PopulateOptions[],
     failSilently?: boolean,
-    select: string | string[],
+    select?: string | string[],
+    sort?: string,
+    session?: ClientSession,
+    safe?: boolean | string,
+    safeException?: HttpException,
+    notFoundException?: HttpException,
 }
 
 /**
@@ -100,8 +106,22 @@ export class MongoAPIPaging {
         expand: string | string[],
         excludeExpand?: string | string[],
         populateWithModel?: PopulateOptions[],
+        expandPathPrefix?: string,
     ): PopulateOptions[] {
-        return this.parseExpand(expand, excludeExpand, populateWithModel);
+        return this.parseExpand(expand, excludeExpand, populateWithModel, { idPrefix: expandPathPrefix });
+    }
+
+    /**
+     * Parse a select string (or array) into the form mongoose's .find()/.findOne()
+     * accepts. Pass-through for arrays/falsy values.
+     */
+    static parseSelect(
+        select?: string | string[],
+        _options?: MongoAPIPagingOptions,
+    ): string | string[] | undefined {
+        if (!select) return undefined;
+        if (Array.isArray(select)) return select.join(' ');
+        return select;
     }
 
     static parseSpaceSeparated(v: string | string[] = []): string[] {
@@ -137,7 +157,7 @@ export class MongoAPIPaging {
         return newArr;
     }
 
-    private static parseSort(sort: string): Sort {
+    static parseSort(sort: string, _conditions?: any): Sort {
         if (!sort) {
             return this.SORT_DEFAULT;
         }

@@ -1,15 +1,12 @@
-import { Module, OnModuleInit } from '@nestjs/common';
-import { UsersModule } from '@api/users';
+import { Global, Module, OnModuleInit } from '@nestjs/common';
 import { Role, RoleSchema } from './roles.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RolesService } from './roles.service';
 import { TenantDataSource } from '@core/helpers/enums';
 
+@Global()
 @Module({
-    imports: [
-        MongooseModule.forFeature([{ name: Role.name, schema: RoleSchema }], TenantDataSource.Core),
-        UsersModule
-    ],
+    imports: [MongooseModule.forFeature([{ name: Role.name, schema: RoleSchema }], TenantDataSource.Core)],
     providers: [RolesService],
     exports: [RolesService],
 })

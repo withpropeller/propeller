@@ -32,7 +32,7 @@ export abstract class Repository<T> {
             const entity = this.createPartial(details);
 
             return await this.save(entity, options);
-        } catch (err) {
+        } catch (err: any) {
             if (err && err.code === MONGO_UNIQUE_CONSTRAINT_CODE) {
                 throw new ConflictException('Unique constraint');
             }
@@ -211,7 +211,7 @@ export abstract class Repository<T> {
         return arr[0];
     }
 
-    async updateById(id: string, update: Partial<T> | any, options?: QueryOptions) {
+    async updateById(id: string | Types.ObjectId, update: Partial<T> | any, options?: QueryOptions) {
         return await this.updateOne({ _id: id }, update as any, options);
     }
 

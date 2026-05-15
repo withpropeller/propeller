@@ -195,8 +195,7 @@ export abstract class LedgerRepository<T> {
         const { select, projections, conditions, limit, sort, populate, reverseList } =
             MongoAPIPaging.getPagingConstraints(
                 query,
-                requiredConditions,
-                defaultConditions,
+                { ...defaultConditions, ...requiredConditions },
                 excludeExpand,
                 populateWithModel,
                 this.options,

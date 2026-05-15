@@ -22,7 +22,8 @@ import { PhoneConflictException } from '@common/exceptions/phone-conflict.except
 export class UsersService extends Repository<User> {
     constructor(
         @InjectModel(User.name, TenantDataSource.Core) model: Model<HydratedDocument<User>>,
-        private rolesService: RolesService) {
+        private rolesService: RolesService,
+    ) {
         super(model);
     }
 
@@ -31,7 +32,7 @@ export class UsersService extends Repository<User> {
             const entity = this.createPartial(details);
 
             return await this.save(entity);
-        } catch (err) {
+        } catch (err: any) {
             if (err && err.code === MONGO_UNIQUE_CONSTRAINT_CODE) {
                 throw new EmailConflictException();
             }
@@ -57,7 +58,7 @@ export class UsersService extends Repository<User> {
 
             await this.bulkInsert(cardEntities), { session };
             await session.commitTransaction();
-        } catch (err) {
+        } catch (err: any) {
             await session.abortTransaction();
             if (err && err.code === MONGO_UNIQUE_CONSTRAINT_CODE) {
                 if (err.message.includes('email')) {
@@ -207,7 +208,7 @@ export class UsersService extends Repository<User> {
         const user = await this.findOne({ _id: userId, 'stateToken.code': code }, true);
 
         if (user && user.stateToken) {
-            const currentDate = new Date();  
+            const currentDate = new Date();
 
             if (differenceInSeconds(currentDate, user.stateToken.requestedAt) > user.stateToken.ttl) {
                 throw AuthException.TOKEN_EXPIRED;

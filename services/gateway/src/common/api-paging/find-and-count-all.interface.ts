@@ -17,6 +17,7 @@ export interface PagingConstraint {
     limit: number;
     skip?: number;
     populate?: any;
+    projections?: any;
     conditions: any;
     reverseList: boolean;
 }

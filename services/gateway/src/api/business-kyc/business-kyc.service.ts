@@ -138,7 +138,7 @@ export class KYCWizardService extends Repository<BusinessKYC> {
 
     async submitKyc(businessId: string, kycId: string) {
         const businessKyc = await this.findOne({ _id: kycId, business: businessId });
-    
+
         // Guard: validate KYC completeness before submission
         if (!businessKyc.businessInformation) {
             throw new BadRequestException('Business information is required before submission');
@@ -156,7 +156,7 @@ export class KYCWizardService extends Repository<BusinessKYC> {
         // Mark KYC as submitted
         businessKyc.status = BusinessKYCStatus.Submitted;
         await this.updateById(businessKyc._id, { $set: { status: BusinessKYCStatus.Submitted } });
-    
+
         // Append event to business-events stream — compliance worker picks it up
         await this.flo.append('business-events', {
             type: 'business.kyc-submitted',

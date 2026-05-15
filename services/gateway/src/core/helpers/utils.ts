@@ -27,6 +27,19 @@ export class Utils {
         return customAlphabet(alphabet, length)();
     }
 
+    static generateRandomBytes(length: number): Buffer {
+        return crypto.randomBytes(length);
+    }
+
+    /** Constant-time string compare. */
+    static safeStringCompare(a: string | undefined | null, b: string | undefined | null): boolean {
+        if (a == null || b == null) return a === b;
+        const ab = Buffer.from(String(a));
+        const bb = Buffer.from(String(b));
+        if (ab.length !== bb.length) return false;
+        return crypto.timingSafeEqual(ab, bb);
+    }
+
     public static toSlug(value: string) {
         return _.kebabCase(value);
     }
@@ -218,10 +231,10 @@ export class Utils {
         const encodedId = str.split(MODEL_PREFIX_SEPARATOR).slice(-1)[0];
 
         const id = CryptoUtils.base58DecodeObjectId(encodedId);
+        const idStr = id ? id.toString() : null;
 
-        if (((allowedTag && (tag == allowedTag)) || isEnum(tag, ModelIdTag)) && isMongoId(id)) {
-            //return [tag, id];
-            return id;
+        if (((allowedTag && (tag == allowedTag)) || isEnum(tag, ModelIdTag)) && isMongoId(idStr)) {
+            return idStr;
         }
 
         return null;

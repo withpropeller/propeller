@@ -8,8 +8,7 @@ import { HydratedDocument, Model } from 'mongoose';
 import { Repository } from '@core/abstracts/repository';
 
 @Injectable()
-export class RolesService  extends Repository<Role>  {
-
+export class RolesService extends Repository<Role> {
     constructor(
         @InjectModel(Role.name, TenantDataSource.Core) model: Model<HydratedDocument<Role>>,
         @Inject(CACHE_MANAGER) private cacheManager: CacheStore,
@@ -39,8 +38,8 @@ export class RolesService  extends Repository<Role>  {
         return this.cacheRoles();
     }
 
-    async findOneBySlug(slug: string, failSilently = false)/*: Promise<Role> */{
-       const role = await this.model.findOne({ slug }).exec();
+    async findOneBySlug(slug: string, failSilently = false) /*: Promise<Role> */ {
+        const role = await this.model.findOne({ slug }).exec();
         if (!role && !failSilently) {
             throw new NotFoundException(`Role Does not exist`);
         }
@@ -56,7 +55,7 @@ export class RolesService  extends Repository<Role>  {
         return cachedRoles;
     }
 
-    async findOneByIdFromCache(id: number, failSilently = false)/*: Promise<Role>*/ {
+    async findOneByIdFromCache(id: number, failSilently = false) /*: Promise<Role>*/ {
         const roles = await this.fetchRolesFromCache();
         const role = roles.find((v) => v.id === id);
 
@@ -77,10 +76,10 @@ export class RolesService  extends Repository<Role>  {
     }
 
     async fetchRolesBySlugsFromCache(slugs: string[]): Promise<HydratedDocument<Role>[]> {
-       const roles = await this.fetchRolesFromCache();
+        const roles = await this.fetchRolesFromCache();
         return roles.filter((v) => slugs.includes(v.slug));
     }
-    
+
     async addPermissions(publicId: string, body: AddRolePermissionDto) {
         const role = await this.findOneById(publicId);
         const updatedPermissions = role.permissions.concat(body.permissions);
