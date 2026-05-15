@@ -225,7 +225,7 @@ export abstract class LedgerRepository<T> {
         if (query.countTotal) {
             // eslint-disable-next-line
             const { _id, ...withoutLastIdConditions } = conditions;
-            count = await this.model.find(withoutLastIdConditions).count().exec();
+            count = await this.model.countDocuments(withoutLastIdConditions).exec();
         }
 
         if (reverseList) {
@@ -286,7 +286,7 @@ export abstract class LedgerRepository<T> {
 
     async updateOne(criteria: Record<string, unknown>, update: Partial<T>, options?: QueryOptions) {
         try {
-            return await this.model.updateOne(criteria as any, update as any, options);
+            return await this.model.updateOne(criteria as any, update as any, options as any);
         } catch (err: any) {
             if (err && err.code === MONGO_UNIQUE_CONSTRAINT_CODE) {
                 throw MongoException.Conflict.setMessage('Unique constraint');

@@ -5,16 +5,82 @@
 /* Fonts loaded via next/font/google in layout.tsx — CSS vars: --font-geist, --font-geist-mono */
 
 :root {
+  /* Brand */
+  --c-brand:       62 89 243;
+  --c-brand-deep:  26 54 217;
+  --c-brand-mute: 208 221 252;
+
+  /* Text */
+  --c-ink:       14 20 27;     /* #0E141B */
+  --c-ink-soft:  36 43 49;     /* #242B31 */
+  --c-ink-2:     52 58 64;     /* #343A40 */
+  --c-ink-3:     74 80 86;     /* #4A5056 */
+
+  /* Surfaces */
+  --c-paper:    255 255 255;
+  --c-paper-2: 246 247 250;
+
+  /* Neutrals (light → dark) */
+  --c-slate-0: 255 255 255;
+  --c-slate-1: 246 247 250;
+  --c-slate-2: 236 238 243;
+  --c-slate-3: 215 218 223;
+  --c-slate-4: 199 203 209;
+  --c-slate-5: 142 149 156;
+  --c-slate-6: 100 106 113;
+  --c-slate-7: 74 80 86;
+  --c-slate-8: 52 58 64;
+
+  /* Inline-code pill */
   --code-bg: #ECEEF3;
   --code-fg: #0E141B;
-  --border: #D7DADF;
+  --border:  #D7DADF;
   --radius-1: 6px;
+
+  /* API reference code/response panels (Mintlify-style always-dark surface in light mode,
+     subtly elevated panel in dark mode). */
+  --c-panel-bg:      14 20 27;     /* #0E141B */
+  --c-panel-border:  52 58 64;     /* #343A40 */
+  --c-panel-fg:     215 218 223;   /* #D7DADF */
+  --c-panel-muted:  142 149 156;   /* #8E959C */
 }
 
 .dark, [data-theme="dark"] {
-  --code-bg: rgba(36, 43, 49, 0.5);
+  /* Brand stays the same hue, slightly brighter for dark surfaces */
+  --c-brand:      110 134 250;
+  --c-brand-deep:  62  89 243;
+  --c-brand-mute:  40  60 110;
+
+  /* Text inverted: light type on dark surfaces */
+  --c-ink:       246 247 250;
+  --c-ink-soft:  215 218 223;
+  --c-ink-2:     199 203 209;
+  --c-ink-3:     142 149 156;
+
+  /* Surfaces: midnight palette */
+  --c-paper:    14 20 27;     /* midnight-1100 */
+  --c-paper-2:  26 33 41;     /* slightly lighter card */
+
+  /* Neutrals inverted */
+  --c-slate-0:  14 20 27;
+  --c-slate-1:  26 33 41;
+  --c-slate-2:  36 43 49;
+  --c-slate-3:  52 58 64;
+  --c-slate-4:  74 80 86;
+  --c-slate-5: 142 149 156;
+  --c-slate-6: 199 203 209;
+  --c-slate-7: 215 218 223;
+  --c-slate-8: 236 238 243;
+
+  --code-bg: rgba(36, 43, 49, 0.6);
   --code-fg: #D7DADF;
-  --border: #343A40;
+  --border:  #343A40;
+
+  /* Dark theme: code panel as a slightly elevated card that complements --c-paper */
+  --c-panel-bg:      19 26 34;     /* sits just above --c-paper (#0E141B) */
+  --c-panel-border:  36 43 49;     /* #242B31 */
+  --c-panel-fg:     230 233 238;
+  --c-panel-muted:  142 149 156;
 }
 
 /* ── Base ── */
@@ -54,11 +120,21 @@
     font-size: inherit;
   }
 
-  .dark,
-  [data-theme="dark"] {
-    --tw-bg-opacity: 1;
-    background-color: #0E141B; /* midnight-1100 */
-    color: #F6F7FA;
+  /* MDX fenced code blocks (rendered server-side by rehype-pretty-code) get
+     the same panel chrome as <CodeBlock> and the API code panels so theming
+     is consistent across the docs. Scoped to `pre[data-language]` so we only
+     style rehype-pretty-code's own <pre> — NOT the bare <pre> inside our
+     <CodeBlock>/<CodeTabs> panel (which already brings its own chrome). */
+  pre[data-language] {
+    background: rgb(var(--c-panel-bg)) !important;
+    border: 1px solid rgb(var(--c-panel-border));
+    border-radius: 16px;
+    color: rgb(var(--c-panel-fg));
+    margin: 1.5rem 0;
+    padding: 1.25rem;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.7;
   }
 
   ::selection {

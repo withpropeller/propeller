@@ -1,15 +1,27 @@
 import { ContextIdFactory, NestFactory } from '@nestjs/core';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ParamValidationPipe } from '@core/pipes/param-validation.pipe';
 import { ResponseTransformInterceptor } from '@core/interceptors/response-transform.interceptor';
 import { Logger } from 'nestjs-pino';
 import { ConfigService } from '@config/config.service';
-import { VersioningType } from '@nestjs/common';
+import { INestApplication, VersioningType } from '@nestjs/common';
 import { AggregateByTenantContextIdStrategy } from '@core/helpers/tenant-context-id.strategy';
 import { ApiVersion, LocalRequestProperty } from '@core/helpers/enums';
 import * as express from 'express';
 import { ExpressAdapter } from '@nestjs/platform-express';
+
+
+export function buildOpenApiDocument(app: INestApplication) {
+    const options = new DocumentBuilder()
+        .setTitle('Propeller APIs')
+        .setDescription('Financial Infrastructure for the China–Africa corridor')
+        .setVersion(ApiVersion.Current)
+        .addBearerAuth()
+        .build();
+    return SwaggerModule.createDocument(app, options);
+}
+
 
 async function bootstrap() {
     const server = express();
@@ -36,14 +48,10 @@ async function bootstrap() {
     const config = app.get(ConfigService);
 
     if (config.ENABLE_SWAGGER) {
-        const options = new DocumentBuilder()
-            .setTitle('Allawee APIs')
-            .setDescription('Financial Infrastructure')
-            .setVersion(ApiVersion.Current)
-            .addBearerAuth()
-            .build();
-        const document = SwaggerModule.createDocument(app, options);
-        SwaggerModule.setup('/swagger', app, document);
+        const document = buildOpenApiDocument(app);
+        SwaggerModule.setup('', app, document, {
+            jsonDocumentUrl: '/openapi.json',
+        });
     }
 
     await app.listen(config.PORT);

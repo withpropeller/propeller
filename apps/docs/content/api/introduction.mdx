@@ -1,0 +1,54 @@
+# Propeller API
+
+The Propeller API is organized around REST. We accept JSON-encoded request bodies, return JSON-encoded responses, and use standard HTTP response codes, authentication, and verbs.
+
+## Base URLs
+
+```bash
+# Production
+https://api.withpropeller.com
+
+# Sandbox
+https://api.sandbox.withpropeller.com
+```
+
+Sandbox traffic never settles funds, never moves USDC on-chain, and is safe to point at from CI.
+
+## Authentication
+
+All requests require a Bearer API key in the `Authorization` header.
+
+```bash
+curl https://api.withpropeller.com/v1/businesses \
+  -H "Authorization: Bearer $PROPELLER_KEY"
+```
+
+Generate keys in the [Propeller console](https://app.withpropeller.com). Keys are scoped to a single business and environment — sandbox keys (`sk_test_…`) cannot hit production endpoints and vice versa.
+
+## Idempotency
+
+Every state-changing request accepts an `Idempotency-Key` header. Repeat the same key with the same body to safely retry without creating duplicate resources.
+
+```bash
+curl https://api.withpropeller.com/v1/payouts \
+  -H "Authorization: Bearer $PROPELLER_KEY" \
+  -H "Idempotency-Key: $(uuidgen)" \
+  -H "Content-Type: application/json" \
+  -d '{ "amount": 100000, "currency": "NGN" }'
+```
+
+Keys are scoped per business and stored for 24 hours.
+
+## Rate limits
+
+| Plan      | Requests/min |
+|-----------|--------------|
+| Sandbox   | 60           |
+| Starter   | 600          |
+| Scale     | 6,000        |
+
+When you hit the limit you'll get a `429` with `Retry-After` in seconds. Back off and retry — the client SDKs do this automatically.
+
+## Endpoints
+
+<EndpointList />

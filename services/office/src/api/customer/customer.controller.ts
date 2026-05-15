@@ -52,7 +52,7 @@ export class CustomerController {
         return this.service.getOne(param.id, query);
     }
 
-    @ApiOperation({ summary: 'Update Customer' })
+    @ApiOperation({ summary: 'Update Customer', description: 'Update customer information. Only fields included in the request body will be updated.' })
     @ApiParam({ name: 'id', description: 'Customer ID', type: String })
     @Permission(Permissions.CustomersUpdate)
     @Put('/:id')

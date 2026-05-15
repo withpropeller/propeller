@@ -119,7 +119,7 @@ export class AccountController {
         return this.service.getBalance(param.id, query);
     }
 
-    @ApiOperation({ summary: 'Update Deposit Channel Account Name' })
+    @ApiOperation({ summary: 'Update Deposit Channel Account Name', description: 'Refresh the deposit channel account name from the linked financial account. This is useful when the account name has changed and needs to be updated in Propeller.' })
     @ApiBearerAuth()
     @ApiParam({ name: 'id', description: 'Account ID', type: String })
     @Permission(Permissions.AccountsUpdateDepositChannel)

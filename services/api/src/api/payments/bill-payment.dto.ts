@@ -33,7 +33,7 @@ export class CreateBillPaymentDto {
     @IsOptional()
     debitSource?: TagMap;
 
-    @ApiPropertyOptional({ type: 'object', example: { key: 'value' } })
+    @ApiPropertyOptional({ type: 'object', additionalProperties: true, example: { key: 'value' } })
     @IsOptional()
     @IsObject()
     @IsNotEmptyObject()

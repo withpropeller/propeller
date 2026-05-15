@@ -3,21 +3,46 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PropellerLogo, PropellerWordmark } from "@/components/chrome";
+import { ThemeToggle } from "./theme-toggle";
+import { TocList } from "./toc";
+import { FeedbackWidget } from "./feedback";
 
-export type DocLink = { href: string; label: string; badge?: "new" | "beta" };
+export type DocLink = { href: string; label: string; badge?: "new" | "beta"; method?: string };
 export type DocSection = { title: string; links: DocLink[] };
 
-export function DocsTopBar() {
+export type TopTab = { id: string; label: string; href: string; matchPrefixes: string[] };
+export type TopTabWithSections = TopTab & { sections: DocSection[] };
+
+export function DocsTopBar({ tabs }: { tabs: TopTab[] }) {
+  const pathname = usePathname();
+  const activeId = pickActiveTabId(tabs, pathname);
   return (
-    <header className="docs-top sticky top-0 z-20 h-14 px-6 flex items-center justify-between bg-paper border-b border-slate-3">
+    <header className="docs-top sticky top-0 z-20 bg-paper border-b border-slate-3">
+      <div className="h-14 px-6 flex items-center justify-between">
       <div className="flex items-center gap-6">
         <Link href="/" className="brand inline-flex items-start  gap-2.5 no-underline text-ink font-semibold text-15">
           <PropellerLogo size={20} />
           <PropellerWordmark size={110} />
         </Link>
-        <span className="font-mono text-12 text-slate-5 px-2.5 py-1 border border-slate-3 rounded-full">
-          docs · v1
-        </span>
+        <nav className="hidden md:flex items-center gap-1">
+          {tabs.map((t) => {
+            const active = t.id === activeId;
+            return (
+              <Link
+                key={t.id}
+                href={t.href}
+                className={`relative px-3 py-1.5 text-13 no-underline rounded-1 ${
+                  active ? "text-ink font-medium" : "text-slate-5 hover:text-ink"
+                }`}
+              >
+                {t.label}
+                {active && (
+                  <span aria-hidden className="absolute left-2 right-2 -bottom-[15px] h-[2px] bg-brand" />
+                )}
+              </Link>
+            );
+          })}
+        </nav>
       </div>
       <div className="flex items-center gap-3">
         <div className="relative w-[360px] h-[34px] hidden md:block docs-search">
@@ -36,6 +61,8 @@ export function DocsTopBar() {
         </div>
         <Link className="navlink hidden sm:inline-flex" href="https://withpropeller.com">withpropeller.com ↗</Link>
         <Link className="btn btn-ghost btn-sm" href="https://app.withpropeller.com">Console</Link>
+        <ThemeToggle />
+      </div>
       </div>
       <style>{`
         @media (max-width: 880px) { .docs-search { width: 220px !important; display: block !important; } }
@@ -45,8 +72,21 @@ export function DocsTopBar() {
   );
 }
 
-export function DocsSidebar({ sections }: { sections: DocSection[] }) {
+function pickActiveTabId(tabs: TopTab[], pathname: string): string {
+  for (const t of tabs) {
+    if (t.matchPrefixes.includes("__default__")) continue;
+    if (t.matchPrefixes.some((p) => pathname === p || pathname.startsWith(p + "/"))) {
+      return t.id;
+    }
+  }
+  return tabs.find((t) => t.matchPrefixes.includes("__default__"))?.id ?? tabs[0]?.id ?? "";
+}
+
+export function DocsSidebar({ tabs }: { tabs: TopTabWithSections[] }) {
   const pathname = usePathname();
+  const activeId = pickActiveTabId(tabs, pathname);
+  const activeTab = tabs.find((t) => t.id === activeId) ?? tabs[0];
+  const sections = activeTab?.sections ?? [];
   return (
     <aside className="docs-side border-r border-slate-3 px-4 py-6 sticky self-start overflow-y-auto"
            style={{ top: 56, height: "calc(100vh - 56px)" }}>
@@ -66,7 +106,8 @@ export function DocsSidebar({ sections }: { sections: DocSection[] }) {
                 }`}
               >
                 {active && <span aria-hidden className="w-[2px] h-3.5 bg-brand -ml-2.5 mr-1.5" />}
-                <span>{l.label}</span>
+                {l.method && <SidebarMethod method={l.method} />}
+                <span className="truncate">{l.label}</span>
                 {l.badge && (
                   <span className={`ml-auto font-mono text-[9px] px-1.5 py-px rounded-sm tracking-[0.04em] uppercase ${
                     l.badge === "new"
@@ -85,42 +126,30 @@ export function DocsSidebar({ sections }: { sections: DocSection[] }) {
   );
 }
 
+function SidebarMethod({ method }: { method: string }) {
+  const m = method.toLowerCase();
+  const color: Record<string, string> = {
+    get: "#3CC88C",
+    post: "#6E86FA",
+    put: "#EE7A4B",
+    patch: "#EE7A4B",
+    delete: "#E14F4F",
+  };
+  return (
+    <span className="font-mono text-[9px] uppercase tracking-[0.04em] w-9 flex-shrink-0" style={{ color: color[m] ?? "#7882A0" }}>
+      {m}
+    </span>
+  );
+}
+
 export function DocsToc({ items, helpful = true }: { items: { id: string; label: string }[]; helpful?: boolean }) {
   return (
     <aside className="toc px-6 py-6 sticky self-start overflow-y-auto" style={{ top: 56, height: "calc(100vh - 56px)" }}>
       <h6 className="font-mono text-10 uppercase tracking-[0.08em] text-slate-5 font-medium mb-2">
         On this page
       </h6>
-      {items.map((i) => (
-        <a key={i.id} href={`#${i.id}`}
-           className="block py-1 text-12 text-slate-5 hover:text-ink no-underline">
-          {i.label}
-        </a>
-      ))}
+      <TocList items={items} />
       {helpful && <FeedbackWidget />}
     </aside>
-  );
-}
-
-function FeedbackWidget() {
-  return (
-    <div className="mt-8 pt-4 border-t border-slate-3 text-12 text-slate-5">
-      Was this page helpful?
-      <div className="flex gap-1.5 mt-2">
-        <FeedbackButton answer="yes">Yes</FeedbackButton>
-        <FeedbackButton answer="no">No</FeedbackButton>
-      </div>
-    </div>
-  );
-}
-
-function FeedbackButton({ answer, children }: { answer: "yes" | "no"; children: React.ReactNode }) {
-  return (
-    <button
-      data-feedback={answer}
-      className="font-mono text-11 px-2.5 py-1 border border-slate-4 bg-transparent rounded-1 cursor-pointer text-slate-6 hover:text-ink hover:border-slate-7"
-    >
-      {children}
-    </button>
   );
 }

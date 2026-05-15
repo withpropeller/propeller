@@ -15,8 +15,7 @@ import { PermissionsGuard, SecureGuard, ThrottlerBehindProxyGuard } from '@core/
         CommonModule,
         ApiModule,
         ThrottlerModule.forRoot({
-            ttl: 1000, // 1000 transactions in  1 second
-            limit: 1000,
+            throttlers: [{ ttl: 1000, limit: 1000 }], // 1000 transactions in 1 second
         }),
         HealthModule,
     ],

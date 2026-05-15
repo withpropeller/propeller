@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { MDXComponents } from "mdx/types";
 import { Callout, DocsH2, DocsP } from "./page";
 import { CodeBlock, type CodeSnippet } from "./code-block";
+import { EndpointList } from "./api/endpoint-list";
 
 function slugify(s: string) {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -164,5 +165,6 @@ export const mdxComponents: MDXComponents = {
   Path,
   ApiRefs,
   MigrationCallout,
+  EndpointList,
   Link,
 };

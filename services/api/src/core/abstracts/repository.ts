@@ -194,7 +194,7 @@ export abstract class Repository<T> {
         if (query.countTotal) {
             // eslint-disable-next-line
             const { _id, ...withoutLastIdConditions } = conditions;
-            count = await this.model.find(withoutLastIdConditions).count().exec();
+            count = await this.model.countDocuments(withoutLastIdConditions).exec();
         }
 
         if (reverseList) {
@@ -247,7 +247,7 @@ export abstract class Repository<T> {
 
     async updateOne(criteria: Record<string, unknown>, update: Partial<T>, options?: QueryOptions) {
         try {
-            return await this.model.updateOne(criteria as any, update as any, options);
+            return await this.model.updateOne(criteria as any, update as any, options as any);
         } catch (err) {
             if (err && err.code === MONGO_UNIQUE_CONSTRAINT_CODE) {
                 throw AppException.Conflict.setMessage('Unique constraint');
@@ -295,10 +295,10 @@ export abstract class Repository<T> {
 
     bulkInsert(docs: T[], options?: InsertManyOptions): Promise<HydratedDocument<T>[]> {
         if (!docs || docs.length === 0) {
-            return;
+            return Promise.resolve([]);
         }
 
-        return this.model.insertMany(docs, options);
+        return this.model.insertMany(docs, options) as unknown as Promise<HydratedDocument<T>[]>;
     }
 
     bulkUpdate(docs: HydratedDocument<T>[], updateObj: Partial<T>) {

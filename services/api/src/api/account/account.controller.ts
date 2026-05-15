@@ -108,7 +108,7 @@ export class AccountController {
         return this.service.addDepositChannels(key.businessId, param.id, body, query);
     }
 
-    @ApiOperation({ summary: 'Update Deposit Channel Account Name' })
+    @ApiOperation({ summary: 'Update Deposit Channel Account Name', description: 'Refresh the deposit channel account name from the linked financial account. This is useful when the account name has changed and needs to be updated in Propeller.' })
     @Permission(Permissions.AccountsUpdateDepositChannel)
     @Put('/:id/deposit-channels/update-account-name')
     @HttpCode(HttpStatus.OK)

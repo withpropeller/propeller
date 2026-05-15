@@ -119,6 +119,16 @@ build.landing:
         cd apps/landing && bun run build
 
 # ============================================================================
+# Docs
+# ============================================================================
+
+## Refresh apps/docs OpenAPI spec from the running services/api at :8000
+docs.openapi:
+    script:
+        curl -fsS http://localhost:8000/openapi.json | jq . > apps/docs/content/api/openapi.json
+        @echo "Wrote apps/docs/content/api/openapi.json"
+
+# ============================================================================
 # Test / Typecheck
 # ============================================================================
 

@@ -53,30 +53,28 @@ const config: Config = {
           1000: "#2A1A00",
         },
 
-        // Semantic aliases
-        brand:      "#3E59F3",
-        "brand-deep":"#1A36D9",
-        "brand-mute":"#D0DDFC",
+        // Semantic aliases (CSS-var driven so they flip with theme)
+        brand:      "rgb(var(--c-brand) / <alpha-value>)",
+        "brand-deep":"rgb(var(--c-brand-deep) / <alpha-value>)",
+        "brand-mute":"rgb(var(--c-brand-mute) / <alpha-value>)",
 
-        ink:       "#0E141B",
-        "ink-soft":"#242B31",
-        "ink-2":   "#343A40",
-        "ink-3":   "#4A5056",
+        ink:       "rgb(var(--c-ink) / <alpha-value>)",
+        "ink-soft":"rgb(var(--c-ink-soft) / <alpha-value>)",
+        "ink-2":   "rgb(var(--c-ink-2) / <alpha-value>)",
+        "ink-3":   "rgb(var(--c-ink-3) / <alpha-value>)",
 
-        // Paper/surface
-        paper:   "#FFFFFF",
-        "paper-2":"#F6F7FA",
+        paper:   "rgb(var(--c-paper) / <alpha-value>)",
+        "paper-2":"rgb(var(--c-paper-2) / <alpha-value>)",
 
-        // Neutrals
-        "slate-0": "#FFFFFF",
-        "slate-1": "#F6F7FA",
-        "slate-2": "#ECEEF3",
-        "slate-3": "#D7DADF",
-        "slate-4": "#C7CBD1",
-        "slate-5": "#8E959C",
-        "slate-6": "#646A71",
-        "slate-7": "#4A5056",
-        "slate-8": "#343A40",
+        "slate-0": "rgb(var(--c-slate-0) / <alpha-value>)",
+        "slate-1": "rgb(var(--c-slate-1) / <alpha-value>)",
+        "slate-2": "rgb(var(--c-slate-2) / <alpha-value>)",
+        "slate-3": "rgb(var(--c-slate-3) / <alpha-value>)",
+        "slate-4": "rgb(var(--c-slate-4) / <alpha-value>)",
+        "slate-5": "rgb(var(--c-slate-5) / <alpha-value>)",
+        "slate-6": "rgb(var(--c-slate-6) / <alpha-value>)",
+        "slate-7": "rgb(var(--c-slate-7) / <alpha-value>)",
+        "slate-8": "rgb(var(--c-slate-8) / <alpha-value>)",
 
         // Signals
         "signal-up":   "#17B04A",

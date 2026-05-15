@@ -1,0 +1,14 @@
+<Callout title="KYC required for live mode">
+  In production a customer is created in `pending_kyc` status. You must submit
+  KYC documents via the Compliance API before any payments can settle.
+</Callout>
+
+## Use cases
+
+- **Hosted checkout** — create a customer just-in-time when a buyer hits your invoice link, then attach the invoice to them.
+- **Backfill** — import existing customers from your CRM at onboarding. Pass your internal ID in `metadata.external_id` to keep a stable cross-reference.
+- **Sub-merchant onboarding** — under a super-merchant business, each merchant's customers are scoped to the merchant's `business_id`. The same email can exist under different businesses.
+
+## Idempotency
+
+Pass an `Idempotency-Key` header to safely retry on network errors. Within 24 hours, a repeat call with the same key and body returns the original customer instead of creating a duplicate.

@@ -1,6 +1,7 @@
-import type { DocSection } from "./nav";
+import type { DocSection, DocLink } from "./nav";
+import { loadOpenApi, operationHref } from "@/lib/openapi";
 
-export const DOCS_SECTIONS: DocSection[] = [
+const DOC_SECTIONS: DocSection[] = [
   {
     title: "Get started",
     links: [
@@ -21,15 +22,17 @@ export const DOCS_SECTIONS: DocSection[] = [
     ],
   },
   {
-    title: "API reference",
+    title: "Operations",
     links: [
-      { href: "/api/businesses", label: "Businesses" },
-      { href: "/api/invoices", label: "Invoices" },
-      { href: "/api/payments", label: "Payments" },
-      { href: "/api/payouts", label: "Payouts" },
-      { href: "/api/webhooks", label: "Webhooks" },
+      { href: "/ops/webhooks", label: "Webhooks" },
+      { href: "/ops/idempotency", label: "Idempotency" },
+      { href: "/ops/rate-limits", label: "Rate limits" },
+      { href: "/ops/status", label: "Status & uptime" },
     ],
   },
+];
+
+const GUIDE_SECTIONS: DocSection[] = [
   {
     title: "Guides",
     links: [
@@ -40,13 +43,82 @@ export const DOCS_SECTIONS: DocSection[] = [
       { href: "/guides/webhooks", label: "Webhook integration" },
     ],
   },
+];
+
+const CHANGELOG_SECTIONS: DocSection[] = [
   {
-    title: "Operations",
-    links: [
-      { href: "/ops/webhooks", label: "Webhooks" },
-      { href: "/ops/idempotency", label: "Idempotency" },
-      { href: "/ops/rate-limits", label: "Rate limits" },
-      { href: "/ops/status", label: "Status & uptime" },
-    ],
+    title: "Changelog",
+    links: [{ href: "/changelog", label: "Recent changes" }],
   },
 ];
+
+function buildApiSections(): DocSection[] {
+  const api = loadOpenApi();
+  return [
+    {
+      title: "Overview",
+      links: [{ href: "/api-reference", label: "Introduction" }],
+    },
+    ...api.tags.map((tag) => ({
+      title: tag.name,
+      links: tag.operations.map<DocLink>((op) => ({
+        href: operationHref(op),
+        label: op.summary ?? op.operationId,
+        method: op.method,
+      })),
+    })),
+  ];
+}
+
+export type DocsTab = {
+  id: string;
+  label: string;
+  href: string;
+  /** Pathname prefixes that activate this tab. Use "__default__" for the fallback tab. */
+  matchPrefixes: string[];
+  sections: DocSection[];
+};
+
+export function getDocsTabs(): DocsTab[] {
+  return [
+    {
+      id: "documentation",
+      label: "Documentation",
+      href: "/",
+      matchPrefixes: ["__default__"],
+      sections: DOC_SECTIONS,
+    },
+    {
+      id: "guides",
+      label: "Guides",
+      href: "/guides/onboarding",
+      matchPrefixes: ["/guides"],
+      sections: GUIDE_SECTIONS,
+    },
+    {
+      id: "api-reference",
+      label: "API reference",
+      href: "/api-reference",
+      matchPrefixes: ["/api-reference"],
+      sections: buildApiSections(),
+    },
+    {
+      id: "changelog",
+      label: "Changelog",
+      href: "/changelog",
+      matchPrefixes: ["/changelog"],
+      sections: CHANGELOG_SECTIONS,
+    },
+  ];
+}
+
+/** Pick the active tab for a pathname. */
+export function pickActiveTab(tabs: DocsTab[], pathname: string): DocsTab {
+  for (const t of tabs) {
+    if (t.matchPrefixes.includes("__default__")) continue;
+    if (t.matchPrefixes.some((p) => pathname === p || pathname.startsWith(p + "/") || pathname === p)) {
+      return t;
+    }
+  }
+  return tabs.find((t) => t.matchPrefixes.includes("__default__")) ?? tabs[0];
+}

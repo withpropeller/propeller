@@ -1,5 +1,5 @@
 import * as pinoHttp from 'pino-http';
-import ecsFormat = require('@elastic/ecs-pino-format');
+import ecsFormat from '@elastic/ecs-pino-format';
 import { ConfigService } from '@config/config.service';
 
 const REDACTION = {

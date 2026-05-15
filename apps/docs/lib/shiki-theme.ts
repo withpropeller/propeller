@@ -3,13 +3,16 @@
 // functions/types. Background is set to midnight-1100.
 import type { ThemeRegistrationRaw } from "shiki";
 
+// One Dark-inspired palette mirrored by components/docs/code-block.tsx.
 const FG       = "#D7DADF";
 const COMMENT  = "#646A71";
-const STRING   = "#C7CBD1";
-const KEYWORD  = "#8EA9FA";
-const NUMBER   = "#8EA9FA";
-const FUNCTION = "#73A9F4";
-const TYPE     = "#73A9F4";
+const STRING   = "#E5A87B"; // warm peach
+const KEYWORD  = "#C678DD"; // import / def / return / if … (pink-magenta)
+const BOOL     = "#C678DD"; // true / false / null / None
+const NUMBER   = "#E5C07B"; // numbers — soft yellow
+const BUILTIN  = "#E5C07B"; // print / console / len … same yellow
+const FUNCTION = "#73A9F4"; // function calls / object keys
+const TYPE     = "#56B6C2"; // types — cyan
 const PUNCT    = "#8E959C";
 
 // Shiki reads `settings` (TextMate-style). Some loaders ignore the VS-Code-style
@@ -40,13 +43,19 @@ export const propellerDark: ThemeRegistrationRaw = {
     { scope: ["constant.language", "constant.language.boolean",
               "constant.language.null", "constant.language.undefined",
               "constant.language.import-export-all"],
-      settings: { foreground: KEYWORD } },
+      settings: { foreground: BOOL } },
 
     // Keywords / storage / control flow
     { scope: ["keyword", "keyword.control", "keyword.operator.expression",
               "keyword.operator.new", "keyword.operator.logical.python",
               "storage", "storage.type", "storage.modifier"],
       settings: { foreground: KEYWORD } },
+
+    // Built-in functions (print, console, len, ...) — distinct from user-defined fns.
+    { scope: ["support.function.builtin", "support.function.builtin.python",
+              "variable.language.builtin", "support.function.print.python",
+              "support.function.node", "support.variable.console"],
+      settings: { foreground: BUILTIN } },
 
     // Operators (muted, between keywords and punctuation)
     { scope: ["keyword.operator", "keyword.operator.assignment",

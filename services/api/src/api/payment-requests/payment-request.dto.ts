@@ -93,7 +93,7 @@ export class CreatePaymentRequestBankTransferDto implements ICreatePaymentReques
     @IsOptional()
     account?: Types.ObjectId;
 
-    @ApiPropertyOptional({ type: 'object', example: { key: 'value' } })
+    @ApiPropertyOptional({ type: 'object', additionalProperties: true, example: { key: 'value' } })
     @IsOptional()
     @IsObject()
     @IsNotEmptyObject()
@@ -148,7 +148,7 @@ export class CreatePaymentRequestPaymentAuthorizationDto implements ICreatePayme
     @IsOptional()
     account?: Types.ObjectId;
 
-    @ApiPropertyOptional({ type: 'object', example: { key: 'value' } })
+    @ApiPropertyOptional({ type: 'object', additionalProperties: true, example: { key: 'value' } })
     @IsOptional()
     @IsObject()
     @IsNotEmptyObject()

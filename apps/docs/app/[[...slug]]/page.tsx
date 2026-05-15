@@ -3,31 +3,13 @@ import type { Metadata } from "next";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypePrettyCode from "rehype-pretty-code";
-import { createHighlighter, type Highlighter } from "shiki";
 import { getDoc, listDocs } from "@/lib/docs";
 import { DocsPage } from "@/components/docs/page";
 import { mdxComponents } from "@/components/docs/mdx";
-import { propellerDark } from "@/lib/shiki-theme";
+import { getHighlighter, shellEnhancer } from "@/lib/shiki";
 
-// Shiki's bundle-aware loader can't look up custom themes by name. We
-// pre-create a highlighter with the theme + every language we use across
-// the docs and hand it to rehype-pretty-code via getHighlighter.
-let _highlighter: Highlighter | undefined;
-async function getHighlighter() {
-  if (!_highlighter) {
-    _highlighter = await createHighlighter({
-      themes: [propellerDark],
-      langs: [
-        "bash", "shell", "sh", "console",
-        "json", "yaml", "toml", "diff",
-        "python", "javascript", "typescript", "tsx", "jsx",
-        "go", "rust", "zig", "c", "cpp", "java", "ruby", "php", "sql",
-        "html", "css", "markdown", "mdx", "plaintext",
-      ],
-    });
-  }
-  return _highlighter;
-}
+// One transformer instance reused across all blocks — it's stateless.
+const shellTransformer = shellEnhancer();
 
 const prettyCodeOptions = {
   theme: "propeller-dark",
@@ -35,6 +17,11 @@ const prettyCodeOptions = {
   defaultLang: "plaintext",
   bypassInlineCode: true,
   getHighlighter,
+  // Apply the same shell flag / HTTP method re-coloring used by <CodeBlock> and
+  // the API code panels. The transformer's tokens() hook decides per-token
+  // whether to repaint, so applying it to all langs is safe (it only matches
+  // CLI-flag / HTTP-method shapes).
+  transformers: [shellTransformer],
 } as const;
 
 export function generateStaticParams(): { slug?: string[] }[] {
