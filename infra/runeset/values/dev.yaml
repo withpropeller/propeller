@@ -1,38 +1,24 @@
 # Dev values — for staging-like local Rune deploys.
-# Production values live in values/prod.yaml.
 
 app:
+  env: dev
   tag: dev
 
 registry: ghcr.io/withpropeller/propeller
 logLevel: debug
 
 flo:
+  component:
+    name: flo
+    volumeSize: 10Gi
+    cpuRequest: "100m"
+    cpuLimit: "1000m"
+    memRequest: "256Mi"
+    memLimit: "1Gi"
   tag: latest
   clientPort: 9000
   metricsPort: 9001
   dashboardPort: 9002
-  cpuLimit: "1000m"
-  memLimit: "1Gi"
-
-api:
-  scale: 1
-  port: 3001
-  publicUrl: "https://api.dev.propeller.xyz"
-  cpuLimit: "500m"
-  memLimit: "512Mi"
-
-services:
-  scale: 1
-  port: 3002
-  cpuLimit: "500m"
-  memLimit: "512Mi"
-
-office:
-  scale: 1
-  port: 3003
-  cpuLimit: "500m"
-  memLimit: "512Mi"
 
 landing:
   component:
@@ -41,7 +27,13 @@ landing:
     scale: 1
     port: 80
     healthPath: /healthz
+    tls: { mode: manual, secret: shared/cf-origin-cert }
+    env: { NODE_ENV: production }
+    envFrom: []
+    dependencies: []
+    cpuRequest: "20m"
     cpuLimit: "100m"
+    memRequest: "32Mi"
     memLimit: "64Mi"
 
 web:
@@ -51,7 +43,13 @@ web:
     scale: 1
     port: 3000
     healthPath: /
+    tls: { mode: manual, secret: shared/cf-origin-cert }
+    env: { NODE_ENV: production }
+    envFrom: []
+    dependencies: []
+    cpuRequest: "50m"
     cpuLimit: "500m"
+    memRequest: "64Mi"
     memLimit: "256Mi"
 
 docs:
@@ -61,7 +59,13 @@ docs:
     scale: 1
     port: 3000
     healthPath: /
+    tls: { mode: manual, secret: shared/cf-origin-cert }
+    env: { NODE_ENV: production }
+    envFrom: []
+    dependencies: []
+    cpuRequest: "50m"
     cpuLimit: "500m"
+    memRequest: "64Mi"
     memLimit: "256Mi"
 
 gateway:
@@ -71,10 +75,15 @@ gateway:
     scale: 1
     port: 3002
     healthPath: /health
+    tls: { mode: auto }
+    env: {}
+    envFrom:
+      - secretRef: gateway-env
+      - configRef: gateway-config
+    dependencies:
+      - { service: mongo, namespace: shared, readyWhen: healthy }
+      - { service: flo,   namespace: shared, readyWhen: healthy }
+    cpuRequest: "50m"
     cpuLimit: "500m"
+    memRequest: "128Mi"
     memLimit: "512Mi"
-
-caddy:
-  scale: 1
-  cpuLimit: "200m"
-  memLimit: "128Mi"

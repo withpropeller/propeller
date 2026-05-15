@@ -1,14 +1,17 @@
-# Production values — populated as Wave 5 hardens up.
+# Production values.
+# Shape: every app service declares a `component:` block consumed by
+# infra/runeset/casts/external-service.yaml. The deploy-prep action lifts
+# values.<component>.component → top-level `component:` via an overlay
+# values file before rune cast renders the template.
 
 app:
-  tag: ""  # set per release: `rune cast --values=prod --set app.tag=v0.1.0`
+  env: prod
+  tag: ""        # set per release by the deploy-prep action (sha-<short>)
 
+registry: ghcr.io/withpropeller/propeller
 logLevel: info
 
-# ── Registry override ────────────────────────────────────────────
-registry: ghcr.io/withpropeller/propeller
-
-# ── Infrastructure components (shared namespace) ─────────────────
+# ── Infrastructure (shared namespace) ─────────────────────────────
 
 mongo:
   component:
@@ -27,12 +30,12 @@ flo:
     cpuLimit: "2000m"
     memRequest: "256Mi"
     memLimit: "2Gi"
-  tag: ""  # pin in prod; never use latest
+  tag: ""        # pin in prod; never use latest
   clientPort: 9000
   metricsPort: 9001
   dashboardPort: 9002
 
-# ── Public-facing components ─────────────────────────────────────
+# ── Public app services (external-service cast) ────────────────────
 
 landing:
   component:
@@ -41,7 +44,13 @@ landing:
     scale: 1
     port: 80
     healthPath: /healthz
+    tls: { mode: manual, secret: shared/cf-origin-cert }
+    env: { NODE_ENV: production }
+    envFrom: []
+    dependencies: []
+    cpuRequest: "50m"
     cpuLimit: "500m"
+    memRequest: "64Mi"
     memLimit: "128Mi"
 
 web:
@@ -51,7 +60,13 @@ web:
     scale: 1
     port: 3000
     healthPath: /
+    tls: { mode: manual, secret: shared/cf-origin-cert }
+    env: { NODE_ENV: production }
+    envFrom: []
+    dependencies: []
+    cpuRequest: "50m"
     cpuLimit: "500m"
+    memRequest: "64Mi"
     memLimit: "256Mi"
 
 docs:
@@ -61,17 +76,14 @@ docs:
     scale: 1
     port: 3000
     healthPath: /
+    tls: { mode: manual, secret: shared/cf-origin-cert }
+    env: { NODE_ENV: production }
+    envFrom: []
+    dependencies: []
+    cpuRequest: "50m"
     cpuLimit: "500m"
+    memRequest: "64Mi"
     memLimit: "256Mi"
-
-# ── Backend components ───────────────────────────────────────────
-
-api:
-  scale: 2
-  port: 3001
-  publicUrl: "https://api.propeller.xyz"
-  cpuLimit: "1000m"
-  memLimit: "1Gi"
 
 gateway:
   component:
@@ -80,12 +92,18 @@ gateway:
     scale: 1
     port: 3002
     healthPath: /health
+    tls: { mode: auto }
+    env: {}
+    envFrom:
+      - secretRef: gateway-env
+      - configRef: gateway-config
+    dependencies:
+      - { service: mongo, namespace: shared, readyWhen: healthy }
+      - { service: flo,   namespace: shared, readyWhen: healthy }
     cpuRequest: "200m"
     cpuLimit: "1000m"
     memRequest: "256Mi"
     memLimit: "1Gi"
-    mongoNamespace: shared   # mongo lives in shared namespace
-    floNamespace: shared      # flo lives in shared namespace
   config:
     REDIS_URI: "redis://redis.prod:6379"
     MAIN_SITE_DOMAIN: "https://withpropeller.com"
@@ -117,9 +135,3 @@ gateway:
     PAYKKA_PUBLIC_KEY_PEM: ""
     PAYKKA_KEY_ID: ""
     SLACK_TOKEN: ""
-
-office:
-  scale: 1
-  port: 3003
-  cpuLimit: "500m"
-  memLimit: "512Mi"

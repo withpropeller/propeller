@@ -1,41 +1,43 @@
 # Staging values — pre-production mirror.
 
 app:
-  tag: stg
+  env: stg
+  tag: ""
 
 registry: ghcr.io/withpropeller/propeller
 logLevel: info
 
 landing:
-  host: stg.withpropeller.com
-  scale: 1
-  cpuLimit: "500m"
-  memLimit: "128Mi"
+  component:
+    name: landing
+    host: stg.withpropeller.com
+    scale: 1
+    port: 80
+    healthPath: /healthz
+    tls: { mode: manual, secret: shared/cf-origin-cert }
+    env: { NODE_ENV: production }
+    envFrom: []
+    dependencies: []
+    cpuRequest: "50m"
+    cpuLimit: "500m"
+    memRequest: "64Mi"
+    memLimit: "128Mi"
 
-api:
-  scale: 1
-  port: 3001
-  publicUrl: "https://api.stg.withpropeller.com"
-  cpuLimit: "500m"
-  memLimit: "512Mi"
-
-services:
-  scale: 1
-  port: 3002
-  cpuLimit: "500m"
-  memLimit: "512Mi"
-
-office:
-  scale: 1
-  port: 3003
-  cpuLimit: "500m"
-  memLimit: "512Mi"
-
-webhook:
-  scale: 1
-  port: 3004
-  cpuLimit: "200m"
-  memLimit: "128Mi"
+web:
+  component:
+    name: web
+    host: app.stg.withpropeller.com
+    scale: 1
+    port: 3000
+    healthPath: /
+    tls: { mode: manual, secret: shared/cf-origin-cert }
+    env: { NODE_ENV: production }
+    envFrom: []
+    dependencies: []
+    cpuRequest: "50m"
+    cpuLimit: "500m"
+    memRequest: "64Mi"
+    memLimit: "256Mi"
 
 docs:
   component:
@@ -44,5 +46,31 @@ docs:
     scale: 1
     port: 3000
     healthPath: /
+    tls: { mode: manual, secret: shared/cf-origin-cert }
+    env: { NODE_ENV: production }
+    envFrom: []
+    dependencies: []
+    cpuRequest: "50m"
     cpuLimit: "500m"
+    memRequest: "64Mi"
     memLimit: "256Mi"
+
+gateway:
+  component:
+    name: gateway
+    host: gateway.stg.withpropeller.com
+    scale: 1
+    port: 3002
+    healthPath: /health
+    tls: { mode: auto }
+    env: {}
+    envFrom:
+      - secretRef: gateway-env
+      - configRef: gateway-config
+    dependencies:
+      - { service: mongo, namespace: shared, readyWhen: healthy }
+      - { service: flo,   namespace: shared, readyWhen: healthy }
+    cpuRequest: "100m"
+    cpuLimit: "500m"
+    memRequest: "128Mi"
+    memLimit: "512Mi"

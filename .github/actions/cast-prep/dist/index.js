@@ -31428,88 +31428,85 @@ var jsYaml = {
 
 
 
-// ── Helpers ──────────────────────────────────────────────────────
-function flatten(obj, prefix = '') {
-    const result = {};
-    for (const [k, v] of Object.entries(obj)) {
-        const key = prefix ? `${prefix}.${k}` : k;
-        if (v !== null && typeof v === 'object' && !Array.isArray(v)) {
-            Object.assign(result, flatten(v, key));
-        }
-        else {
-            result[key] = String(v ?? '');
-        }
-    }
-    return result;
-}
-// ── Main ─────────────────────────────────────────────────────────
 async function run() {
     try {
         const component = core.getInput('component', { required: true });
         const environment = core.getInput('environment', { required: true });
         const configFile = core.getInput('config_file') || '.github/deploy-config.yml';
-        core.info(`🔧 Preparing cast for ${component} → ${environment}`);
-        // 1. Load deploy-config.yml
-        const configPath = external_path_.resolve(configFile);
-        const deployConfig = load(external_fs_.readFileSync(configPath, 'utf-8'));
+        const sha = core.getInput('sha') || process.env.GITHUB_SHA || '';
+        core.info(`Preparing ${component} → ${environment}`);
+        const deployConfig = load(external_fs_.readFileSync(external_path_.resolve(configFile), 'utf-8'));
         const globalCfg = deployConfig.global;
         const compSpec = deployConfig.components[component];
         if (!compSpec) {
-            core.setOutput('has_cast', 'false');
-            core.info(`No component '${component}' in deploy-config — skipping cast`);
+            core.setFailed(`Unknown component '${component}' in ${configFile}`);
             return;
         }
+        const registry = `${globalCfg.registry}/${globalCfg.repo}`;
+        const imageName = `${registry}/${component}`;
+        const shortSha = sha ? sha.slice(0, 7) : '';
+        const imageTag = shortSha ? `sha-${shortSha}` : environment;
+        // ── Build outputs ───────────────────────────────────────────────
+        const hasBuild = !!compSpec.dockerfile;
+        core.setOutput('has_build', hasBuild ? 'true' : 'false');
+        if (hasBuild) {
+            core.setOutput('dockerfile', compSpec.dockerfile);
+            core.setOutput('context', compSpec.context || '.');
+            const buildArgs = compSpec.build_args
+                ? Object.entries(compSpec.build_args)
+                    .map(([k, v]) => `${k}=${v}`)
+                    .join('\n')
+                : '';
+            core.setOutput('build_args', buildArgs);
+            core.setOutput('image_name', imageName);
+            core.setOutput('image_tag', imageTag);
+            core.info(`  build: ${imageName}:${imageTag}`);
+        }
+        else {
+            core.info(`  build: skipped (no dockerfile in deploy-config)`);
+        }
+        // ── Cast outputs ────────────────────────────────────────────────
         const castFile = compSpec.cast;
         if (!castFile) {
             core.setOutput('has_cast', 'false');
-            core.info(`No cast configured for '${component}'`);
+            core.info(`  cast: skipped (no cast in deploy-config)`);
             return;
         }
-        // 2. Load values file
-        const valuesFile = `infra/runeset/values/${environment}.yaml`;
-        const valuesPath = external_path_.resolve(valuesFile);
-        const values = external_fs_.existsSync(valuesPath)
-            ? load(external_fs_.readFileSync(valuesPath, 'utf-8'))
-            : {};
-        // 3. Flatten values
-        const flat = flatten(values);
-        // Fill registry
-        if (!flat['registry']) {
-            flat['registry'] = `${globalCfg.registry}/${globalCfg.repo}`;
+        const namespace = compSpec.namespace || environment;
+        const envValuesPath = `infra/runeset/values/${environment}.yaml`;
+        if (!external_fs_.existsSync(envValuesPath)) {
+            core.setFailed(`Values file not found: ${envValuesPath}`);
+            return;
         }
-        // Fill app.tag from environment name
-        if (!flat['app.tag']) {
-            flat['app.tag'] = environment;
+        const envValues = load(external_fs_.readFileSync(envValuesPath, 'utf-8'));
+        // Lift the active component's subtree to top-level `component:`
+        // values structure: { docs: { component: { name, host, ... } }, ... }
+        const overlay = {
+            app: { tag: imageTag },
+            registry,
+        };
+        const compBlock = envValues[component];
+        if (compBlock && typeof compBlock === 'object') {
+            const inner = compBlock.component;
+            const source = inner && typeof inner === 'object'
+                ? inner
+                : compBlock;
+            overlay.component = source;
         }
-        // 4. Promote active component's keys to "component." prefix
-        //    Values are:  web: { component: { name: web, host: ..., scale: 1, ... } }
-        //    Cast uses:  {{ values:component.name }} {{ values:component.host }} etc.
-        const compValues = values[component];
-        if (compValues && typeof compValues === 'object') {
-            const inner = compValues.component;
-            const source = (inner && typeof inner === 'object') ? inner : compValues;
-            if (typeof source === 'object') {
-                for (const [k, v] of Object.entries(source)) {
-                    flat[`component.${k}`] = String(v ?? '');
-                }
-            }
+        else {
+            core.info(`  no '${component}:' block in ${envValuesPath} — overlay omits component.*`);
         }
-        core.info(`  Resolved ${Object.keys(flat).filter(k => k.startsWith('component.')).length} component.* keys`);
-        core.info(JSON.stringify(Object.fromEntries(Object.entries(flat).filter(([k]) => k.startsWith('component.')))));
-        // 5. Read cast template and substitute {{ values:key }}
-        const castPath = external_path_.resolve(castFile);
-        let content = external_fs_.readFileSync(castPath, 'utf-8');
-        content = content.replace(/\{\{\s*values:([\w.]+)\s*\}\}/g, (_match, key) => {
-            const k = key.trim();
-            return flat[k] ?? `__UNSET:${k}__`;
-        });
-        // 6. Write processed cast
-        const outPath = '/tmp/processed-cast.yaml';
-        external_fs_.writeFileSync(outPath, content, 'utf-8');
-        core.info('Processed cast:');
-        core.info(content);
-        core.setOutput('cast_file', outPath);
+        const overlayDir = process.env.RUNNER_TEMP || '/tmp';
+        const overlayPath = external_path_.join(overlayDir, `${component}-overlay.yaml`);
+        external_fs_.writeFileSync(overlayPath, dump(overlay), 'utf-8');
+        core.info(`  cast: ${castFile} (namespace=${namespace})`);
+        core.info(`  overlay: ${overlayPath}`);
+        core.info(dump(overlay));
         core.setOutput('has_cast', 'true');
+        core.setOutput('cast_file', castFile);
+        core.setOutput('namespace', namespace);
+        core.setOutput('overlay_file', overlayPath);
+        core.setOutput('values_files', `${envValuesPath}\n${overlayPath}`);
     }
     catch (err) {
         core.setFailed(err instanceof Error ? err.message : String(err));

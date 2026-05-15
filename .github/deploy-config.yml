@@ -1,13 +1,15 @@
 # CI deploy config — the deploy.yml workflow reads this for each component.
 #
-# Fields consumed by CI:
-#   context    – Docker build context (relative to repo root)
-#   dockerfile – Path to the Dockerfile
-#   cast       – Rune cast YAML (relative to repo root). Omit for cast-less deploys.
-#   paths      – Glob patterns that trigger a rebuild on push (auto-detect)
+# Fields consumed by the deploy-prep action:
+#   dockerfile  – Path to the Dockerfile. Omit for cast-only components (e.g. mongo).
+#   context     – Docker build context (relative to repo root). Defaults to "."
+#   cast        – Rune cast YAML (relative to repo root). Omit to skip casting.
+#   namespace   – Target namespace override (defaults to the environment name).
+#   build_args  – Map of build-args passed to docker build.
+#   paths       – Glob patterns that trigger a rebuild on push (deploy.yml auto-detect).
 #
-# Everything else (port, scale, env vars, health checks, resources, etc.)
-# lives in the Rune cast + values files in infra/runeset/.
+# Everything else (port, scale, env vars, health checks, resources, tls, deps) lives
+# in the matching component block inside infra/runeset/values/<env>.yaml.
 
 global:
   registry: ghcr.io
@@ -19,6 +21,8 @@ environments:
   main: stg
 
 components:
+
+  # ── App services (use the multipurpose external-service cast) ─────
 
   landing:
     dockerfile: infra/docker/Dockerfile.landing
@@ -36,27 +40,6 @@ components:
     paths:
       - apps/web/**
       - infra/docker/Dockerfile.web
-  gateway:
-     dockerfile: infra/docker/Dockerfile.nestjs
-     context: .
-     cast: infra/runeset/casts/gateway.yaml
-     build_args:
-       APP_DIR: gateway
-       PORT: "3002"
-     paths:
-       - services/gateway/**
-       - libs/core/**
-       - infra/docker/Dockerfile.nestjs
-
-  # TODO — uncomment when you add Dockerfiles for these
-  #
-  # admin:
-  #   dockerfile: infra/docker/Dockerfile.vite
-  #   context: apps/admin
-  #   cast: infra/runeset/casts/external-service.yaml
-  #   paths:
-  #     - apps/admin/**
-  #     - infra/docker/Dockerfile.vite
 
   docs:
     dockerfile: apps/docs/Dockerfile
@@ -64,13 +47,25 @@ components:
     cast: infra/runeset/casts/external-service.yaml
     paths:
       - apps/docs/**
-  #
-  # api:
-  #   dockerfile: infra/docker/Dockerfile.nestjs
-  #   context: apps/api
-  #   cast: infra/runeset/casts/api.yaml
-  #   paths:
-  #     - apps/api/**
-  #     - services/api/**
-  #     - libs/core/**
-  #     - infra/docker/Dockerfile.nestjs
+
+  gateway:
+    dockerfile: infra/docker/Dockerfile.nestjs
+    context: .
+    cast: infra/runeset/casts/external-service.yaml
+    build_args:
+      APP_DIR: gateway
+      PORT: "3002"
+    paths:
+      - services/gateway/**
+      - libs/core/**
+      - infra/docker/Dockerfile.nestjs
+
+  # ── Infrastructure (cast-only, shared namespace) ──────────────────
+
+  mongo:
+    cast: infra/runeset/casts/mongo.yaml
+    namespace: shared
+
+  flo:
+    cast: infra/runeset/casts/flo.yaml
+    namespace: shared

@@ -1,24 +1,45 @@
-name: 'Propeller Cast Prep'
-description: 'Load deploy-config.yml, merge values, and render a Rune cast YAML'
+name: 'Propeller Deploy Prep'
+description: 'Resolve build + cast inputs for a component from deploy-config.yml and env values'
 author: 'Propeller Team'
 
 inputs:
   component:
-    description: 'Component name from deploy-config.yml (e.g. landing, web)'
+    description: 'Component name from deploy-config.yml (e.g. landing, web, gateway, mongo)'
     required: true
   environment:
     description: 'Target environment: dev, stg, prod'
     required: true
+  sha:
+    description: 'Git SHA to tag the image with (defaults to GITHUB_SHA)'
+    required: false
   config_file:
     description: 'Path to deploy-config.yml'
     required: false
     default: '.github/deploy-config.yml'
 
 outputs:
-  cast_file:
-    description: 'Path to the templated cast YAML ready for rune cast'
+  has_build:
+    description: "'true' if this component has a dockerfile to build"
   has_cast:
-    description: "'true' if a cast was generated, 'false' otherwise"
+    description: "'true' if this component has a cast file"
+  dockerfile:
+    description: 'Path to the Dockerfile (when has_build=true)'
+  context:
+    description: 'Docker build context (when has_build=true)'
+  build_args:
+    description: 'Newline-separated KEY=VALUE build args (when has_build=true)'
+  image_name:
+    description: 'Full image name without tag (e.g. ghcr.io/withpropeller/propeller/docs)'
+  image_tag:
+    description: 'Image tag — sha-<short> when SHA available, else environment name'
+  cast_file:
+    description: 'Path to the rune cast YAML (when has_cast=true)'
+  namespace:
+    description: 'Target namespace for the cast (defaults to environment)'
+  overlay_file:
+    description: 'Path to the generated component overlay values file'
+  values_files:
+    description: 'Newline-separated list of values files (env file + overlay)'
 
 runs:
   using: 'node20'

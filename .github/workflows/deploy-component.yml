@@ -41,10 +41,11 @@ jobs:
               out.write(f'components={json.dumps(components)}\n')
           print(f'components: {components}')
 
-  build:
-    name: Build ${{ matrix.component }}
+  deploy:
+    name: Deploy ${{ matrix.component }}
     runs-on: ubuntu-latest
     needs: split
+    if: needs.split.outputs.components != '[]' && needs.split.outputs.components != ''
     strategy:
       fail-fast: false
       matrix:
@@ -52,44 +53,23 @@ jobs:
     permissions:
       contents: read
       packages: write
-
     steps:
       - uses: actions/checkout@v4
 
-      - name: Read component config
-        id: cfg
-        shell: python
-        run: |
-          import yaml, os
-          with open('.github/deploy-config.yml') as f:
-              config = yaml.safe_load(f)
-          g = config['global']
-          c = config['components']['${{ matrix.component }}']
-          with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
-              out.write(f"registry={g['registry']}\n")
-              out.write(f"repo={g['repo']}\n")
-              out.write(f"context={c['context']}\n")
-              out.write(f"dockerfile={c['dockerfile']}\n")
-              args = c.get('build_args', {})
-              if args:
-                  out.write('build_args<<EOF\n')
-                  for k, v in args.items():
-                      out.write(f'{k}={v}\n')
-                  out.write('EOF\n')
-
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
+      - name: Prep
+        id: prep
+        uses: ./.github/actions/cast-prep
         with:
-          images: ghcr.io/${{ steps.cfg.outputs.repo }}/${{ matrix.component }}
-          tags: |
-            type=sha,format=short
-            type=raw,value=${{ inputs.environment }}
+          component: ${{ matrix.component }}
+          environment: ${{ inputs.environment }}
+          sha: ${{ github.sha }}
 
       - name: Set up Docker Buildx
+        if: steps.prep.outputs.has_build == 'true'
         uses: docker/setup-buildx-action@v3
 
       - name: Login to GHCR
+        if: steps.prep.outputs.has_build == 'true'
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -97,39 +77,26 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
+        if: steps.prep.outputs.has_build == 'true'
         uses: docker/build-push-action@v6
         with:
-          context: ${{ steps.cfg.outputs.context }}
-          file: ${{ steps.cfg.outputs.dockerfile }}
+          context: ${{ steps.prep.outputs.context }}
+          file: ${{ steps.prep.outputs.dockerfile }}
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: ${{ steps.cfg.outputs.build_args }}
+          tags: |
+            ${{ steps.prep.outputs.image_name }}:${{ steps.prep.outputs.image_tag }}
+            ${{ steps.prep.outputs.image_name }}:${{ inputs.environment }}
+          build-args: ${{ steps.prep.outputs.build_args }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-  cast:
-    name: Cast ${{ matrix.component }}
-    runs-on: ubuntu-latest
-    needs: [split, build]
-    if: needs.split.outputs.components != '[]' && needs.split.outputs.components != ''
-    strategy:
-      fail-fast: false
-      matrix:
-        component: ${{ fromJson(needs.split.outputs.components) }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Prepare cast file
-        id: cfg
-        uses: ./.github/actions/cast-prep
-        with:
-          component: ${{ matrix.component }}
-          environment: ${{ inputs.environment }}
-
-      - uses: runestack/rune-cast-action@v1
-        if: steps.cfg.outputs.has_cast == 'true'
+      - name: Cast
+        if: steps.prep.outputs.has_cast == 'true'
+        uses: runestack/rune-cast-action@v1
         with:
           server: ${{ secrets.RUNED_HOST }}
           token: ${{ secrets.RUNE_TOKEN }}
-          source: ${{ steps.cfg.outputs.cast_file }}
-          namespace: ${{ inputs.environment }}
+          source: ${{ steps.prep.outputs.cast_file }}
+          values: ${{ steps.prep.outputs.values_files }}
+          namespace: ${{ steps.prep.outputs.namespace }}
           create-namespace: true
