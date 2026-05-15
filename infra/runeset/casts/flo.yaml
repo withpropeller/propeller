@@ -3,7 +3,7 @@
 
 service:
   name: flo
-  image: "ghcr.io/floruntime/flo:0.1.0-dev.2"
+  image: "ghcr.io/floruntime/flo:0.1.0-dev.3"
   imagePull: always
   scale: 1
   ports:
@@ -13,10 +13,25 @@ service:
       port: 9001
     - name: dashboard
       port: 9002
-  command: /usr/local/bin/flo
+  # Use image ENTRYPOINT (/usr/local/bin/docker-entrypoint.sh): it chowns
+  # /data/flo on a fresh mount, then `exec su-exec flo:flo flo "$@"` drops to
+  # uid 1000. Overriding `command:` bypasses the wrapper and leaves flo
+  # running as root.
   args:
     - server
     - start
+    - -c
+    - /etc/flo/flo.toml
+  volumes:
+    - name: flo-data
+      mountPath: /data/flo
+      claimTemplate:
+        storageClassName: do-lon1
+        size: "10Gi"
+        accessMode: ReadWriteOnce
+  securityContext:
+    seccompProfile:
+      type: Unconfined
   health:
     liveness:
       type: tcp

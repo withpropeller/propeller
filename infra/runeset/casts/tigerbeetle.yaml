@@ -21,7 +21,7 @@ service:
     - name: tb-data
       mountPath: /data
       claimTemplate:
-        storageClassName: local
+        storageClassName: do-lon1
         size: "10Gi"
         accessMode: ReadWriteOnce
   initSteps:

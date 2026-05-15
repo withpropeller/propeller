@@ -15,8 +15,8 @@ service:
     - name: mongo-data
       mountPath: /data/db
       claimTemplate:
-        storageClassName: local
-        size: "20Gi"
+        storageClassName: do-lon1
+        size: "10Gi"
         accessMode: ReadWriteOnce
   health:
     liveness:
