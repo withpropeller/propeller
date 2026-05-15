@@ -1,0 +1,44 @@
+# Cluster port-forwards (remote rune cluster → localhost).
+#
+# Forwards run in the background via the rune port-forward daemon
+# (~/.rune/forwards/). Survives terminal close until stopped.
+# Requires `rune` CLI logged in and pointed at the cluster.
+
+# ============================================================================
+# Forward all infra at once
+# ============================================================================
+
+## Forward mongo + flo + tigerbeetle from the cluster to localhost
+cluster.forward:
+    requires: cluster.forward.mongo cluster.forward.flo cluster.forward.tigerbeetle
+    script:
+        @rune port-forward list
+
+## Stop all active port-forwards
+cluster.forward.stop:
+    script:
+        rune port-forward stop --all
+
+## List active port-forwards
+cluster.forward.list:
+    script:
+        rune port-forward list
+
+# ============================================================================
+# Per-service forwards
+# ============================================================================
+
+## Forward mongo to localhost:27017 (Compass: mongodb://localhost:27017)
+cluster.forward.mongo:
+    script:
+        rune port-forward -d mongo 27017 -n shared
+
+## Forward flo dashboard to localhost:9002 (browse to http://localhost:9002)
+cluster.forward.flo:
+    script:
+        rune port-forward -d flo 9002 -n shared
+
+## Forward tigerbeetle to localhost:4000 (TCP)
+cluster.forward.tigerbeetle:
+    script:
+        rune port-forward -d tigerbeetle 4000 -n shared
