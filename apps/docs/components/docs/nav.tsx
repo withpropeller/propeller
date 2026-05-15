@@ -60,7 +60,7 @@ export function DocsTopBar({ tabs }: { tabs: TopTab[] }) {
           </kbd>
         </div>
         <Link className="navlink hidden sm:inline-flex" href="https://withpropeller.com">withpropeller.com ↗</Link>
-        <Link className="btn btn-ghost btn-sm" href="https://app.withpropeller.com">Console</Link>
+        <Link className="btn btn-primary btn-sm" href="https://app.withpropeller.com">Dashboard</Link>
         <ThemeToggle />
       </div>
       </div>

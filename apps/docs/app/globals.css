@@ -295,11 +295,13 @@
   .btn-lg { @apply text-17 px-6s py-4s; }
 
   .btn-primary {
-    @apply bg-lime text-ink;
+    background: rgb(var(--c-brand));
+    color: #FFFFFF;
   }
   .btn-primary:hover {
-    background: #C2E63D;
+    background: rgb(var(--c-brand-deep));
     text-decoration: none;
+    color: #FFFFFF;
   }
 
   .btn-ghost {
