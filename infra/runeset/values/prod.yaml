@@ -95,8 +95,8 @@ gateway:
     tls: { mode: auto }
     env: {}
     envFrom:
-      - secretRef: gateway-env
-      - configRef: gateway-config
+      - secret: gateway-env
+      - config: gateway-config
     dependencies:
       - { service: mongo, namespace: shared, readyWhen: healthy }
       - { service: flo,   namespace: shared, readyWhen: healthy }
