@@ -34,9 +34,6 @@ const EnvSchema = Joi.object({
     ISV_SERVICE_GRPC_URL: Joi.string(),
     BROWSERLESS_WS_URL: Joi.string(),
 
-    // Redis
-    REDIS_URI: Joi.string(),
-
     // Security
     INFRA_JWT_SECRET: Joi.string(),
     JWT_SECRET_EXPIRY: Joi.string().optional().default('3h'),
@@ -146,14 +143,6 @@ export class ConfigService {
 
     get SANDBOX_MONGODB_URI(): string {
         return this.envConfig.MONGODB_URL + '/sandbox-db';
-    }
-
-    get REDIS_PORT(): string {
-        return this.envConfig.REDIS_PORT;
-    }
-
-    get REDIS_URI(): string {
-        return this.envConfig.REDIS_URI;
     }
 
     get SHORTENER_SERVICE_GRPC_URL(): string {
