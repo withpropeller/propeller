@@ -35,10 +35,9 @@ const EnvSchema = Joi.object({
     BROWSERLESS_WS_URL: Joi.string(),
 
     // Security
-    INFRA_JWT_SECRET: Joi.string(),
+    JWT_SECRET: Joi.string(),
     JWT_SECRET_EXPIRY: Joi.string().optional().default('3h'),
     ENABLE_SWAGGER: Joi.string().optional(),
-    INFRA_ENCRYPTION_PASSPHRASE: Joi.string(),
 
     // Slack Notification
     SLACK_TOKEN: Joi.string(),
@@ -158,15 +157,11 @@ export class ConfigService {
     }
 
     get JWT_SECRET(): string {
-        return this.envConfig.INFRA_JWT_SECRET;
+        return this.envConfig.JWT_SECRET;
     }
 
     get JWT_SECRET_EXPIRY(): string {
         return this.envConfig.JWT_SECRET_EXPIRY;
-    }
-
-    get ENCRYPTION_PASSPHRASE(): string {
-        return this.envConfig.INFRA_ENCRYPTION_PASSPHRASE;
     }
 
     get inProduction(): boolean {
