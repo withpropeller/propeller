@@ -93,7 +93,7 @@ gateway:
     env: {}
     envFrom:
       - secret: gateway-secrets
-      - config: gateway-config
+      - configmap: gateway-config
     dependencies:
       - mongo.shared.rune
       - flo.shared.rune
