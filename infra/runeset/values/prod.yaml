@@ -90,7 +90,7 @@ gateway:
     scale: 1
     port: 3002
     healthPath: /health
-    env: {}
+    env: { NODE_ENV: prod }
     envFrom:
       - secret: gateway-secrets
       - configmap: gateway-config
