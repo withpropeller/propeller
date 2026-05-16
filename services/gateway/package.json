@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "nest build",
+    "build": "nest build && tsc-alias -p tsconfig.json",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "bunx nest start",
     "start:dev": "bunx nest start --watch",
@@ -90,6 +90,7 @@
     "ts-jest": "29.0.3",
     "ts-loader": "^9.2.3",
     "ts-node": "^10.0.0",
+    "tsc-alias": "^1.8.10",
     "tsconfig-paths": "4.1.1",
     "typescript": "^4.7.4"
   }
