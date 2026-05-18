@@ -27,12 +27,7 @@ const EnvSchema = Joi.object({
 
     // Domains
     MAIN_SITE_DOMAIN: Joi.string(),
-    INFRA_WEB_DOMAIN: Joi.string(),
-
-    // Messaging
-    SHORTENER_SERVICE_GRPC_URL: Joi.string(),
-    ISV_SERVICE_GRPC_URL: Joi.string(),
-    BROWSERLESS_WS_URL: Joi.string(),
+    APP_DOMAIN: Joi.string(),
 
     // Security
     JWT_SECRET: Joi.string(),
@@ -48,13 +43,6 @@ const EnvSchema = Joi.object({
     S3_SECRET_ACCESS_KEY: Joi.string(),
     S3_ACCESS_KEY_ID: Joi.string(),
     S3_DOCUMENT_STORE_BUCKET: Joi.string(),
-
-    //External Integrations
-    PREMBLY_URI: Joi.string(),
-    FLUTTERWAVE_SECRET_KEY: Joi.string(),
-    FLUTTERWAVE_CALLBACK_URL: Joi.string(),
-    PAYSTACK_URI: Joi.string(),
-    PROVIDUS_THIRD_PARTY_URI: Joi.string(),
 
     // PayKKa KYB
     PAYKKA_BASE_URL: Joi.string().optional(),
@@ -125,7 +113,7 @@ export class ConfigService {
     }
 
     get APP_DOMAIN(): string {
-        return this.envConfig.INFRA_WEB_DOMAIN;
+        return this.envConfig.APP_DOMAIN;
     }
 
     get MONGODB_URL(): string {
@@ -142,18 +130,6 @@ export class ConfigService {
 
     get SANDBOX_MONGODB_URI(): string {
         return this.envConfig.MONGODB_URL + '/sandbox-db';
-    }
-
-    get SHORTENER_SERVICE_GRPC_URL(): string {
-        return this.envConfig.SHORTENER_SERVICE_GRPC_URL;
-    }
-
-    get ISV_SERVICE_GRPC_URL(): string {
-        return this.envConfig.ISV_SERVICE_GRPC_URL;
-    }
-
-    get BROWSERLESS_WS_URL(): string {
-        return this.envConfig.BROWSERLESS_WS_URL;
     }
 
     get JWT_SECRET(): string {
@@ -204,36 +180,12 @@ export class ConfigService {
         return this.envConfig.S3_DOCUMENT_STORE_BUCKET;
     }
 
-    get PREMBLY_URI(): RestUriCredentials {
-        return ExtractURICredentials(this.envConfig.PREMBLY_URI);
-    }
-
-    get FLUTTERWAVE_SECRET_KEY(): string {
-        return this.envConfig.FLUTTERWAVE_SECRET_KEY;
-    }
-
-    get FLUTTERWAVE_CALLBACK_URL(): string {
-        return this.envConfig.FLUTTERWAVE_CALLBACK_URL;
-    }
-
-    get PROVIDUS_THIRD_PARTY_URI(): RestUriCredentials {
-        return ExtractURICredentials(this.envConfig.PROVIDUS_THIRD_PARTY_URI);
-    }
-
-    get PAYSTACK_URI(): RestUriCredentials {
-        return ExtractURICredentials(this.envConfig.PAYSTACK_URI);
-    }
-
     get MACHINE_KEY(): string {
         return this.envConfig.MACHINE_KEY;
     }
 
     get API_SERVICE_URL(): string {
         return this.envConfig.API_SERVICE_URL;
-    }
-
-    get SECURE_SERVICE_URL(): string {
-        return this.envConfig.SECURE_SERVICE_URL;
     }
 
     get PAYKKA_BASE_URL(): string {
