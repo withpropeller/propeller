@@ -24,6 +24,12 @@ service:
       port: {{ values:component.port }}
       intervalSeconds: 10
       timeoutSeconds: 3
+    readiness:
+      type: http
+      path: "{{ values:component.healthPath }}"
+      port: {{ values:component.port }}
+      intervalSeconds: 10
+      timeoutSeconds: 3
   resources:
     cpu:
       request: "{{ values:component.cpuRequest }}"
