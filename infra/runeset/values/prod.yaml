@@ -113,6 +113,7 @@ notifications:
       FROM_EMAIL: "Propeller <notifications@withpropeller.com>"
     envFrom:
       - secret: notifications-secrets
+      - configmap: notifications-config
     dependencies:
       - flo.shared.rune
     cpuRequest: "100m"
