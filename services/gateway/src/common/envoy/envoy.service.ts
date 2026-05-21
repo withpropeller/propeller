@@ -55,7 +55,7 @@ export class EnvoyService {
             payload: event.payload,
         };
 
-        const result = await this.flo.client.stream.append(floStreamName(event.streamName), envelope);
+        const result = await this.flo.append(floStreamName(event.streamName), envelope);
         return `${result.id.timestampMs}-${result.id.sequence}`;
     }
 

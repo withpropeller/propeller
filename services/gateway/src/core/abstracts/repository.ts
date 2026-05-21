@@ -246,7 +246,7 @@ export abstract class Repository<T> {
             return;
         }
 
-        return this.model.insertMany(docs, options);
+        return this.model.insertMany(docs, options) as unknown as Promise<HydratedDocument<T>[]>;
     }
 
     bulkUpdate(docs: HydratedDocument<T>[], updateObj: Partial<T>) {
