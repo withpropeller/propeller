@@ -22,14 +22,14 @@ service:
       type: http
       path: "{{ values:component.healthPath }}"
       port: {{ values:component.port }}
-      initialDelaySeconds: 60
+      initialDelaySeconds: 120
       intervalSeconds: 10
       timeoutSeconds: 3
     readiness:
       type: http
       path: "{{ values:component.healthPath }}"
       port: {{ values:component.port }}
-      initialDelaySeconds: 60
+      initialDelaySeconds: 120
       intervalSeconds: 10
       timeoutSeconds: 3
   resources:
