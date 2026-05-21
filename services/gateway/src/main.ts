@@ -5,14 +5,13 @@ import { ParamValidationPipe } from '@core/pipes/param-validation.pipe';
 import { ContextIdFactory, NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Logger } from 'nestjs-pino';
-import { AppModule as GraphQLAppModule } from './app.graphql.module';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
         cors: true,
         bodyParser: true,
-        bufferLogs: true,
+        bufferLogs: false,
     });
     app.useLogger(app.get(Logger));
     app.useGlobalPipes(new ParamValidationPipe());
@@ -32,24 +31,11 @@ async function bootstrap() {
         SwaggerModule.setup('', app, document);
     }
 
+    app.enableShutdownHooks();
     await app.listen(config.PORT);
 }
-bootstrap();
 
-async function bootstrapGraphQL() {
-    const app = await NestFactory.create(GraphQLAppModule, {
-      // cors: true,
-    //    bodyParser: true,
-    //    bufferLogs: true,
-    });
-   // app.useLogger(app.get(Logger));
-   // app.useGlobalPipes(new ParamValidationPipe());
-   // app.useGlobalInterceptors(new ResponseTransformInterceptor());
-   // ContextIdFactory.apply(new AggregateByTenantContextIdStrategy());
-
- //   const config = app.get(ConfigService);
-
-    await app.listen(4000);
-}
-
-//bootstrapGraphQL()
+bootstrap().catch((err: unknown) => {
+    console.error('Gateway failed to start:', err);
+    process.exit(1);
+});

@@ -1,9 +1,11 @@
-import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { FloClient, StreamAppendResult } from '@floruntime/node';
 import { ConfigService } from '@config/config.service';
+import { retryWithBackoff } from '@core/helpers';
 
 @Injectable()
 export class FloService implements OnModuleInit, OnModuleDestroy {
+    private readonly logger = new Logger(FloService.name);
     readonly client: FloClient;
 
     constructor(private readonly config: ConfigService) {
@@ -11,7 +13,15 @@ export class FloService implements OnModuleInit, OnModuleDestroy {
     }
 
     async onModuleInit() {
-        await this.client.connect();
+        await retryWithBackoff(() => this.client.connect(), {
+            maxAttempts: 12,
+            initialDelayMs: 500,
+            maxDelayMs: 10_000,
+            onRetry: (attempt, error) => {
+                this.logger.warn(`Flo connect attempt ${attempt} failed (${this.config.FLO_ADDR}): ${error}`);
+            },
+        });
+        this.logger.log(`Connected to Flo at ${this.config.FLO_ADDR}`);
     }
 
     async onModuleDestroy() {

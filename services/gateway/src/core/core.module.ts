@@ -18,6 +18,7 @@ import { JwtModule } from '@nestjs/jwt';
             useFactory: (config: ConfigService) => {
                 return {
                     uri: config.CORE_MONGODB_URI,
+                    serverSelectionTimeoutMS: 60_000,
                 };
             },
             connectionName: TenantDataSource.Core,
@@ -28,6 +29,7 @@ import { JwtModule } from '@nestjs/jwt';
             useFactory: (config: ConfigService) => {
                 return {
                     uri: config.LIVE_MONGODB_URI,
+                    serverSelectionTimeoutMS: 60_000,
                 };
             },
             connectionName: TenantDataSource.Live,
@@ -38,6 +40,7 @@ import { JwtModule } from '@nestjs/jwt';
             useFactory: (config: ConfigService) => {
                 return {
                     uri: config.SANDBOX_MONGODB_URI,
+                    serverSelectionTimeoutMS: 60_000,
                 };
             },
             connectionName: TenantDataSource.Sandbox,
