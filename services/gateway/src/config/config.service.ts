@@ -11,7 +11,6 @@ import * as Joi from 'joi';
 import { Injectable } from '@nestjs/common';
 import { AppStatus } from '../core/helpers/enums';
 import { AppException } from '@core/exceptions';
-import { ExtractURICredentials, RestUriCredentials } from '@config/uri-credential';
 
 interface EnvConfig {
     [prop: string]: string;

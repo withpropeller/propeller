@@ -38,7 +38,7 @@ cluster.forward.flo:
     script:
         rune port-forward -d flo 9000 9002 -n shared
 
-## Forward tigerbeetle to localhost:4000 (TCP)
+## Forward tigerbeetle to localhost:4100 (TCP) — 4000 is reserved for the gateway
 cluster.forward.tigerbeetle:
     script:
-        rune port-forward -d tigerbeetle 4000 -n shared
+        rune port-forward -d tigerbeetle 4100:4000 -n shared
