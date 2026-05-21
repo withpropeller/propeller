@@ -1,4 +1,7 @@
-# Multi-stage Dockerfile for Propeller Go workers (go.work modules).
+# Multi-stage Dockerfile for Propeller Go workers.
+#
+# Builds a single worker module (GOWORK=off) with local replace deps copied
+# into the image. Do not copy go.work — it lists the full monorepo workspace.
 #
 # Build arguments:
 #   WORKER_DIR  — path under repo root (e.g. workers/notifications)
@@ -12,11 +15,18 @@
 FROM golang:1.25-alpine AS builder
 ARG WORKER_DIR
 RUN apk add --no-cache git
+ENV GOWORK=off
 WORKDIR /repo
 
-COPY go.work go.work.sum ./
+# Local modules referenced via replace in the worker's go.mod
 COPY libs/go-events ./libs/go-events
-COPY ${WORKER_DIR} ./${WORKER_DIR}
+COPY ${WORKER_DIR}/go.mod ./${WORKER_DIR}/
+
+WORKDIR /repo/${WORKER_DIR}
+RUN go mod download
+
+WORKDIR /repo
+COPY ${WORKER_DIR} ./${WORKER_DIR}/
 
 WORKDIR /repo/${WORKER_DIR}
 RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /out/worker .
