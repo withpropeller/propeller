@@ -63,7 +63,15 @@ func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
 
-	if err := worker.Start(ctx); err != nil {
+	// Stop() calls client.Interrupt() to unblock an in-flight GroupRead immediately.
+	// defer worker.Close() alone runs too late (after Start returns).
+	go func() {
+		<-ctx.Done()
+		slog.Info("shutdown signal received, stopping worker")
+		worker.Stop()
+	}()
+
+	if err := worker.Start(ctx); err != nil && ctx.Err() == nil {
 		slog.Error("stream worker exited", "error", err)
 	}
 
