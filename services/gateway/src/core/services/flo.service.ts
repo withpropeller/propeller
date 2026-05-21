@@ -9,7 +9,7 @@ export class FloService implements OnModuleInit, OnModuleDestroy {
     readonly client: FloClient;
 
     constructor(private readonly config: ConfigService) {
-        this.client = new FloClient(this.config.FLO_ADDR, { namespace: 'propeller' });
+        this.client = new FloClient(this.config.FLO_ADDR, { namespace: this.config.FLO_NAMESPACE });
     }
 
     async onModuleInit() {

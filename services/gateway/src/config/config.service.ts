@@ -147,8 +147,8 @@ export class ConfigService {
         return ['prod', 'stg', 'beta'].includes(this.envConfig.NODE_ENV);
     }
 
-    get APP_ENVIRONMENT() {
-        return this.envConfig.APP_ENVIRONMENT;
+    get FLO_NAMESPACE(): string {
+        return this.envConfig.NODE_ENV;
     }
 
     get ENABLE_SWAGGER() {
