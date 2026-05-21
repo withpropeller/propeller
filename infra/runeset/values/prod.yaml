@@ -101,3 +101,21 @@ gateway:
     cpuLimit: "1000m"
     memRequest: "256Mi"
     memLimit: "1Gi"
+
+notifications:
+  component:
+    name: notifications
+    scale: 1
+    env:
+      APP_ENV: prod
+      LOG_LEVEL: info
+      FLO_ADDR: "flo.shared.rune:9000"
+      FROM_EMAIL: "Propeller <notifications@withpropeller.com>"
+    envFrom:
+      - secret: notifications-secrets
+    dependencies:
+      - flo.shared.rune
+    cpuRequest: "100m"
+    cpuLimit: "1000m"
+    memRequest: "128Mi"
+    memLimit: "512Mi"

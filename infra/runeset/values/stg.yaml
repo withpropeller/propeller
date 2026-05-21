@@ -74,3 +74,21 @@ gateway:
     cpuLimit: "500m"
     memRequest: "128Mi"
     memLimit: "512Mi"
+
+notifications:
+  component:
+    name: notifications
+    scale: 1
+    env:
+      APP_ENV: stg
+      LOG_LEVEL: info
+      FLO_ADDR: "flo.shared.rune:9000"
+      FROM_EMAIL: "Propeller <onboarding@usepropeller.com>"
+    envFrom:
+      - secretRef: notifications-secrets
+    dependencies:
+      - { service: flo, namespace: shared, readyWhen: healthy }
+    cpuRequest: "50m"
+    cpuLimit: "500m"
+    memRequest: "64Mi"
+    memLimit: "256Mi"

@@ -1,0 +1,19 @@
+# Multipurpose background-worker cast.
+# Used by stream/action workers (notifications, compliance, …) — no ingress, no HTTP port.
+# All knobs come from values; each component declares:
+#   component.{name, scale, env, envFrom, dependencies, cpu*, mem*}
+service:
+  name: "{{ values:component.name }}"
+  image: "{{ values:registry }}/{{ values:component.name }}:{{ values:app.tag }}"
+  imagePull: always
+  scale: {{ values:component.scale }}
+  env: {{ values:component.env }}
+  envFrom: {{ values:component.envFrom }}
+  dependencies: {{ values:component.dependencies }}
+  resources:
+    cpu:
+      request: "{{ values:component.cpuRequest }}"
+      limit: "{{ values:component.cpuLimit }}"
+    memory:
+      request: "{{ values:component.memRequest }}"
+      limit: "{{ values:component.memLimit }}"

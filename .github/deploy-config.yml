@@ -60,6 +60,19 @@ components:
       - libs/core/**
       - infra/docker/Dockerfile.nestjs
 
+  # ── Background workers (worker cast) ───────────────────────────────
+
+  notifications:
+    dockerfile: infra/docker/Dockerfile.worker
+    context: .
+    cast: infra/runeset/casts/worker.yaml
+    build_args:
+      WORKER_DIR: workers/notifications
+    paths:
+      - workers/notifications/**
+      - libs/go-events/**
+      - infra/docker/Dockerfile.worker
+
   # ── Infrastructure (cast-only, shared namespace) ──────────────────
 
   mongo:
