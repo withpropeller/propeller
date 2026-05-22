@@ -52,6 +52,9 @@ func main() {
 		Group:       "notification",
 		Concurrency: 5,
 		BatchSize:   10,
+		// Route the worker's reconnect/group-join logs through slog so they
+		// land in the structured JSON pipeline instead of plain stderr.
+		Logger: newFloLogger(),
 	}, handlers.MakeHandler(ref))
 	if err != nil {
 		slog.Error("failed to create stream worker", "error", err)

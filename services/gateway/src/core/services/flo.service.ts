@@ -34,7 +34,7 @@ export class FloService implements OnModuleInit, OnModuleDestroy {
                 this.logger.warn(`Flo connect attempt ${attempt} failed (${this.config.FLO_ADDR}): ${error}`);
             },
         });
-        this.logger.log(`Connected to Flo at ${this.config.FLO_ADDR}`);
+        this.logger.log(`Connected to Flo at ${this.config.FLO_ADDR} (namespace: ${this.config.FLO_NAMESPACE})`);
     }
 
     async onModuleDestroy() {

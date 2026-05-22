@@ -1,6 +1,6 @@
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/floruntime/flo-go v0.1.0-dev.16 h1:aFgju1/TGanj/fVzv+W3gbiFFE4wOxUBWRLEGG6qgh4=
-github.com/floruntime/flo-go v0.1.0-dev.16/go.mod h1:uZVaqVffUSOVF7T9jV99PVHZxM7QwPx/btL+kCSdNXI=
+github.com/floruntime/flo-go v0.1.0-dev.17 h1:Ng0aevM8AlJxHxig5Wsm29e/2DX/T0K9jQxHen5Cmzg=
+github.com/floruntime/flo-go v0.1.0-dev.17/go.mod h1:uZVaqVffUSOVF7T9jV99PVHZxM7QwPx/btL+kCSdNXI=
 go.mongodb.org/mongo-driver v1.17.9 h1:IexDdCuuNJ3BHrELgBlyaH9p60JXAvdzWR128q+U5tU=
 go.mongodb.org/mongo-driver v1.17.9/go.mod h1:LlOhpH5NUEfhxcAwG0UEkMqwYcc4JU18gtCdGudk/tQ=

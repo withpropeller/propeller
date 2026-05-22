@@ -2,6 +2,7 @@
 #
 #   rune cast configs.yaml
 #
+# Flo uses infra/flo.toml (see runeset/README.md).
 # Configmap values are stored plaintext. Use secrets for anything sensitive.
 
 configmaps:

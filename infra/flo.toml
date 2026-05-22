@@ -1,5 +1,10 @@
-# Flo Server Configuration — Propeller local dev
-# Mounted into the container at /etc/flo/flo.toml
+# Flo server configuration (source of truth).
+#
+# Loaded into Rune as configmap shared/flo-config, mounted at /etc/flo/flo.toml.
+# After editing:
+#   rune create config flo-config -n shared \
+#     --from-file=flo.toml=infra/flo.toml --replace
+#   rune restart flo -n shared
 
 [server]
 port = 9000

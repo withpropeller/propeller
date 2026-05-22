@@ -1,5 +1,10 @@
 # Flo event bus — runs on Rune cluster in shared namespace.
-# Apply:  rune cast infra/runeset/casts/flo.yaml -n shared --create-namespace
+#
+# Config: infra/flo.toml → configmap flo-config → /etc/flo/flo.toml (not in this file).
+#   rune create config flo-config -n shared \
+#     --from-file=flo.toml=infra/flo.toml --replace
+#   rune cast infra/runeset/casts/flo.yaml -n shared --create-namespace
+# Config-only change: re-run create config, then `rune restart flo -n shared`
 
 service:
   name: flo
@@ -22,6 +27,10 @@ service:
     - start
     - -c
     - /etc/flo/flo.toml
+  configmapMounts:
+    - name: flo-config
+      mountPath: /etc/flo
+      configmapName: flo-config
   volumes:
     - name: flo-data
       mountPath: /data/flo

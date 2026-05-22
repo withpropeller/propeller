@@ -7,7 +7,7 @@ Rune service specs for Propeller. See the [Rune docs](http://docs.runestack.io/)
 ```
 runeset.yaml           top-level metadata (name, version, namespace)
 casts/
-  flo.yaml             Flo runtime
+  flo.yaml             Flo runtime (config from ../flo.toml via rune create config)
   api.yaml             apps/api — public REST
   services.yaml        apps/services — dashboard backend
   office.yaml          apps/office — admin backend
@@ -28,10 +28,27 @@ Frontends (`apps/dashboard`, `apps/admin`, `apps/docs`) deploy as static + CDN �
 rune cast infra/runeset/configs.yaml          # your filled-in version of configs.example.yaml
 rune cast infra/runeset/secrets.yaml          # NEVER commit this file with real values
 
+# Flo (shared namespace): load config from infra/flo.toml, then cast service
+rune create config flo-config -n shared \
+  --from-file=flo.toml=infra/flo.toml --replace
+rune cast infra/runeset/casts/flo.yaml -n shared --create-namespace
+
 # Service rollout
 rune cast infra/runeset/ --values=values/dev.yaml          # dev
 rune cast infra/runeset/ --values=values/prod.yaml --set app.tag=v0.1.0   # prod
 ```
+
+### Flo configuration
+
+Edit `infra/flo.toml` (single source of truth), push config, restart:
+
+```sh
+rune create config flo-config -n shared \
+  --from-file=flo.toml=infra/flo.toml --replace
+rune restart flo -n shared
+```
+
+First deploy also needs `rune cast infra/runeset/casts/flo.yaml -n shared --create-namespace`.
 
 ## Secrets
 
