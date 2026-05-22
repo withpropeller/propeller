@@ -100,15 +100,15 @@ export class ConfigService {
     }
 
     get CORE_MONGODB_URI(): string {
-        return this.envConfig.INFRA_MONGODB_URL + '/core-db';
+        return this.envConfig.MONGODB_URL + '/core-db';
     }
 
     get LIVE_MONGODB_URI(): string {
-        return this.envConfig.INFRA_MONGODB_URL + '/live-db';
+        return this.envConfig.MONGODB_URL + '/live-db';
     }
 
     get SANDBOX_MONGODB_URI(): string {
-        return this.envConfig.INFRA_MONGODB_URL + '/sandbox-db';
+        return this.envConfig.MONGODB_URL + '/sandbox-db';
     }
 
     get RABBIT_MQ_URL(): string {

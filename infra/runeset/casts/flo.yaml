@@ -38,6 +38,13 @@ service:
       port: 9000
       intervalSeconds: 10
       timeoutSeconds: 5
+    readiness:
+      type: http
+      path: /health
+      port: 9002
+      initialDelaySeconds: 5
+      intervalSeconds: 10
+      timeoutSeconds: 5
   resources:
     cpu:
       request: "100m"
