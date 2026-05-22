@@ -16,6 +16,8 @@ FROM golang:1.25-alpine AS builder
 ARG WORKER_DIR
 RUN apk add --no-cache git
 ENV GOWORK=off
+# flo-go dev tags may exist on GitHub before proxy.golang.org indexes them
+ENV GOPRIVATE=github.com/floruntime/flo-go
 WORKDIR /repo
 
 # Local modules referenced via replace in the worker's go.mod
