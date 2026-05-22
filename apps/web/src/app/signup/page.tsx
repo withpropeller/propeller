@@ -8,10 +8,10 @@ import { AuthShell } from '@/components/auth/AuthShell'
 import { PasswordStrength } from '@/components/auth/PasswordStrength'
 import { PhoneInput } from '@/components/ui/PhoneInput'
 import { SelectInput } from '@/components/ui/SelectInput'
-import { MERCHANT_SIGNUP_COUNTRIES } from '@/lib/constants'
+import { SIGNUP_COUNTRIES } from '@/lib/constants'
 import { useSignup, useResendConfirmation } from '@/hooks/useSignup'
 
-const countryOptions = MERCHANT_SIGNUP_COUNTRIES.map((c) => ({
+const countryOptions = SIGNUP_COUNTRIES.map((c) => ({
   value: c.code,
   label: c.name,
 }))
@@ -27,7 +27,7 @@ export default function SignupPage() {
     password: '',
     businessName: '',
     businessWebsite: '',
-    countryCode: 'CN',
+    countryCode: 'NG',
     isIncorporated: false,
     termsAccepted: false,
   })
@@ -113,15 +113,15 @@ export default function SignupPage() {
     >
       <div className="mb-7">
         <span className="text-[12px] font-semibold uppercase tracking-[0.12em] text-ink-soft">
-          {step === 1 ? 'Get started' : 'Your exporting business'}
+          {step === 1 ? 'Get started' : 'Your business'}
         </span>
         <h1 className="mt-2 mb-2 text-[36px] leading-[1.08] font-semibold tracking-[-0.025em] text-propeller-navy">
           {step === 1 ? 'Create your account.' : 'Tell us about your company.'}
         </h1>
         <p className="text-[15px] text-ink-soft leading-[1.5]">
           {step === 1
-            ? 'For exporters and global merchants collecting Naira from African buyers.'
-            : 'We use this to start KYB and set up your corridor dashboard.'}
+            ? 'Collect payments on the China–Africa corridor. We review every business before you go live.'
+            : 'We use this to set up your account. Full access follows compliance review.'}
         </p>
       </div>
 
@@ -164,7 +164,7 @@ export default function SignupPage() {
               <Label htmlFor="firstName">First name</Label>
               <Input
                 id="firstName"
-                placeholder="Wei"
+                placeholder="Adunni"
                 value={formData.firstName}
                 onChange={handleInputChange}
                 autoComplete="given-name"
@@ -175,7 +175,7 @@ export default function SignupPage() {
               <Label htmlFor="lastName">Last name</Label>
               <Input
                 id="lastName"
-                placeholder="Zhang"
+                placeholder="Okafor"
                 value={formData.lastName}
                 onChange={handleInputChange}
                 autoComplete="family-name"
@@ -202,8 +202,7 @@ export default function SignupPage() {
             <PhoneInput
               value={formData.phone}
               onChange={(value) => setFormData((p) => ({ ...p, phone: value }))}
-              defaultCountryCode="CN"
-              placeholder="138 0013 8000"
+              defaultCountryCode={formData.countryCode}
               aria-invalid={!!getFieldError('phone')}
             />
             {getFieldError('phone') && (
@@ -278,23 +277,12 @@ export default function SignupPage() {
             searchable
             searchPlaceholder="Search countries"
           />
-          <p className="text-[12px] text-ink-soft leading-[1.5] -mt-2">
-            Self-serve signup is for registered exporters outside Nigeria. Nigerian businesses
-            should contact{' '}
-            <a
-              href="mailto:support@withpropeller.com"
-              className="text-propeller-blue no-underline hover:underline"
-            >
-              support@withpropeller.com
-            </a>
-            .
-          </p>
 
           <div className="flex flex-col gap-2">
             <Label htmlFor="businessName">Legal business name</Label>
             <Input
               id="businessName"
-              placeholder="Acme Exports Co., Ltd."
+              placeholder="Acme Ltd."
               value={formData.businessName}
               onChange={handleInputChange}
               autoComplete="organization"
@@ -305,7 +293,7 @@ export default function SignupPage() {
             <Label htmlFor="businessWebsite">Business website</Label>
             <Input
               id="businessWebsite"
-              placeholder="https://acme-exports.com"
+              placeholder="https://example.com"
               value={formData.businessWebsite}
               onChange={handleInputChange}
               autoComplete="url"
@@ -320,8 +308,7 @@ export default function SignupPage() {
               }
             />
             <span className="text-[12px] text-ink-soft leading-[1.5]">
-              I confirm this business is legally registered in the selected country (e.g. USCC in
-              China, Companies House in the UK).
+              I confirm this business is legally registered in the country selected above.
             </span>
           </label>
 

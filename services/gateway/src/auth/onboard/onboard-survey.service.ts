@@ -8,7 +8,6 @@ import { OnboardSurveyDto } from './onboard-survey.dto';
 import { SCryptCryptoFactory } from '@core/crypto';
 import { AuthException } from '@auth/auth.exception';
 import { TenantDataSource } from '@core/helpers/enums';
-import { isSelfServeMerchantCountry } from './onboard.constants';
 
 @Injectable()
 export class OnboardSurveyService extends Repository<OnboardSurvey> {
@@ -44,7 +43,7 @@ export class OnboardSurveyService extends Repository<OnboardSurvey> {
     }
 
     async ensureOnboardCriteriaMet(onboard: OnboardSurvey) {
-        if (!onboard.isIncorporated || !isSelfServeMerchantCountry(onboard.countryCode)) {
+        if (!onboard.isIncorporated || !onboard.countryCode?.trim()) {
             throw AuthException.ONBOARD_CRITERIA_NOT_MET;
         }
         return onboard;

@@ -59,7 +59,7 @@ export class OnboardSurveyDto {
     @IsOptional()
     readonly businessWebsite: string;
 
-    @ApiProperty({ description: 'Country of incorporation (ISO 3166-1 alpha-2)', example: 'CN' })
+    @ApiProperty({ description: 'Country of incorporation (ISO 3166-1 alpha-2)', example: 'NG' })
     @IsISO31661Alpha2()
     readonly countryCode: string;
 }

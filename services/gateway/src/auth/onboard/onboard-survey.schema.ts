@@ -32,7 +32,7 @@ export class OnboardSurvey {
     @Prop()
     isIncorporated: boolean;
 
-    @Prop({ default: 'CN' })
+    @Prop({ default: 'NG' })
     countryCode: string;
 }
 

@@ -219,36 +219,7 @@ export const COUNTRIES: Country[] = [
   { code: 'TO', name: 'Tonga', dialCode: '+676' },
 ]
 
-/** Self-serve signup: exporter jurisdictions on the China–Africa corridor (keep in sync with gateway onboard.constants). */
-export const MERCHANT_SIGNUP_COUNTRY_CODES = [
-  'CN',
-  'HK',
-  'MO',
-  'SG',
-  'TW',
-  'US',
-  'GB',
-  'DE',
-  'FR',
-  'NL',
-  'IT',
-  'ES',
-  'CH',
-  'BE',
-  'CA',
-  'AE',
-  'IN',
-  'KR',
-  'JP',
-  'AU',
-] as const
-
-const MERCHANT_SIGNUP_COUNTRY_EXTRA: Country[] = [
-  { code: 'MO', name: 'Macau', dialCode: '+853' },
-]
-
-export const MERCHANT_SIGNUP_COUNTRIES: Country[] = MERCHANT_SIGNUP_COUNTRY_CODES.map((code) => {
-  const found = COUNTRIES.find((c) => c.code === code)
-  if (found) return found
-  return MERCHANT_SIGNUP_COUNTRY_EXTRA.find((c) => c.code === code)!
-})
+/** Unique countries for signup and other country pickers. */
+export const SIGNUP_COUNTRIES: Country[] = COUNTRIES.filter(
+  (c, i, arr) => arr.findIndex((x) => x.code === c.code) === i,
+)
