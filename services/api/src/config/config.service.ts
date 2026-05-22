@@ -119,6 +119,10 @@ export class ConfigService {
         return this.envConfig.FLO_ADDR;
     }
 
+    get FLO_NAMESPACE(): string {
+        return this.envConfig.NODE_ENV;
+    }
+
     get inProduction(): boolean {
         return this.envConfig.NODE_ENV === 'prod';
     }
