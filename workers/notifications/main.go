@@ -39,6 +39,7 @@ func main() {
 		slog.Error("failed to connect to Flo", "addr", cfg.FloAddr, "error", err)
 		os.Exit(1)
 	}
+
 	defer floClient.Close()
 	slog.Info("connected to Flo", "addr", cfg.FloAddr)
 

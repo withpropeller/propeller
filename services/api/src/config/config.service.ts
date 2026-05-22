@@ -25,58 +25,20 @@ const EnvSchema = Joi.object({
     LOG_LEVEL: Joi.string().default('info'),
 
     // DB
-    INFRA_MONGODB_URL: Joi.string(),
+    MONGODB_URL: Joi.string(),
 
     // Messaging
-    RABBIT_MQ_URL: Joi.string(),
     FLO_ADDR: Joi.string().default('localhost:9000'),
 
     // Security
     ENABLE_SWAGGER: Joi.string().optional(),
-    INFRA_ENCRYPTION_PASSPHRASE: Joi.string(),
-
-    ISV_SERVICE_GRPC_URL: Joi.string(),
-    CAGE_SERVICE_URL: Joi.string(),
-    EVERVAULT_API_KEY: Joi.string(),
-    EVERVAULT_APP_ID: Joi.string(),
-    CARD_AUTH_SANDBOX_URL: Joi.string(),
-
-    WEBHOOK_SERVICE_SANDBOX_URL: Joi.string(),
-
-    INFRA_WEBHOOK_SANDBOX_URL: Joi.string(),
-    INTERSWITCH_SECRET_KEY: Joi.string(),
-    PROVIDUS_SETTLEMENT_URI: Joi.string(),
-    PROVIDUS_SETTLEMENT_ACCOUNT_NUMBER: Joi.string(),
-
-    SCPLITE_CLIENT_ID: Joi.string(),
-    SCPLITE_CLIENT_SECRET: Joi.string(),
-
-    PROVIPAY_URI_LIVE: Joi.string(),
-    PROVIPAY_URI_SANDBOX: Joi.string(),
-
-    PROVIDUS_THIRD_PARTY_URI: Joi.string(),
-    MAPLERAD_URI_LIVE: Joi.string(),
-    MAPLERAD_URI_SANDBOX: Joi.string(),
-    MAPLERAD_SIGNING_KEY_SANDBOX: Joi.string(),
-    INTERSWITCH_SAFETOKEN_URI: Joi.string(),
-    FLUTTERWAVE_URI: Joi.string(),
-
-    PAYSTACK_URI_LIVE: Joi.string(),
-    PAYSTACK_URI_SANDBOX: Joi.string(),
 
     SLACK_TOKEN: Joi.string(),
-    BROWSERLESS_WS_URL: Joi.string(),
 
     AWS_REGION: Joi.string(),
     S3_ACCESS_KEY_ID: Joi.string(),
     S3_SECRET_ACCESS_KEY: Joi.string(),
     S3_DOCUMENT_STORE_BUCKET: Joi.string(),
-
-    PAVILION_URI_SANDBOX: Joi.string(),
-    PAVILION_URI_LIVE: Joi.string(),
-
-    PAVILION_BASE_URL_LIVE: Joi.string(),
-    PAVILION_BASE_URL_SANDBOX: Joi.string(),
 });
 
 @Injectable()

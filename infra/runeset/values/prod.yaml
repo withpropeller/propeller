@@ -83,6 +83,25 @@ docs:
     memRequest: "64Mi"
     memLimit: "256Mi"
 
+api:
+  component:
+    name: api
+    host: api.withpropeller.com
+    scale: 1
+    port: 3001
+    healthPath: /health
+    env: { NODE_ENV: prod }
+    envFrom:
+      - secret: api-secrets
+      - configmap: api-config
+    dependencies:
+      - mongo.shared.rune
+      - flo.shared.rune
+    cpuRequest: "200m"
+    cpuLimit: "2000m"
+    memRequest: "512Mi"
+    memLimit: "1Gi"
+
 gateway:
   component:
     name: gateway

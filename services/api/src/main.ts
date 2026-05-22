@@ -54,7 +54,11 @@ async function bootstrap() {
         });
     }
 
+    app.enableShutdownHooks();
     await app.listen(config.PORT);
 }
 
-bootstrap();
+bootstrap().catch((err: unknown) => {
+    console.error('API failed to start:', err);
+    process.exit(1);
+});

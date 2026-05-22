@@ -68,6 +68,26 @@ docs:
     memRequest: "64Mi"
     memLimit: "256Mi"
 
+api:
+  component:
+    name: api
+    host: api.dev.withpropeller.com
+    scale: 1
+    port: 3001
+    healthPath: /health
+    tls: { mode: auto }
+    env: { NODE_ENV: dev }
+    envFrom:
+      - secretRef: api-secrets
+      - configRef: api-config
+    dependencies:
+      - { service: mongo, namespace: shared, readyWhen: healthy }
+      - { service: flo,   namespace: shared, readyWhen: healthy }
+    cpuRequest: "100m"
+    cpuLimit: "1000m"
+    memRequest: "256Mi"
+    memLimit: "512Mi"
+
 gateway:
   component:
     name: gateway

@@ -60,6 +60,17 @@ components:
       - libs/core/**
       - infra/docker/Dockerfile.nestjs
 
+  api:
+    dockerfile: infra/docker/Dockerfile.nestjs
+    context: .
+    cast: infra/runeset/casts/external-service.yaml
+    build_args:
+      APP_DIR: api
+      PORT: "3001"
+    paths:
+      - services/api/**
+      - infra/docker/Dockerfile.nestjs
+
   # ── Background workers (worker cast) ───────────────────────────────
 
   notifications:

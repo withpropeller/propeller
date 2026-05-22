@@ -1,11 +1,13 @@
 import { Public } from '@common/decorators/public-request.decorator';
 import { Controller, Get } from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
 import { ApiExcludeEndpoint } from '@nestjs/swagger';
 import { HealthCheckService, HealthCheck, MemoryHealthIndicator } from '@nestjs/terminus';
 import { RedisHealthIndicator } from './redis.health.indicator';
 
 @Controller('health')
 @Public()
+@SkipThrottle()
 export class HealthController {
     constructor(
         private health: HealthCheckService,
