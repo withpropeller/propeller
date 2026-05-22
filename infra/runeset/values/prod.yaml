@@ -109,7 +109,7 @@ gateway:
     scale: 1
     port: 3002
     healthPath: /health
-    env: { NODE_ENV: prod }
+    env: { APP_ENV: prod }
     envFrom:
       - secret: gateway-secrets
       - configmap: gateway-config

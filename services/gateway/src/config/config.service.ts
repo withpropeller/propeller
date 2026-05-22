@@ -21,6 +21,8 @@ const EnvSchema = Joi.object({
     PORT: Joi.number().optional().default(4000),
     LOG_LEVEL: Joi.string().default('info'),
 
+    APP_ENV: Joi.string().valid('dev', 'test', 'stg', 'beta', 'prod').optional().default('dev'),
+
     // Mongo DBs
     MONGODB_URL: Joi.string(),
 
@@ -147,8 +149,12 @@ export class ConfigService {
         return ['prod', 'stg', 'beta'].includes(this.envConfig.NODE_ENV);
     }
 
+    get FLO_ADDR(): string {
+        return this.envConfig.FLO_ADDR;
+    }
+
     get FLO_NAMESPACE(): string {
-        return this.envConfig.NODE_ENV;
+        return this.envConfig.APP_ENV;
     }
 
     get ENABLE_SWAGGER() {
@@ -205,9 +211,5 @@ export class ConfigService {
 
     get PAYKKA_KEY_ID(): string {
         return this.envConfig.PAYKKA_KEY_ID;
-    }
-
-    get FLO_ADDR(): string {
-        return this.envConfig.FLO_ADDR;
     }
 }
