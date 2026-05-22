@@ -10,7 +10,7 @@
 port = 9000
 bind = "0.0.0.0"
 data_dir = "/data/flo"
-shards = 0    # auto-detect (CPUs - 1 in latest image)
+shards = 1    # auto-detect (CPUs - 1 in latest image)
 
 [storage]
 hot_window_seconds = 90

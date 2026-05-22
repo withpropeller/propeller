@@ -1,6 +1,8 @@
 github.com/btcsuite/btcd v0.24.2 h1:aLmxPguqxza+4ag8R1I2nnJjSu2iFn/kqtHTIImswcY=
 github.com/floruntime/flo-go v0.1.0-dev.16 h1:aFgju1/TGanj/fVzv+W3gbiFFE4wOxUBWRLEGG6qgh4=
 github.com/floruntime/flo-go v0.1.0-dev.16/go.mod h1:uZVaqVffUSOVF7T9jV99PVHZxM7QwPx/btL+kCSdNXI=
+github.com/floruntime/flo-go v0.1.0-dev.18 h1:sV8lwx2kf2ceMs61QmkJnnhs402kE2ySMb/zXm6XRpA=
+github.com/floruntime/flo-go v0.1.0-dev.18/go.mod h1:uZVaqVffUSOVF7T9jV99PVHZxM7QwPx/btL+kCSdNXI=
 github.com/go-chi/chi/v5 v5.1.0/go.mod h1:DslCQbL2OYiznFReuXYUmQ2hGd1aDpCnlMNITLSKoi8=
 github.com/golang/protobuf v1.5.0/go.mod h1:FsONVRAS9T7sI+LIUmWTfcYkHO4aIWwzhcaSAoJOfIk=
 github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
