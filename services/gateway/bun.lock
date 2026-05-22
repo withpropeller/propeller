@@ -13,6 +13,7 @@
         "@nestjs/axios": "^2.0.0",
         "@nestjs/common": "^9.0.0",
         "@nestjs/core": "^9.0.0",
+        "@nestjs/event-emitter": "^2.1.1",
         "@nestjs/graphql": "^10.1.7",
         "@nestjs/jwt": "^10.0.1",
         "@nestjs/microservices": "^9.2.1",
@@ -352,6 +353,8 @@
     "@nestjs/common": ["@nestjs/common@9.4.3", "", { "dependencies": { "iterare": "1.2.1", "tslib": "2.5.3", "uid": "2.0.2" }, "peerDependencies": { "cache-manager": "<=5", "class-transformer": "*", "class-validator": "*", "reflect-metadata": "^0.1.12", "rxjs": "^7.1.0" }, "optionalPeers": ["cache-manager", "class-transformer", "class-validator"] }, "sha512-Gd6D4IaYj01o14Bwv81ukidn4w3bPHCblMUq+SmUmWLyosK+XQmInCS09SbDDZyL8jy86PngtBLTdhJ2bXSUig=="],
 
     "@nestjs/core": ["@nestjs/core@9.4.3", "", { "dependencies": { "@nuxtjs/opencollective": "0.3.2", "fast-safe-stringify": "2.1.1", "iterare": "1.2.1", "path-to-regexp": "3.2.0", "tslib": "2.5.3", "uid": "2.0.2" }, "peerDependencies": { "@nestjs/common": "^9.0.0", "@nestjs/microservices": "^9.0.0", "@nestjs/platform-express": "^9.0.0", "@nestjs/websockets": "^9.0.0", "reflect-metadata": "^0.1.12", "rxjs": "^7.1.0" }, "optionalPeers": ["@nestjs/microservices", "@nestjs/platform-express", "@nestjs/websockets"] }, "sha512-Qi63+wi55Jh4sDyaj5Hhx2jOpKqT386aeo+VOKsxnd+Ql9VvkO/FjmuwBGUyzkJt29ENYc+P0Sx/k5LtstNpPQ=="],
+
+    "@nestjs/event-emitter": ["@nestjs/event-emitter@2.1.1", "", { "dependencies": { "eventemitter2": "6.4.9" }, "peerDependencies": { "@nestjs/common": "^8.0.0 || ^9.0.0 || ^10.0.0", "@nestjs/core": "^8.0.0 || ^9.0.0 || ^10.0.0" } }, "sha512-6L6fBOZTyfFlL7Ih/JDdqlCzZeCW0RjCX28wnzGyg/ncv5F/EOeT1dfopQr1loBRQ3LTgu8OWM7n4zLN4xigsg=="],
 
     "@nestjs/graphql": ["@nestjs/graphql@10.2.1", "", { "dependencies": { "@graphql-tools/merge": "8.3.18", "@graphql-tools/schema": "9.0.16", "@graphql-tools/utils": "9.2.1", "@nestjs/mapped-types": "1.2.2", "chokidar": "3.5.3", "fast-glob": "3.2.12", "graphql-tag": "2.12.6", "graphql-ws": "5.11.3", "lodash": "4.17.21", "normalize-path": "3.0.0", "subscriptions-transport-ws": "0.11.0", "tslib": "2.5.0", "uuid": "9.0.0", "ws": "8.12.0" }, "peerDependencies": { "@apollo/subgraph": "^0.1.5 || ^0.3.0 || ^0.4.0 || ^2.0.0", "@nestjs/common": "^8.2.3 || ^9.0.0", "@nestjs/core": "^8.2.3 || ^9.0.0", "class-transformer": "*", "class-validator": "*", "graphql": "^15.8.0 || ^16.0.0", "reflect-metadata": "^0.1.13", "ts-morph": "^13.0.2 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0" }, "optionalPeers": ["@apollo/subgraph", "class-transformer", "class-validator", "ts-morph"] }, "sha512-FBzYTymT4oopiGMpej7GTRyhz1BgJxLlXZPUueamC5J9u1WxCwJyETkzBI/zeUkUydlklF/xd5zDd/Md6//hEw=="],
 
@@ -936,6 +939,8 @@
     "etag": ["etag@1.8.1", "", {}, "sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg=="],
 
     "event-target-shim": ["event-target-shim@5.0.1", "", {}, "sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ=="],
+
+    "eventemitter2": ["eventemitter2@6.4.9", "", {}, "sha512-JEPTiaOt9f04oa6NOkc4aH+nVp5I3wEjpHbIPqfgCdD5v5bUzy7xQqwcVO2aDQgOWhI28da57HksMrzK9HlRxg=="],
 
     "eventemitter3": ["eventemitter3@5.0.4", "", {}, "sha512-mlsTRyGaPBjPedk6Bvw+aqbsXDtoAyAzm5MO7JgU+yVRyMQ5O8bD4Kcci7BS85f93veegeCPkL8R4GLClnjLFw=="],
 

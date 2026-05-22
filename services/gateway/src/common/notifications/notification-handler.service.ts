@@ -35,10 +35,7 @@ export class NotificationHandler {
         return this.flo.append('notification-events', payload);
     }
 
-    handleSlack(
-        template: string,
-        additionalContent: Record<string, unknown> = {},
-    ) {
+    handleSlack(template: string, additionalContent: Record<string, unknown> = {}) {
         return this.handle(
             template,
             ExtractSlackNotificationTo(this.config.SLACK_TOKEN, this.config.SLACK_EVENTS_CHANNEL),

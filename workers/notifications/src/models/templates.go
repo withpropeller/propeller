@@ -3,10 +3,10 @@ package models
 import (
 	"bytes"
 	"fmt"
+	"html/template"
 	"os"
 	"path/filepath"
 	"strings"
-	"text/template"
 	"time"
 )
 
@@ -25,22 +25,53 @@ type EmailTemplateData struct {
 	ResetLink    string
 	Token        string
 	Year         int
+	ContentBody  template.HTML
 	Content      map[string]interface{}
 }
 
-// GetTextFromTemplate renders a template from disk.
+const defaultAppDomain = "https://app.withpropeller.com"
+
+// GetTextFromTemplate renders a body fragment and wraps it in carcass.html when present.
 func GetTextFromTemplate(channel string, templateName string, content map[string]interface{}) (*string, error) {
 	cwd, _ := os.Getwd()
-	fileName := filepath.Join(cwd, "templates", channel, templateName+".html")
-	return parseTemplate(fileName, content)
+	bodyPath := filepath.Join(cwd, "templates", channel, templateName+".html")
+	body, err := renderTemplateFile(bodyPath, content)
+	if err != nil {
+		return nil, err
+	}
+
+	carcassPath := filepath.Join(cwd, "templates", channel, "carcass.html")
+	if _, statErr := os.Stat(carcassPath); statErr != nil {
+		return body, nil
+	}
+
+	wrapContent := make(map[string]interface{}, len(content)+1)
+	for k, v := range content {
+		wrapContent[k] = v
+	}
+	wrapContent["contentBody"] = template.HTML(*body)
+
+	return renderTemplateFile(carcassPath, wrapContent)
 }
 
-func parseTemplate(fileName string, content map[string]interface{}) (*string, error) {
+func renderTemplateFile(fileName string, content map[string]interface{}) (*string, error) {
 	tmpl, err := template.ParseFiles(fileName)
 	if err != nil {
 		return nil, err
 	}
 
+	data := buildTemplateData(content)
+
+	buf := new(bytes.Buffer)
+	if err := tmpl.Execute(buf, data); err != nil {
+		return nil, err
+	}
+
+	text := buf.String()
+	return &text, nil
+}
+
+func buildTemplateData(content map[string]interface{}) EmailTemplateData {
 	data := EmailTemplateData{
 		Year:    time.Now().Year(),
 		Content: content,
@@ -51,8 +82,13 @@ func parseTemplate(fileName string, content map[string]interface{}) (*string, er
 	if v, ok := content["businessName"].(string); ok {
 		data.BusinessName = v
 	}
-	if v, ok := content["app_domain"].(string); ok {
-		data.AppDomain = v
+	if v, ok := content["app_domain"].(string); ok && v != "" {
+		data.AppDomain = strings.TrimRight(v, "/")
+	} else if v, ok := content["site_domain"].(string); ok && v != "" {
+		data.AppDomain = strings.TrimRight(v, "/")
+	}
+	if data.AppDomain == "" {
+		data.AppDomain = defaultAppDomain
 	}
 	if v, ok := content["verifyLink"].(string); ok {
 		data.VerifyLink = v
@@ -63,14 +99,10 @@ func parseTemplate(fileName string, content map[string]interface{}) (*string, er
 	if v, ok := content["securityToken"].(string); ok {
 		data.Token = v
 	}
-
-	buf := new(bytes.Buffer)
-	if err := tmpl.Execute(buf, data); err != nil {
-		return nil, err
+	if v, ok := content["contentBody"].(template.HTML); ok {
+		data.ContentBody = v
 	}
-
-	text := buf.String()
-	return &text, nil
+	return data
 }
 
 // BuildFallbackBody produces a simple HTML body when no template is on disk.

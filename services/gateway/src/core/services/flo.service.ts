@@ -3,6 +3,19 @@ import { FloClient, StreamAppendResult } from '@floruntime/node';
 import { ConfigService } from '@config/config.service';
 import { retryWithBackoff } from '@core/helpers';
 
+const enc = new TextEncoder();
+const dec = new TextDecoder();
+
+export const floEncode = (v: unknown): Uint8Array =>
+    typeof v === 'string' ? enc.encode(v) : enc.encode(JSON.stringify(v));
+
+export const floDecodeStr = (v: Uint8Array | null): string | null => (v ? dec.decode(v) : null);
+
+export const floDecodeJson = <T = unknown>(v: Uint8Array | null): T | null => {
+    if (!v) return null;
+    return JSON.parse(dec.decode(v));
+};
+
 @Injectable()
 export class FloService implements OnModuleInit, OnModuleDestroy {
     private readonly logger = new Logger(FloService.name);

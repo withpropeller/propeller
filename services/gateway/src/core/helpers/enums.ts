@@ -104,6 +104,11 @@ export enum AccessKeyTag {
     WebhookSigningKey = 'wsk',
 }
 
+/** Flo KV key prefixes (see https://docs.floruntime.io/primitives/kv/). */
+export enum FloKeys {
+    AuthEmail = 'auth:email',
+}
+
 export enum RedisKeys {
     Views = 'infra:views',
     Assemble = 'infra:assemble',

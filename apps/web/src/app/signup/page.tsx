@@ -2,25 +2,19 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, ArrowRight, Check } from 'lucide-react'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { Alert, Button, Checkbox, Input, Label, PasswordInput } from '@/components/propeller'
 import { AuthShell } from '@/components/auth/AuthShell'
 import { PasswordStrength } from '@/components/auth/PasswordStrength'
 import { PhoneInput } from '@/components/ui/PhoneInput'
+import { SelectInput } from '@/components/ui/SelectInput'
+import { MERCHANT_SIGNUP_COUNTRIES } from '@/lib/constants'
 import { useSignup, useResendConfirmation } from '@/hooks/useSignup'
 
-const registeredOptions = [
-  {
-    value: 'RC',
-    label: 'Registered Company (RC)',
-    description: 'Registered with the CAC as a limited liability company.',
-  },
-  {
-    value: 'BN',
-    label: 'Business Name (BN)',
-    description: 'Enterprise or sole proprietorship registered with the CAC.',
-  },
-] as const
+const countryOptions = MERCHANT_SIGNUP_COUNTRIES.map((c) => ({
+  value: c.code,
+  label: c.name,
+}))
 
 export default function SignupPage() {
   const [step, setStep] = useState(1)
@@ -33,7 +27,8 @@ export default function SignupPage() {
     password: '',
     businessName: '',
     businessWebsite: '',
-    businessRegStatus: 'RC',
+    countryCode: 'CN',
+    isIncorporated: false,
     termsAccepted: false,
   })
 
@@ -66,9 +61,10 @@ export default function SignupPage() {
     formData.termsAccepted
 
   const isStep2Valid =
-    formData.businessRegStatus !== 'UNREGISTERED' &&
+    formData.isIncorporated &&
     formData.businessName &&
-    formData.businessWebsite
+    formData.businessWebsite &&
+    countryOptions.some((c) => c.value === formData.countryCode)
 
   if (signupDone) {
     return (
@@ -117,19 +113,18 @@ export default function SignupPage() {
     >
       <div className="mb-7">
         <span className="text-[12px] font-semibold uppercase tracking-[0.12em] text-ink-soft">
-          {step === 1 ? 'Get started' : 'About your business'}
+          {step === 1 ? 'Get started' : 'Your exporting business'}
         </span>
         <h1 className="mt-2 mb-2 text-[36px] leading-[1.08] font-semibold tracking-[-0.025em] text-propeller-navy">
-          {step === 1 ? 'Create your account.' : 'Tell us about your business.'}
+          {step === 1 ? 'Create your account.' : 'Tell us about your company.'}
         </h1>
         <p className="text-[15px] text-ink-soft leading-[1.5]">
           {step === 1
-            ? 'Two minutes to set up. Talk to a real person before you ship to production.'
-            : 'We use this to set up compliance and your dashboard.'}
+            ? 'For exporters and global merchants collecting Naira from African buyers.'
+            : 'We use this to start KYB and set up your corridor dashboard.'}
         </p>
       </div>
 
-      {/* Progress dots */}
       <div className="flex items-center gap-2 mb-7">
         {[1, 2].map((i) => (
           <span
@@ -169,7 +164,7 @@ export default function SignupPage() {
               <Label htmlFor="firstName">First name</Label>
               <Input
                 id="firstName"
-                placeholder="Adunni"
+                placeholder="Wei"
                 value={formData.firstName}
                 onChange={handleInputChange}
                 autoComplete="given-name"
@@ -180,7 +175,7 @@ export default function SignupPage() {
               <Label htmlFor="lastName">Last name</Label>
               <Input
                 id="lastName"
-                placeholder="Okafor"
+                placeholder="Zhang"
                 value={formData.lastName}
                 onChange={handleInputChange}
                 autoComplete="family-name"
@@ -207,6 +202,8 @@ export default function SignupPage() {
             <PhoneInput
               value={formData.phone}
               onChange={(value) => setFormData((p) => ({ ...p, phone: value }))}
+              defaultCountryCode="CN"
+              placeholder="138 0013 8000"
               aria-invalid={!!getFieldError('phone')}
             />
             {getFieldError('phone') && (
@@ -273,110 +270,60 @@ export default function SignupPage() {
 
       {step === 2 && (
         <form className="flex flex-col gap-[18px]" onSubmit={handleSignup}>
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[13px] font-semibold text-ink whitespace-nowrap">
-                Company registration status
-              </span>
-              {formData.businessRegStatus !== 'UNREGISTERED' && (
-                <button
-                  type="button"
-                  onClick={() =>
-                    setFormData((p) => ({ ...p, businessRegStatus: 'UNREGISTERED' }))
-                  }
-                  className="text-[12px] font-medium text-propeller-blue no-underline hover:underline"
-                >
-                  Not registered?
-                </button>
-              )}
-            </div>
+          <SelectInput
+            label="Country of incorporation"
+            options={countryOptions}
+            value={formData.countryCode}
+            onChange={(countryCode) => setFormData((p) => ({ ...p, countryCode }))}
+            searchable
+            searchPlaceholder="Search countries"
+          />
+          <p className="text-[12px] text-ink-soft leading-[1.5] -mt-2">
+            Self-serve signup is for registered exporters outside Nigeria. Nigerian businesses
+            should contact{' '}
+            <a
+              href="mailto:support@withpropeller.com"
+              className="text-propeller-blue no-underline hover:underline"
+            >
+              support@withpropeller.com
+            </a>
+            .
+          </p>
 
-            {formData.businessRegStatus !== 'UNREGISTERED' ? (
-              <>
-                <div
-                  role="radiogroup"
-                  aria-label="Company registration status"
-                  className="rounded-[12px] border border-line-strong bg-white overflow-hidden divide-y divide-line"
-                >
-                  {registeredOptions.map((opt) => {
-                    const selected = formData.businessRegStatus === opt.value
-                    return (
-                      <button
-                        key={opt.value}
-                        type="button"
-                        role="radio"
-                        aria-checked={selected}
-                        onClick={() =>
-                          setFormData((p) => ({ ...p, businessRegStatus: opt.value }))
-                        }
-                        className="w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors hover:bg-paper focus-visible:bg-paper focus-visible:outline-none"
-                      >
-                        <span
-                          className={`size-4 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${
-                            selected
-                              ? 'bg-propeller-blue'
-                              : 'border border-line-strong bg-white'
-                          }`}
-                          aria-hidden
-                        >
-                          {selected && <Check size={10} className="text-white" strokeWidth={3} />}
-                        </span>
-                        <span className="text-[14px] font-medium text-ink">{opt.label}</span>
-                      </button>
-                    )
-                  })}
-                </div>
-                <p className="mt-2 text-[12px] text-ink-soft leading-[1.5]">
-                  {
-                    registeredOptions.find((o) => o.value === formData.businessRegStatus)
-                      ?.description
-                  }
-                </p>
-              </>
-            ) : (
-              <Alert severity="warning" title="Registration required">
-                <span className="block mb-2">
-                  Only businesses registered with the CAC can sign up today.
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setFormData((p) => ({ ...p, businessRegStatus: 'RC' }))}
-                  className="text-[12px] font-semibold underline underline-offset-2"
-                >
-                  My business is registered
-                </button>
-              </Alert>
-            )}
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="businessName">Legal business name</Label>
+            <Input
+              id="businessName"
+              placeholder="Acme Exports Co., Ltd."
+              value={formData.businessName}
+              onChange={handleInputChange}
+              autoComplete="organization"
+            />
           </div>
 
-          <div
-            className={
-              formData.businessRegStatus === 'UNREGISTERED'
-                ? 'opacity-50 pointer-events-none flex flex-col gap-[18px]'
-                : 'flex flex-col gap-[18px]'
-            }
-          >
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="businessName">Business name</Label>
-              <Input
-                id="businessName"
-                placeholder="Lumen Inc."
-                value={formData.businessName}
-                onChange={handleInputChange}
-                autoComplete="organization"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="businessWebsite">Business website</Label>
-              <Input
-                id="businessWebsite"
-                placeholder="https://lumen.co"
-                value={formData.businessWebsite}
-                onChange={handleInputChange}
-                autoComplete="url"
-              />
-            </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="businessWebsite">Business website</Label>
+            <Input
+              id="businessWebsite"
+              placeholder="https://acme-exports.com"
+              value={formData.businessWebsite}
+              onChange={handleInputChange}
+              autoComplete="url"
+            />
           </div>
+
+          <label className="flex items-start gap-2.5 cursor-pointer select-none">
+            <Checkbox
+              checked={formData.isIncorporated}
+              onCheckedChange={(checked) =>
+                setFormData((p) => ({ ...p, isIncorporated: checked }))
+              }
+            />
+            <span className="text-[12px] text-ink-soft leading-[1.5]">
+              I confirm this business is legally registered in the selected country (e.g. USCC in
+              China, Companies House in the UK).
+            </span>
+          </label>
 
           <Button
             type="submit"

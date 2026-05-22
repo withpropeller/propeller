@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Utils, AccountStatus, AppMessages, NotificationTemplates } from '@core/helpers';
+import { Utils, AccountStatus, AppMessages } from '@core/helpers';
 import { SCryptCryptoFactory } from '@core/crypto';
 import { AuthException } from './auth.exception';
 import { SigninDto } from './dto/signin.dto';
@@ -16,8 +16,10 @@ import { MultiFactorAuth } from './multi-factor.auth';
 import { AuthErrors, TwoFAChannels } from './auth.enums';
 import { HydratedDocument } from 'mongoose';
 import { JWTUser } from './jwt.strategy';
-import { NotificationHandler } from '@common/notifications/notification-handler.service';
-import { ExtractEmailNotificationTo } from '@core/jobs/notification.job';
+import { EventTask, EventTasks } from '@core/events';
+import { ExecutionOptions } from '@core/interfaces';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { TenantDataSource } from '@core/helpers';
 
 export type UserWithAccessToken = { user: User; accessToken: string };
 
@@ -30,10 +32,10 @@ export class AuthService {
         private jwt: JwtService,
         private businessService: BusinessService,
         private twoFactorAuth: MultiFactorAuth,
-        private notificationHandler: NotificationHandler,
+        private eventEmitter: EventEmitter2,
     ) {}
 
-    async signup(onboard: OnboardSurvey): Promise<User> {
+    async signup(onboard: OnboardSurvey, options?: ExecutionOptions): Promise<User> {
         const entity = this.usersService.createPartial({});
         entity.email = onboard.email;
         entity.firstName = onboard.firstName;
@@ -45,15 +47,10 @@ export class AuthService {
         // create user's default organization and add to organization
         await this.businessService.create(user, onboard);
 
-        // set sessionToken
-        const sessionToken = await this.setStateToken(user.id);
-
-        // Send email confirmation
-        this.notificationHandler.handle(NotificationTemplates.ConfirmAccount, ExtractEmailNotificationTo(user), {
-            firstName: user.firstName,
-            businessName: onboard.businessName,
-            sessionToken,
-        });
+        this.eventEmitter.emit(
+            EventTasks.UserSignedUp,
+            new EventTask(EventTasks.UserSignedUp, TenantDataSource.Sandbox, { user, onboard }, options),
+        );
 
         return user;
     }
@@ -79,13 +76,10 @@ export class AuthService {
             await this.usersService.save(user);
         }
 
-        // set a session token
-        const sessionToken = await this.setStateToken(user.id);
-
-        this.notificationHandler.handle(NotificationTemplates.ConfirmAccount, ExtractEmailNotificationTo(user), {
-            firstName: user.firstName,
-            sessionToken,
-        });
+        this.eventEmitter.emit(
+            EventTasks.UserEmailConfirmRequested,
+            new EventTask(EventTasks.UserEmailConfirmRequested, TenantDataSource.Sandbox, { user }),
+        );
     }
 
     async getAuthToken(data: SigninDto) {
@@ -139,13 +133,10 @@ export class AuthService {
     async sendResetPasswordToken(data: ForgotPasswordDto) {
         const user = await this.usersService.findOneByEmail(data.email);
 
-        // set session token
-        const sessionToken = await this.setStateToken(user.id);
-
-        this.notificationHandler.handle(NotificationTemplates.ResetPassword, ExtractEmailNotificationTo(user), {
-            firstName: user.firstName,
-            sessionToken,
-        });
+        this.eventEmitter.emit(
+            EventTasks.UserPasswordResetRequested,
+            new EventTask(EventTasks.UserPasswordResetRequested, TenantDataSource.Sandbox, { user }),
+        );
     }
 
     async changePassword(publicId: string, data: ChangePasswordDto) {
@@ -208,9 +199,10 @@ export class AuthService {
         // save user
         await this.usersService.save(user);
 
-        this.notificationHandler.handle(NotificationTemplates.AccountActivated, ExtractEmailNotificationTo(user), {
-            firstName: user.firstName,
-        });
+        this.eventEmitter.emit(
+            EventTasks.UserAccountActivated,
+            new EventTask(EventTasks.UserAccountActivated, TenantDataSource.Sandbox, { user, business }),
+        );
 
         return this.authenticatedUser(user);
     }

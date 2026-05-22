@@ -7,10 +7,12 @@ import { HttpModule } from '@nestjs/axios';
 import { LoggerModule } from 'nestjs-pino';
 import { TenantDataSource, PinoLoggerConfig } from './helpers';
 import { JwtModule } from '@nestjs/jwt';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Global()
 @Module({
     imports: [
+        EventEmitterModule.forRoot(),
         ConfigModule,
         HttpModule,
         MongooseModule.forRootAsync({

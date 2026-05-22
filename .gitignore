@@ -35,6 +35,7 @@ Thumbs.db
 
 # Go binaries
 workers/compliance/compliance
+workers/notifications/notifications
 
 # Editors
 .vscode/

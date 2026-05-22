@@ -32,16 +32,16 @@ func main() {
 
 	// ── Connect to Flo ──
 	floClient := flo.NewClient(cfg.FloAddr,
-		flo.WithNamespace("propeller"),
+		flo.WithNamespace(cfg.FloNamespace),
 		flo.WithTimeout(10*time.Second),
 	)
 	if err := floClient.Connect(); err != nil {
-		slog.Error("failed to connect to Flo", "addr", cfg.FloAddr, "error", err)
+		slog.Error("failed to connect to Flo", "addr", cfg.FloAddr, "namespace", cfg.FloNamespace, "error", err)
 		os.Exit(1)
 	}
 
 	defer floClient.Close()
-	slog.Info("connected to Flo", "addr", cfg.FloAddr)
+	slog.Info("connected to Flo", "addr", cfg.FloAddr, "namespace", cfg.FloNamespace)
 
 	// ── Wire services ──
 	ref := app.NewContainerRef(cfg)

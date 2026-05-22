@@ -13,6 +13,8 @@ import { MultiFactorAuth } from './multi-factor.auth';
 import { TenantDataSource } from '@core/helpers/enums';
 import { Business, BusinessSchema } from '@api/business/business.schema';
 import { CommonModule } from '@common/common.module';
+import { AuthListener } from './auth.listener';
+import { AuthRegistryService } from './auth-registry.service';
 
 @Module({
     imports: [
@@ -27,7 +29,7 @@ import { CommonModule } from '@common/common.module';
         BusinessModule,
     ],
     controllers: [AuthController],
-    providers: [AuthService, MultiFactorAuth, OnboardSurveyService, JwtStrategy],
+    providers: [AuthService, AuthListener, AuthRegistryService, MultiFactorAuth, OnboardSurveyService, JwtStrategy],
     exports: [AuthService, MultiFactorAuth],
 })
 export class AuthModule {}

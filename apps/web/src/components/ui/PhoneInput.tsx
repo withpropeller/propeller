@@ -21,9 +21,8 @@ function Flag({ code, className }: { code: string; className?: string }) {
   )
 }
 
-// Parse a full phone string (e.g. "+234 801 234 5678") into country + local parts
-function parseValue(value: string): { countryCode: string; local: string } {
-  const defaultCode = 'NG'
+// Parse a full phone string (e.g. "+86 138 0013 8000") into country + local parts
+function parseValue(value: string, defaultCode: string): { countryCode: string; local: string } {
   if (!value || !value.startsWith('+')) return { countryCode: defaultCode, local: value ?? '' }
 
   // Greedily match the longest dial code first to avoid "+1" matching "+1868" etc.
@@ -46,6 +45,8 @@ export interface PhoneInputProps {
   onChange: (value: string) => void
   placeholder?: string
   disabled?: boolean
+  /** ISO country code when the field is empty (default NG for legacy forms). */
+  defaultCountryCode?: string
   'aria-invalid'?: boolean
 }
 
@@ -53,10 +54,11 @@ export function PhoneInput({
   value,
   onChange,
   placeholder = '801 234 5678',
+  defaultCountryCode = 'NG',
   disabled,
   'aria-invalid': ariaInvalid,
 }: PhoneInputProps) {
-  const { countryCode: initCode, local: initLocal } = parseValue(value)
+  const { countryCode: initCode, local: initLocal } = parseValue(value, defaultCountryCode)
 
   const [selectedCode, setSelectedCode] = useState(initCode)
   const [localValue, setLocalValue] = useState(initLocal)

@@ -3,6 +3,7 @@ import { Controller, Get } from '@nestjs/common';
 import { SkipThrottle } from '@nestjs/throttler';
 import { HealthCheckService, HealthCheck, MemoryHealthIndicator, MongooseHealthIndicator } from '@nestjs/terminus';
 import { RedisHealthIndicator } from './redis.health.indicator';
+import { ApiExcludeEndpoint } from '@nestjs/swagger';
 
 @Controller('health')
 @Public()
@@ -17,6 +18,7 @@ export class HealthController {
 
     @Get()
     @HealthCheck()
+    @ApiExcludeEndpoint()
     check() {
         return this.health.check([
             // async () => this.redis.isHealthy('redis'),

@@ -14,7 +14,8 @@ interface SignupFormData {
   password: string
   businessName: string
   businessWebsite: string
-  businessRegStatus: string
+  countryCode: string
+  isIncorporated: boolean
   termsAccepted: boolean
 }
 
@@ -25,34 +26,16 @@ export function useSignup() {
     formData: SignupFormData,
     options?: Parameters<typeof orvalMutate>[1]
   ) => {
-    const { businessRegStatus, termsAccepted, ...fields } = formData
-    orvalMutate(
-      {
-        data: {
-          ...fields,
-          isIncorporated: businessRegStatus !== 'UNREGISTERED',
-          countryCode: 'NG',
-        },
-      },
-      options
-    )
+    const { termsAccepted, ...payload } = formData
+    orvalMutate({ data: payload }, options)
   }
 
   const mutateAsync = async (
     formData: SignupFormData,
     options?: Parameters<typeof orvalMutateAsync>[1]
   ) => {
-    const { businessRegStatus, termsAccepted, ...fields } = formData
-    return orvalMutateAsync(
-      {
-        data: {
-          ...fields,
-          isIncorporated: businessRegStatus !== 'UNREGISTERED',
-          countryCode: 'NG',
-        },
-      },
-      options
-    )
+    const { termsAccepted, ...payload } = formData
+    return orvalMutateAsync({ data: payload }, options)
   }
 
   return { ...rest, mutate, mutateAsync }
