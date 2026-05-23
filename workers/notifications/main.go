@@ -41,7 +41,7 @@ func main() {
 	}
 
 	defer floClient.Close()
-	slog.Info("connected to Flo", "addr", cfg.FloAddr, "namespace", cfg.FloNamespace)
+	slog.Info("connected to Flo (SDK v0.1.0-dev.18)", "addr", cfg.FloAddr, "namespace", cfg.FloNamespace)
 
 	// ── Wire services ──
 	ref := app.NewContainerRef(cfg)
