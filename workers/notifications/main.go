@@ -53,15 +53,15 @@ func main() {
 		os.Exit(1)
 	}
 	defer client.Close()
-	slog.Info("#trial 1: connected to Flo (SDK v0.1.0-dev.18)", "addr", addr, "namespace", namespace)
+	slog.Info("#trial 2: connected to Flo (SDK v0.1.0-dev.18)", "addr", addr, "namespace", namespace)
 
 	// Seed the stream so the consumer group has something to bind to.
 	// We don't need more — the probe is about blocking reads against the
 	// (then) empty stream after the seed is consumed.
-	if _, err := client.Stream.Append(stream, []byte(`{"probe":"seed"}`), nil); err != nil {
+	/*if _, err := client.Stream.Append(stream, []byte(`{"probe":"seed"}`), nil); err != nil {
 		slog.Error("seed append failed", "error", err)
 		os.Exit(1)
-	}
+	}*/
 
 	worker, err := client.NewStreamWorker(flo.StreamWorkerOptions{
 		Stream:      stream,
