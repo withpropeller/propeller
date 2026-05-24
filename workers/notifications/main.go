@@ -10,7 +10,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -47,13 +46,13 @@ func main() {
 	// Seed the stream so the consumer group has something to bind to.
 	// We don't need more — the probe is about blocking reads against the
 	// (then) empty stream after the seed is consumed.
-	result, err := floClient.Stream.Append(evts.StreamNotificationEvents, []byte(`{"probe":"seed"}`), nil)
+	/*result, err := floClient.Stream.Append(evts.StreamNotificationEvents, []byte(`{"probe":"seed"}`), nil)
 	fmt.Println("seed append result", result)
 	if err != nil {
 		slog.Error("seed append failed", "error", err)
 		os.Exit(1)
 	}
-	fmt.Println("seed append result error", err)
+	fmt.Println("seed append result error", err)*/
 
 	// ── Wire services ──
 	ref := app.NewContainerRef(cfg)
