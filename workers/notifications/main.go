@@ -1,31 +1,15 @@
-// Probe for the cross-shard blocking-read connection-drop issue.
+// Package main — Notification Worker
 //
-// Mirrors the shape of the Propeller `notifications` worker
-// (workers/notifications/main.go) — uses StreamWorker against a stream
-// that quickly becomes empty. The interesting signal is whether the
-// worker stays connected across multiple BlockMS cycles, or whether you
-// see repeating "Connection lost, reconnecting..." log lines from the
-// SDK.
+// Consumes notification-events from Flo and dispatches to delivery channels
+// (email via Resend). Channels are wired via ContainerRef following the
+// ISendNotification interface from the incumbent Stanza architecture.
 //
-// Pair with the server-side debug logs added to shard.zig:
-//
-//	"group_read register: ..."
-//	"waiter timeout: ..."
-//	"deliverDeferred[cross]: sent ..."  or  "[same]: write ..."
-//	"deliverInbound: write ..."
-//
-// If you see register + timeout + sent but no inbound write on the owner
-// shard, the inbox path is broken. If you see inbound write but the
-// client still drops, the socket-write side is the suspect.
-//
-// Run:
-//
-//	FLO_ENDPOINT=localhost:9000 go run main.go
+// Stream: notification-events
+// Event type: notification.send
 package main
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -33,54 +17,58 @@ import (
 	"time"
 
 	flo "github.com/floruntime/flo-go"
+	evts "github.com/propeller/propeller/libs/go-events"
+
+	"github.com/propeller/propeller/workers/notifications/config"
+	app "github.com/propeller/propeller/workers/notifications/src"
+	"github.com/propeller/propeller/workers/notifications/src/handlers"
 )
 
 func main() {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}))
 	slog.SetDefault(logger)
 
-	addr := envOr("FLO_ADDR", "localhost:9000")
-	namespace := envOr("FLO_NAMESPACE", "prod")
-	stream := envOr("FLO_STREAM", "notification-events")
-	group := envOr("FLO_GROUP", "notification")
+	cfg := config.GetConfig()
 
-	client := flo.NewClient(addr,
-		flo.WithNamespace(namespace),
+	// ── Connect to Flo ──
+	floClient := flo.NewClient(cfg.FloAddr,
+		flo.WithNamespace(cfg.FloNamespace),
 		flo.WithTimeout(10*time.Second),
 	)
-	if err := client.Connect(); err != nil {
-		slog.Error("failed to connect to Flo", "addr", addr, "namespace", namespace, "error", err)
+	if err := floClient.Connect(); err != nil {
+		slog.Error("failed to connect to Flo", "addr", cfg.FloAddr, "namespace", cfg.FloNamespace, "error", err)
 		os.Exit(1)
 	}
-	defer client.Close()
-	slog.Info("#trial 2: connected to Flo (SDK v0.1.0-dev.18)", "addr", addr, "namespace", namespace)
 
-	// Seed the stream so the consumer group has something to bind to.
-	// We don't need more — the probe is about blocking reads against the
-	// (then) empty stream after the seed is consumed.
-	/*if _, err := client.Stream.Append(stream, []byte(`{"probe":"seed"}`), nil); err != nil {
-		slog.Error("seed append failed", "error", err)
-		os.Exit(1)
-	}*/
+	defer floClient.Close()
+	slog.Info("#trial 1: connected to Flo (SDK v0.1.0-dev.18)", "addr", cfg.FloAddr, "namespace", cfg.FloNamespace)
 
-	worker, err := client.NewStreamWorker(flo.StreamWorkerOptions{
-		Stream:      stream,
-		Group:       group,
+	// ── Wire services ──
+	ref := app.NewContainerRef(cfg)
+
+	// ── Stream worker ──
+	worker, err := floClient.NewStreamWorker(flo.StreamWorkerOptions{
+		Stream:      evts.StreamNotificationEvents,
+		Group:       "notification",
 		Concurrency: 5,
 		BatchSize:   10,
-		Logger:      slogPrintf{},
-	}, handle)
+		// Route the worker's reconnect/group-join logs through slog so they
+		// land in the structured JSON pipeline instead of plain stderr.
+		Logger: newFloLogger(),
+	}, handlers.MakeHandler(ref))
 	if err != nil {
 		slog.Error("failed to create stream worker", "error", err)
 		os.Exit(1)
 	}
 	defer worker.Close()
 
-	slog.Info("probe worker started", "stream", stream, "group", group)
+	slog.Info("notification worker started", "stream", evts.StreamNotificationEvents)
 
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
 
+	// Stop() calls client.Interrupt() to unblock an in-flight GroupRead immediately.
+	// defer worker.Close() alone runs too late (after Start returns).
 	go func() {
 		<-ctx.Done()
 		slog.Info("shutdown signal received, stopping worker")
@@ -90,24 +78,6 @@ func main() {
 	if err := worker.Start(ctx); err != nil && ctx.Err() == nil {
 		slog.Error("stream worker exited", "error", err)
 	}
+
 	slog.Info("shutdown complete")
-}
-
-func handle(sctx *flo.StreamContext) error {
-	slog.Info("received record", "stream_id", sctx.StreamID())
-	return nil // auto-ack
-}
-
-func envOr(key, def string) string {
-	if v := os.Getenv(key); v != "" {
-		return v
-	}
-	return def
-}
-
-// slogPrintf adapts slog into the SDK's Printf-based Logger interface.
-type slogPrintf struct{}
-
-func (slogPrintf) Printf(format string, v ...any) {
-	slog.Info("flo-sdk", "msg", fmt.Sprintf(format, v...))
 }
