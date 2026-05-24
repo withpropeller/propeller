@@ -8,7 +8,7 @@
 
 service:
   name: flo
-  image: "ghcr.io/floruntime/flo:0.1.0-dev.3"
+  image: "ghcr.io/floruntime/flo:0.1.0-dev.5"
   imagePull: always
   scale: 1
   ports:
