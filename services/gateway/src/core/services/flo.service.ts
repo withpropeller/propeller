@@ -47,11 +47,11 @@ export class FloService implements OnModuleInit, OnModuleDestroy {
     }
 
     async append(stream: string, value: string | object | Uint8Array): Promise<StreamAppendResult> {
-        console.log(`Appending to stream ${stream}: ${value}`);
+        console.log(`Appending to stream ${stream}: ${JSON.stringify(value)}`);
         const namespace = this.client.getNamespace();
         console.log(`Namespace: ${namespace}`);
         const result = await this.client.stream.append(stream, value);
-        console.log(`Append result: ${JSON.stringify(result)}`);
+        console.log('Append result:', result);
         return result;
     }
 }
