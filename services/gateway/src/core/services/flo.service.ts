@@ -23,6 +23,7 @@ export class FloService implements OnModuleInit, OnModuleDestroy {
 
     constructor(private readonly config: ConfigService) {
         this.client = new FloClient(this.config.FLO_ADDR, { namespace: this.config.FLO_NAMESPACE });
+        this.logger.log(`Flo client created at ${this.config.FLO_ADDR} (namespace: ${this.config.FLO_NAMESPACE})`);
     }
 
     async onModuleInit() {
@@ -45,7 +46,12 @@ export class FloService implements OnModuleInit, OnModuleDestroy {
         return this.client.isConnected();
     }
 
-    append(stream: string, value: string | object | Uint8Array): Promise<StreamAppendResult> {
-        return this.client.stream.append(stream, value);
+    async append(stream: string, value: string | object | Uint8Array): Promise<StreamAppendResult> {
+        console.log(`Appending to stream ${stream}: ${value}`);
+        const namespace = this.client.getNamespace();
+        console.log(`Namespace: ${namespace}`);
+        const result = await this.client.stream.append(stream, value);
+        console.log(`Append result: ${JSON.stringify(result)}`);
+        return result;
     }
 }
