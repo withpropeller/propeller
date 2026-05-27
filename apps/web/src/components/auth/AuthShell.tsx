@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import Link from '@/lib/routing'
 import { ReactNode } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { BrandPanel } from './BrandPanel'

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { createPortal } from 'react-dom'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/lib/routing'
 import { useQueryClient } from '@tanstack/react-query'
 import { usePanelContext } from '@/context/PanelContext'
 import { useAccountControllerGet, useAccountControllerGetOne, useAccountControllerGetLogs, useAccountControllerAddDepositChannel, getAccountControllerGetOneQueryKey } from '@/api/accounts/accounts'
@@ -15,7 +15,7 @@ import { useEventsControllerGetOne, useEventsControllerRetryEvent } from '@/api/
 import { useApiRequestsControllerGetOne } from '@/api/requests/requests'
 import { usePaymentRequestControllerGetOne } from '@/api/payment-requests/payment-requests'
 import { AddEndpointModal } from '@/components/ui/AddEndpointModal'
-import { X, ArrowUp, ArrowDown, ArrowUpRight, ArrowDownLeft, ArrowRight, Landmark, ChevronRight, ShieldAlert, CreditCard, Webhook, AlertCircle, Download, Eye, EyeOff, Wallet, Network, RotateCcw, ChevronDown, ChevronUp } from 'lucide-react'
+import { X, ArrowUp, ArrowDown, ArrowUpRight, ArrowDownLeft, Landmark, ChevronRight, ShieldAlert, CreditCard, Webhook, AlertCircle, Download, Eye, EyeOff, Wallet, Network, RotateCcw, ChevronDown, ChevronUp } from 'lucide-react'
 import { Badge } from '@/components/ui/Badge'
 import { NetworkBadge } from '@/components/ui/NetworkBadge'
 import { CopyButton } from '@/components/ui/CopyButton'
@@ -482,14 +482,10 @@ function TransactionDetail({ txn }: { txn: any }) {
             <dl className="space-y-2.5">
               <SectionRow label="Card">
                 {last4 ? (
-                  <button
-                    onClick={() => cardId && navigateAndClose(`/dashboard/issuing/cards/${cardId}`)}
-                    className="flex items-center gap-2 link"
-                    disabled={!cardId}
-                  >
+                  <div className="flex items-center gap-2">
                     <NetworkBadge value={cardNetwork} />
                     <span className="font-medium">•••• {last4}</span>
-                  </button>
+                  </div>
                 ) : (
                   <span className="text-content-tertiary">No card linked</span>
                 )}
@@ -762,18 +758,6 @@ function TransactionDetail({ txn }: { txn: any }) {
         )}
 
         <div className="flex items-center gap-2">
-          {txn.authorization?.id && (
-            <Button
-              variant="outline"
-              color="secondary"
-              size="sm"
-              className="gap-1.5 flex-1 cursor-pointer"
-              onClick={() => navigateAndClose(`/dashboard/issuing/authorizations/${txn.authorization.id}`)}
-            >
-              View authorization
-              <ArrowRight width={13} height={13} />
-            </Button>
-          )}
           {canDispute && (
             <Button
               variant="outline"
@@ -1400,16 +1384,18 @@ function DisputePanel({ id }: { id: string }) {
                     ? <Landmark width={12} height={12} className="text-content-tertiary" />
                     : <CreditCard width={12} height={12} className="text-content-tertiary" />
                   }
-                  <button
-                    onClick={() => {
-                      if (isPaymentSource) { closePanel(); router.push(`/dashboard/payments?id=${disputeSource.id}`) }
-                      else if (isCardTxnSource) { closePanel(); router.push(`/dashboard/issuing/transactions?id=${disputeSource.id}`) }
-                      else { closePanel(); router.push(`/dashboard/issuing/authorizations/${disputeSource.id}`) }
-                    }}
-                    className="text-xs font-mono text-content-tertiary hover:text-action-primary-main hover:underline truncate max-w-40 text-left cursor-pointer"
-                  >
-                    {disputeSource.id}
-                  </button>
+                  {isPaymentSource ? (
+                    <button
+                      onClick={() => { closePanel(); router.push(`/dashboard/payments?id=${disputeSource.id}`) }}
+                      className="text-xs font-mono text-content-tertiary hover:text-action-primary-main hover:underline truncate max-w-40 text-left cursor-pointer"
+                    >
+                      {disputeSource.id}
+                    </button>
+                  ) : (
+                    <span className="text-xs font-mono text-content-tertiary truncate max-w-40">
+                      {disputeSource.id}
+                    </span>
+                  )}
                   <CopyButton text={disputeSource.id} />
                 </div>
               ) : (
@@ -1422,16 +1408,9 @@ function DisputePanel({ id }: { id: string }) {
                   <div className="w-8 h-5 rounded border border-border-primary-light bg-slate-900 flex items-center justify-center text-[8px] font-bold text-white uppercase">
                     {sourceCard.network?.charAt(0) || 'C'}
                   </div>
-                  {sourceCard.id ? (
-                    <button
-                      onClick={() => { closePanel(); router.push(`/dashboard/issuing/cards/${sourceCard.id}`) }}
-                      className="text-xs font-mono text-content-tertiary hover:text-action-primary-main hover:underline truncate max-w-40 text-left cursor-pointer"
-                    >
-                      •••• {sourceCard.details?.last4 || '••••'}
-                    </button>
-                  ) : (
-                    <span className="text-xs font-mono text-content-tertiary">•••• {sourceCard.details?.last4 || '••••'}</span>
-                  )}
+                  <span className="text-xs font-mono text-content-tertiary truncate max-w-40">
+                    •••• {sourceCard.details?.last4 || '••••'}
+                  </span>
                   {sourceCard.id && <CopyButton text={sourceCard.id} />}
                 </div>
               </SectionRow>

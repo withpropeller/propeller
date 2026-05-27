@@ -9,7 +9,6 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
-        cors: true,
         bodyParser: true,
         bufferLogs: false,
     });
@@ -19,6 +18,21 @@ async function bootstrap() {
     ContextIdFactory.apply(new AggregateByTenantContextIdStrategy());
 
     const config = app.get(ConfigService);
+
+    const allowedOrigins = config.ALLOWED_ORIGINS;
+    const allowAny = allowedOrigins.includes('*');
+    app.enableCors({
+        origin: (origin, callback) => {
+            if (!origin) return callback(null, true);
+            if (allowAny || allowedOrigins.includes(origin)) return callback(null, true);
+            callback(new Error(`Origin ${origin} not allowed by CORS`), false);
+        },
+        credentials: true,
+        methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+        exposedHeaders: ['Set-Cookie'],
+        maxAge: 86400,
+    });
 
     if (config.ENABLE_SWAGGER) {
         const options = new DocumentBuilder()

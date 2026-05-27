@@ -4,21 +4,23 @@ WORKDIR /app
 COPY apps/web/package.json apps/web/bun.lock* ./
 RUN bun install --frozen-lockfile
 
-# Stage 2 — Build
+# Stage 2 — Build the Vite SPA
 FROM oven/bun:1-alpine AS builder
 WORKDIR /app
+ARG VITE_API_BASE_URL=https://gateway.withpropeller.com
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 COPY --from=deps /app/node_modules ./node_modules
 COPY apps/web/ .
 COPY tsconfig.base.json /tsconfig.base.json
 COPY biome.json /biome.json
 RUN bun run build
 
-# Stage 3 — Run
+# Stage 3 — Run the Bun server that serves dist/ + /api/auth/login + health
 FROM oven/bun:1-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/server.ts ./server.ts
+COPY --from=builder /app/package.json ./package.json
 EXPOSE 3000
-CMD ["bun", "run", "server.js"]
+CMD ["bun", "run", "server.ts"]

@@ -1,9 +1,9 @@
-// API base URLs — swap via NEXT_PUBLIC_ env vars
+// API base URLs — swap via VITE_* env vars at build time
 export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://infrasrv.allawee.com'
+  import.meta.env.VITE_API_BASE_URL ?? 'https://gateway.withpropeller.com'
 
 export const DOCS_URL =
-  process.env.NEXT_PUBLIC_DOCS_URL ?? 'https://allawee-paystack-issuing-docs.apidocumentation.com'
+  import.meta.env.VITE_DOCS_URL ?? 'https://docs.withpropeller.com'
 
 // localStorage keys
 export const STORAGE_KEYS = {

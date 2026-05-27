@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter, usePathname } from '@/lib/routing'
 import { useAuth } from '@/context/AuthContext'
 
 interface AuthGuardProps {

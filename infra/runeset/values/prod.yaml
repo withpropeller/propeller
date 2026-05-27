@@ -59,7 +59,9 @@ web:
     host: app.withpropeller.com
     scale: 1
     port: 3000
-    healthPath: /
+    healthPath: /health
+    buildArgs:
+      VITE_API_BASE_URL: https://gateway.withpropeller.com
     env: { NODE_ENV: production }
     envFrom: []
     dependencies: []

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
+import Link from '@/lib/routing'
 import { ChevronRight } from 'lucide-react'
 import {
   Button,

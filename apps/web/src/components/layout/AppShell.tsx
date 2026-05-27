@@ -1,7 +1,7 @@
 'use client'
 
 import { ReactNode, useEffect } from 'react'
-import Link from 'next/link'
+import Link from '@/lib/routing'
 import { Sidebar } from './Sidebar'
 import { GlobalPanel } from './GlobalPanel'
 import { MobileTopBar } from './MobileTopBar'
@@ -10,7 +10,7 @@ import { IssuingNavProvider } from '@/context/IssuingNavContext'
 import { usePanelContext } from '@/context/PanelContext'
 import { useMode } from '@/context/ModeContext'
 import { useSidebar } from '@/context/SidebarContext'
-import { usePathname } from 'next/navigation'
+import { usePathname } from '@/lib/routing'
 import { Alert, AlertDescription, AlertWarningIcon } from '@/lib/pax'
 import { useBusinessControllerFind } from '@/api/business/business'
 
@@ -95,8 +95,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="flex flex-1 min-h-0 overflow-hidden">
             <IssuingNavProvider>
               <main id="main-content" className="flex-1 min-w-0 overflow-y-auto">
-                {/* Issuing topnav — renders full-width, above the content padding.
-                    Sticky within this scroll container. Only for Issuing routes. */}
+                {/* Sticky topnav above the content padding, shown on dashboard routes. */}
                 {isDashboardRoute && (
                   <div className="sticky top-0 z-10">
                     <Topnav />

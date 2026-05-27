@@ -37,6 +37,8 @@ components:
     dockerfile: infra/docker/Dockerfile.web
     context: .
     cast: infra/runeset/casts/external-service.yaml
+    build_args:
+      VITE_API_BASE_URL: https://gateway.withpropeller.com
     paths:
       - apps/web/**
       - infra/docker/Dockerfile.web

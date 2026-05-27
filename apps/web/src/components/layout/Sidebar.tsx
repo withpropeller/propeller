@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useState } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import Link from '@/lib/routing'
+import { usePathname } from '@/lib/routing'
 import {
   LayoutDashboard, Users, Wallet, ShieldAlert, ArrowLeftRight,
-  CreditCard, Code2, Settings, ChevronDown, ChevronLeft, ChevronRight, X,
+  Code2, Settings, ChevronDown, ChevronLeft, ChevronRight, X,
   LogOut, MoreVertical,
 } from 'lucide-react'
 import { Button } from '@/lib/pax'
@@ -47,20 +47,6 @@ const NAV_SECTIONS: { section: string; items: SectionItem[] }[] = [
   {
     section: 'PRODUCTS',
     items: [
-      {
-        kind: 'parent',
-        id: 'issuing',
-        label: 'Issuing',
-        icon: CreditCard,
-        basePath: '/dashboard/issuing',
-        children: [
-          { href: '/dashboard/issuing/card-programs', label: 'Card programs' },
-          { href: '/dashboard/issuing/cards', label: 'Cards' },
-          { href: '/dashboard/issuing/authorizations', label: 'Authorizations' },
-          { href: '/dashboard/issuing/bins', label: 'BINs' },
-          { href: '/dashboard/issuing/transactions', label: 'Transactions' },
-        ],
-      },
       {
         kind: 'link',
         id: 'payments',

@@ -1,7 +1,7 @@
 'use client'
 
-import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import Link from '@/lib/routing'
+import { usePathname, useRouter } from '@/lib/routing'
 import { ArrowLeft } from 'lucide-react'
 import {
   IconButton,
@@ -20,7 +20,6 @@ import { useBusinessControllerFind } from '@/api/business/business'
 // Single-level breadcrumb pages — just show the label, no back button
 const LIST_LABELS: Record<string, string> = {
   '/dashboard': 'Dashboard',
-  '/dashboard/issuing': 'Issuing',
   '/dashboard/payments': 'Payments',
   '/dashboard/accounts': 'Accounts',
   '/dashboard/customers': 'Customers',
@@ -35,11 +34,6 @@ interface SectionInfo {
 }
 
 const SECTION_LABELS: Record<string, SectionInfo> = {
-  '/dashboard/issuing/card-programs':   { section: 'Issuing',    sectionPath: '/dashboard/issuing',    subsection: 'Card programs' },
-  '/dashboard/issuing/cards':           { section: 'Issuing',    sectionPath: '/dashboard/issuing',    subsection: 'Cards' },
-  '/dashboard/issuing/authorizations':  { section: 'Issuing',    sectionPath: '/dashboard/issuing',    subsection: 'Authorizations' },
-  '/dashboard/issuing/bins':            { section: 'Issuing',    sectionPath: '/dashboard/issuing',    subsection: 'BINs' },
-  '/dashboard/issuing/transactions':    { section: 'Issuing',    sectionPath: '/dashboard/issuing',    subsection: 'Transactions' },
   '/dashboard/developer/webhooks':      { section: 'Developer',  sectionPath: '/dashboard/developer',  subsection: 'Webhooks' },
   '/dashboard/developer/events':        { section: 'Developer',  sectionPath: '/dashboard/developer',  subsection: 'Events' },
   '/dashboard/developer/api-keys':      { section: 'Developer',  sectionPath: '/dashboard/developer',  subsection: 'API keys' },
@@ -66,11 +60,6 @@ const DETAIL_PARENTS: Record<string, ParentInfo> = {
   'disputes':               { section: 'Disputes',  sectionPath: '/dashboard/disputes' },
   // Legacy top-level api-keys route
   'api-keys':               { section: 'Developer', sectionPath: '/dashboard/developer', subsection: 'API keys', subsectionPath: '/dashboard/developer/api-keys' },
-  'issuing/card-programs':  { section: 'Issuing',   sectionPath: '/dashboard/issuing',   subsection: 'Card programs',   subsectionPath: '/dashboard/issuing/card-programs' },
-  'issuing/cards':          { section: 'Issuing',   sectionPath: '/dashboard/issuing',   subsection: 'Cards',           subsectionPath: '/dashboard/issuing/cards' },
-  'issuing/authorizations': { section: 'Issuing',   sectionPath: '/dashboard/issuing',   subsection: 'Authorizations',  subsectionPath: '/dashboard/issuing/authorizations' },
-  'issuing/bins':           { section: 'Issuing',   sectionPath: '/dashboard/issuing',   subsection: 'BINs',            subsectionPath: '/dashboard/issuing/bins' },
-  'issuing/transactions':   { section: 'Issuing',   sectionPath: '/dashboard/issuing',   subsection: 'Transactions',    subsectionPath: '/dashboard/issuing/transactions' },
   'developer/events':       { section: 'Developer', sectionPath: '/dashboard/developer', subsection: 'Events',          subsectionPath: '/dashboard/developer/events' },
   'developer/webhooks':     { section: 'Developer', sectionPath: '/dashboard/developer', subsection: 'Webhooks',        subsectionPath: '/dashboard/developer/webhooks' },
   'developer/api-keys':     { section: 'Developer', sectionPath: '/dashboard/developer', subsection: 'API keys',        subsectionPath: '/dashboard/developer/api-keys' },

@@ -23,6 +23,27 @@ interface DeployConfig {
   components: Record<string, ComponentSpec>;
 }
 
+function formatBuildArgs(args: Record<string, string>): string {
+  return Object.entries(args)
+    .map(([k, v]) => `${k}=${v}`)
+    .join('\n');
+}
+
+function componentBuildArgs(
+  compBlock: unknown
+): Record<string, string> | undefined {
+  if (!compBlock || typeof compBlock !== 'object') return undefined;
+  const block = compBlock as Record<string, unknown>;
+  const inner = block.component;
+  const source =
+    inner && typeof inner === 'object'
+      ? (inner as Record<string, unknown>)
+      : block;
+  const buildArgs = source.buildArgs;
+  if (!buildArgs || typeof buildArgs !== 'object') return undefined;
+  return buildArgs as Record<string, string>;
+}
+
 async function run(): Promise<void> {
   try {
     const component = core.getInput('component', { required: true });
@@ -57,18 +78,26 @@ async function run(): Promise<void> {
         : `${environment}-${shortSha}`
       : environment;
 
+    const envValuesPath = `infra/runeset/values/${environment}.yaml`;
+    let envValues: Record<string, unknown> | undefined;
+    if (fs.existsSync(envValuesPath)) {
+      envValues = load(fs.readFileSync(envValuesPath, 'utf-8')) as Record<
+        string,
+        unknown
+      >;
+    }
+
     // ── Build outputs ───────────────────────────────────────────────
     const hasBuild = !!compSpec.dockerfile;
     core.setOutput('has_build', hasBuild ? 'true' : 'false');
     if (hasBuild) {
       core.setOutput('dockerfile', compSpec.dockerfile);
       core.setOutput('context', compSpec.context || '.');
-      const buildArgs = compSpec.build_args
-        ? Object.entries(compSpec.build_args)
-            .map(([k, v]) => `${k}=${v}`)
-            .join('\n')
-        : '';
-      core.setOutput('build_args', buildArgs);
+      const mergedBuildArgs: Record<string, string> = {
+        ...compSpec.build_args,
+        ...componentBuildArgs(envValues?.[component]),
+      };
+      core.setOutput('build_args', formatBuildArgs(mergedBuildArgs));
       core.setOutput('image_name', imageName);
       core.setOutput('image_tag', imageTag);
       core.info(`  build: ${imageName}:${imageTag}`);
@@ -85,15 +114,10 @@ async function run(): Promise<void> {
     }
 
     const namespace = compSpec.namespace || environment;
-    const envValuesPath = `infra/runeset/values/${environment}.yaml`;
-    if (!fs.existsSync(envValuesPath)) {
+    if (!envValues) {
       core.setFailed(`Values file not found: ${envValuesPath}`);
       return;
     }
-    const envValues = load(fs.readFileSync(envValuesPath, 'utf-8')) as Record<
-      string,
-      unknown
-    >;
 
     // Lift the active component's subtree to top-level `component:`
     // values structure: { docs: { component: { name, host, ... } }, ... }
@@ -107,8 +131,9 @@ async function run(): Promise<void> {
       const inner = (compBlock as Record<string, unknown>).component;
       const source =
         inner && typeof inner === 'object'
-          ? inner
-          : (compBlock as Record<string, unknown>);
+          ? { ...(inner as Record<string, unknown>) }
+          : { ...(compBlock as Record<string, unknown>) };
+      delete source.buildArgs;
       overlay.component = source;
     } else {
       core.info(

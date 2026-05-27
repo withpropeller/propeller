@@ -41,18 +41,7 @@ func main() {
 	}
 
 	defer floClient.Close()
-	slog.Info("#trial 4: connected to Flo (SDK v0.1.0-dev.18)", "addr", cfg.FloAddr, "namespace", cfg.FloNamespace)
-
-	// Seed the stream so the consumer group has something to bind to.
-	// We don't need more — the probe is about blocking reads against the
-	// (then) empty stream after the seed is consumed.
-	/*result, err := floClient.Stream.Append(evts.StreamNotificationEvents, []byte(`{"probe":"seed"}`), nil)
-	fmt.Println("seed append result", result)
-	if err != nil {
-		slog.Error("seed append failed", "error", err)
-		os.Exit(1)
-	}
-	fmt.Println("seed append result error", err)*/
+	slog.Info("connected to Flo", "addr", cfg.FloAddr, "namespace", cfg.FloNamespace)
 
 	// ── Wire services ──
 	ref := app.NewContainerRef(cfg)

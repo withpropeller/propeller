@@ -29,6 +29,7 @@ const EnvSchema = Joi.object({
     // Domains
     MAIN_SITE_DOMAIN: Joi.string(),
     APP_DOMAIN: Joi.string(),
+    ALLOWED_ORIGINS: Joi.string().optional().default(''),
 
     // Security
     JWT_SECRET: Joi.string(),
@@ -115,6 +116,18 @@ export class ConfigService {
 
     get APP_DOMAIN(): string {
         return this.envConfig.APP_DOMAIN;
+    }
+
+    /**
+     * Comma-separated list of origins permitted by CORS. An entry of `*`
+     * disables the allowlist and reflects any origin. Empty string means
+     * no cross-origin requests are accepted.
+     */
+    get ALLOWED_ORIGINS(): string[] {
+        return (this.envConfig.ALLOWED_ORIGINS ?? '')
+            .split(',')
+            .map((s) => s.trim())
+            .filter(Boolean);
     }
 
     get MONGODB_URL(): string {

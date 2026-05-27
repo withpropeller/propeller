@@ -16,10 +16,11 @@ type ProcessHandler struct {
 // MakeHandler returns a flo.StreamRecordHandler that processes notification records.
 func MakeHandler(ref *app.ContainerRef) flo.StreamRecordHandler {
 	h := &ProcessHandler{Ref: ref}
-	return func(sctx *flo.StreamContext) error {
+	return func(ctx *flo.StreamContext) error {
+		slog.Info("notification event received", "streamId", ctx.StreamID())
 		var env models.NotificationEnvelope
-		if err := sctx.Into(&env); err != nil {
-			slog.Warn("notification: unmarshal failed, nacking", "streamId", sctx.StreamID(), "error", err)
+		if err := ctx.Into(&env); err != nil {
+			slog.Warn("notification: unmarshal failed, nacking", "streamId", ctx.StreamID(), "error", err)
 			return err
 		}
 
@@ -35,6 +36,7 @@ func MakeHandler(ref *app.ContainerRef) flo.StreamRecordHandler {
 }
 
 func (h *ProcessHandler) handleSend(job models.NotificationJob) error {
+	slog.Info("handling notification send", "job", job)
 	channels := models.ExtractChannels(job.To)
 
 	if len(channels.Email) > 0 {
