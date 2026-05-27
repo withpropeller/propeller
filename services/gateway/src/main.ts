@@ -29,7 +29,10 @@ async function bootstrap() {
         },
         credentials: true,
         methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+        // Omitting allowedHeaders makes the cors middleware reflect whatever
+        // the browser requests via Access-Control-Request-Headers, so custom
+        // headers like x-dashboard-mode or future ones don't need an allowlist
+        // update each time.
         exposedHeaders: ['Set-Cookie'],
         maxAge: 86400,
     });
