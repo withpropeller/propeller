@@ -22,7 +22,7 @@ func GetConfig() *ConfigType {
 		FloAddr:      envOrDefault("FLO_ADDR", "localhost:9000"),
 		FloNamespace: envOrDefault("APP_ENV", "dev"),
 		ResendAPIKey: os.Getenv("RESEND_API_KEY"),
-		FromEmail:    envOrDefault("FROM_EMAIL", "Propeller <onboarding@usepropeller.com>"),
+		FromEmail:    envOrDefault("FROM_EMAIL", "Propeller <onboarding@hyphenmoney.com>"),
 	}
 	return c
 }

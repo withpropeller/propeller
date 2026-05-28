@@ -38,11 +38,11 @@ var NotificationSenders = struct {
 	Support NotificationEntity
 }{
 	NoReply: NotificationEntity{
-		Id:   "onboarding@withpropeller.com",
+		Id:   "onboarding@hyphenmoney.com",
 		Name: "Propeller",
 	},
 	Support: NotificationEntity{
-		Id:   "support@withpropeller.com",
+		Id:   "support@hyphenmoney.com",
 		Name: "Propeller Support",
 	},
 }

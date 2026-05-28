@@ -130,7 +130,7 @@ notifications:
     env:
       LOG_LEVEL: info
       FLO_ADDR: "flo.shared.rune:9000"
-      FROM_EMAIL: "Propeller <notifications@withpropeller.com>"
+      FROM_EMAIL: "Hyphen <notifications@hyphenmoney.com>"
     envFrom:
       - secret: notifications-secrets
       - configmap: notifications-config

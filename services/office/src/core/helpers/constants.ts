@@ -11,14 +11,14 @@ export const MONGO_UNIQUE_CONSTRAINT_CODE = 11000;
 export const MODEL_PREFIX_SEPARATOR = '.';
 
 export const EmailSenders = {
-    NO_REPLY: { email: 'support@allawee.com', name: 'Allawee' },
-    HELLO: { email: 'hello@allawee.com', name: 'Allawee' },
-    SUPPORT: { email: 'support@allawee.com', name: 'Allawee' },
+    NO_REPLY: { email: 'support@hyphenmoney.com', name: 'Allawee' },
+    HELLO: { email: 'hello@hyphenmoney.com', name: 'Allawee' },
+    SUPPORT: { email: 'support@hyphenmoney.com', name: 'Allawee' },
 };
 
 export const NotificationSenders = {
-    NO_REPLY: { id: 'support@allawee.com', name: 'Allawee' },
-    SUPPORT: { id: 'support@allawee.com', name: 'Allawee' },
+    NO_REPLY: { id: 'support@hyphenmoney.com', name: 'Allawee' },
+    SUPPORT: { id: 'support@hyphenmoney.com', name: 'Allawee' },
 };
 
 export const SMSSenders = {

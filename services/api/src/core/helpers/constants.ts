@@ -36,8 +36,8 @@ export const EmailTemplates = {
 };
 
 export const EmailSenders = {
-    NO_REPLY: { email: 'support@allawee.com', name: 'Allawee' },
-    HELLO: { email: 'hello@allawee.com', name: 'Allawee' },
+    NO_REPLY: { email: 'support@hyphenmoney.com', name: 'Allawee' },
+    HELLO: { email: 'hello@hyphenmoney.com', name: 'Allawee' },
 };
 
 export const SMSSenders = {
