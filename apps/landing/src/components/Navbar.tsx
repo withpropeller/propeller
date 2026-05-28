@@ -5,7 +5,7 @@ const navLinks = [
   { label: 'Solutions', href: '#solutions' },
   { label: 'Developers', href: '#developers' },
   { label: 'Testimonials', href: '#testimonials' },
-  { label: 'Docs', href: 'https://docs.withpropeller.com' },
+  { label: 'Docs', href: 'https://docs.hyphenmoney.com' },
 ]
 
 export default function Navbar() {
@@ -53,7 +53,7 @@ export default function Navbar() {
           {/* CTA + hamburger */}
           <div className="flex items-center gap-4">
             <a
-              href="https://app.withpropeller.com"
+              href="https://app.hyphenmoney.com"
               className="hidden md:inline-flex items-center px-5 py-2 text-sm font-semibold text-white bg-gradient-to-r from-[#e85d4a] to-[#8b5cf6] hover:opacity-90 rounded-sharp transition-opacity"
             >
               Get Started
@@ -84,7 +84,7 @@ export default function Navbar() {
               </a>
             ))}
             <a
-              href="https://app.withpropeller.com"
+              href="https://app.hyphenmoney.com"
               className="mt-2 inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-[#e85d4a] to-[#8b5cf6] rounded-sharp"
             >
               Get Started

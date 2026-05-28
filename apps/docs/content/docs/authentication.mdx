@@ -20,7 +20,7 @@ toc:
 
 ## Get a key
 
-Create a key from the [console](https://console.withpropeller.com). Keys are
+Create a key from the [console](https://console.hyphenmoney.com). Keys are
 scoped to one organization. Propeller will only ever show the full key once —
 copy it out and store it in a secrets manager.
 
@@ -37,7 +37,7 @@ header.
 <CodeBlock snippets={[
   {
     lang: "curl",
-    code: `curl https://api.withpropeller.com/v1/businesses \\
+    code: `curl https://api.hyphenmoney.com/v1/businesses \\
   -H "Authorization: Bearer $PROPELLER_KEY" \\
   -H "Content-Type: application/json"`,
   },
@@ -46,14 +46,14 @@ header.
     code: `import os, requests
 
 resp = requests.get(
-    "https://api.withpropeller.com/v1/businesses",
+    "https://api.hyphenmoney.com/v1/businesses",
     headers={"Authorization": f"Bearer {os.environ['PROPELLER_KEY']}"},
 )
 print(resp.json())`,
   },
   {
     lang: "node",
-    code: `const resp = await fetch("https://api.withpropeller.com/v1/businesses", {
+    code: `const resp = await fetch("https://api.hyphenmoney.com/v1/businesses", {
   headers: {
     Authorization: \`Bearer \${process.env.PROPELLER_KEY}\`,
   },

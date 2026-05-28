@@ -59,8 +59,8 @@ export function DocsTopBar({ tabs }: { tabs: TopTab[] }) {
             ⌘K
           </kbd>
         </div>
-        <Link className="navlink hidden sm:inline-flex" href="https://withpropeller.com">withpropeller.com ↗</Link>
-        <Link className="btn btn-primary btn-sm" href="https://app.withpropeller.com">Dashboard</Link>
+        <Link className="navlink hidden sm:inline-flex" href="https://hyphenmoney.com">hyphenmoney.com ↗</Link>
+        <Link className="btn btn-primary btn-sm" href="https://app.hyphenmoney.com">Dashboard</Link>
         <ThemeToggle />
       </div>
       </div>

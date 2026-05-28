@@ -6,10 +6,10 @@ The Propeller API is organized around REST. We accept JSON-encoded request bodie
 
 ```bash
 # Production
-https://api.withpropeller.com
+https://api.hyphenmoney.com
 
 # Sandbox
-https://api.sandbox.withpropeller.com
+https://api.sandbox.hyphenmoney.com
 ```
 
 Sandbox traffic never settles funds, never moves USDC on-chain, and is safe to point at from CI.
@@ -19,18 +19,18 @@ Sandbox traffic never settles funds, never moves USDC on-chain, and is safe to p
 All requests require a Bearer API key in the `Authorization` header.
 
 ```bash
-curl https://api.withpropeller.com/v1/businesses \
+curl https://api.hyphenmoney.com/v1/businesses \
   -H "Authorization: Bearer $PROPELLER_KEY"
 ```
 
-Generate keys in the [Propeller console](https://app.withpropeller.com). Keys are scoped to a single business and environment — sandbox keys (`sk_test_…`) cannot hit production endpoints and vice versa.
+Generate keys in the [Propeller console](https://app.hyphenmoney.com). Keys are scoped to a single business and environment — sandbox keys (`sk_test_…`) cannot hit production endpoints and vice versa.
 
 ## Idempotency
 
 Every state-changing request accepts an `Idempotency-Key` header. Repeat the same key with the same body to safely retry without creating duplicate resources.
 
 ```bash
-curl https://api.withpropeller.com/v1/payouts \
+curl https://api.hyphenmoney.com/v1/payouts \
   -H "Authorization: Bearer $PROPELLER_KEY" \
   -H "Idempotency-Key: $(uuidgen)" \
   -H "Content-Type: application/json" \

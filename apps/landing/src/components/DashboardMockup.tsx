@@ -188,7 +188,7 @@ export default function DashboardMockup() {
           <div className="w-3 h-3 rounded-full bg-green-400" />
           <div className="flex-1 flex justify-center">
             <div className="flex items-center gap-2 px-3 py-1 rounded-md bg-cream-100 text-xs text-warm-light">
-              <span>withpropeller.com</span>
+              <span>hyphenmoney.com</span>
               <ChevronDown size={12} />
             </div>
           </div>

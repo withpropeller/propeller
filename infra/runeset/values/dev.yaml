@@ -23,7 +23,7 @@ flo:
 landing:
   component:
     name: landing
-    host: dev.withpropeller.com
+    host: dev.hyphenmoney.com
     scale: 1
     port: 80
     healthPath: /healthz
@@ -39,13 +39,13 @@ landing:
 web:
   component:
     name: web
-    host: app.dev.withpropeller.com
+    host: app.dev.hyphenmoney.com
     scale: 1
     port: 3000
     healthPath: /health
     tls: { mode: manual, secret: shared/cf-origin-cert }
     buildArgs:
-      VITE_API_BASE_URL: https://gateway.dev.withpropeller.com
+      VITE_API_BASE_URL: https://gateway.dev.hyphenmoney.com
     env: { NODE_ENV: production }
     envFrom: []
     dependencies: []
@@ -57,7 +57,7 @@ web:
 docs:
   component:
     name: docs
-    host: docs.dev.withpropeller.com
+    host: docs.dev.hyphenmoney.com
     scale: 1
     port: 3000
     healthPath: /
@@ -73,7 +73,7 @@ docs:
 api:
   component:
     name: api
-    host: api.dev.withpropeller.com
+    host: api.dev.hyphenmoney.com
     scale: 1
     port: 3001
     healthPath: /health
@@ -93,7 +93,7 @@ api:
 gateway:
   component:
     name: gateway
-    host: gateway.dev.withpropeller.com
+    host: gateway.dev.hyphenmoney.com
     scale: 1
     port: 3002
     healthPath: /health

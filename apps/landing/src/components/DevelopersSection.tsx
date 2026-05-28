@@ -13,7 +13,7 @@ function CodeMockup() {
     "Amount": 1000
   },
   "CreditedWalletId": "12345678",
-  "ReturnURL": "https://withpropeller.com/successful-payment",
+  "ReturnURL": "https://hyphenmoney.com/successful-payment",
 }`
 
   const lines = code.split('\n')

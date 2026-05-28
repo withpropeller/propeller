@@ -7,7 +7,7 @@ RUN bun install --frozen-lockfile
 # Stage 2 — Build the Vite SPA
 FROM oven/bun:1-alpine AS builder
 WORKDIR /app
-ARG VITE_API_BASE_URL=https://gateway.withpropeller.com
+ARG VITE_API_BASE_URL=https://gateway.hyphenmoney.com
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 COPY --from=deps /app/node_modules ./node_modules
 COPY apps/web/ .

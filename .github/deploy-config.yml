@@ -38,7 +38,7 @@ components:
     context: .
     cast: infra/runeset/casts/external-service.yaml
     build_args:
-      VITE_API_BASE_URL: https://gateway.withpropeller.com
+      VITE_API_BASE_URL: https://gateway.hyphenmoney.com
     paths:
       - apps/web/**
       - infra/docker/Dockerfile.web

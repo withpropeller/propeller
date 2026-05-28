@@ -8,7 +8,7 @@ const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://withpropeller.com"),
+  metadataBase: new URL("https://hyphenmoney.com"),
   title: {
     default: "Propeller — China–Africa payment corridor",
     template: "%s · Propeller",

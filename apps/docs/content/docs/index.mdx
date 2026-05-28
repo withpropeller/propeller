@@ -47,13 +47,13 @@ issue an invoice, and let Propeller handle the rest.
 
 ## Quickstart
 
-Get a sandbox API key from the [console](https://console.withpropeller.com),
+Get a sandbox API key from the [console](https://console.hyphenmoney.com),
 set `PROPELLER_KEY`, and create your first business:
 
 <CodeBlock snippets={[
   {
     lang: "curl",
-    code: `curl https://api.withpropeller.com/v1/businesses \\
+    code: `curl https://api.hyphenmoney.com/v1/businesses \\
   -H "Authorization: Bearer $PROPELLER_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -67,7 +67,7 @@ set `PROPELLER_KEY`, and create your first business:
     code: `import requests
 
 resp = requests.post(
-    "https://api.withpropeller.com/v1/businesses",
+    "https://api.hyphenmoney.com/v1/businesses",
     headers={"Authorization": f"Bearer {PROPELLER_KEY}"},
     json={
         "name": "Acme Exports Ltd",
@@ -79,7 +79,7 @@ print(resp.json())`,
   },
   {
     lang: "node",
-    code: `const resp = await fetch("https://api.withpropeller.com/v1/businesses", {
+    code: `const resp = await fetch("https://api.hyphenmoney.com/v1/businesses", {
   method: "POST",
   headers: {
     Authorization: \`Bearer \${process.env.PROPELLER_KEY}\`,
@@ -113,5 +113,5 @@ with a bearer token in the `Authorization` header.
 
 - **API reference** — every endpoint documented in the sidebar.
 - **Guides** — walkthroughs for common workflows (onboarding, payments, webhooks).
-- **Status** — check [status.withpropeller.com](https://status.withpropeller.com) for uptime.
+- **Status** — check [status.hyphenmoney.com](https://status.hyphenmoney.com) for uptime.
 - **Support** — email [support@hyphenmoney.com](mailto:support@hyphenmoney.com) for account or integration help.

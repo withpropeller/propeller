@@ -29,7 +29,7 @@ type EmailTemplateData struct {
 	Content      map[string]interface{}
 }
 
-const defaultAppDomain = "https://app.withpropeller.com"
+const defaultAppDomain = "https://app.hyphenmoney.com"
 
 // GetTextFromTemplate renders a body fragment and wraps it in carcass.html when present.
 func GetTextFromTemplate(channel string, templateName string, content map[string]interface{}) (*string, error) {

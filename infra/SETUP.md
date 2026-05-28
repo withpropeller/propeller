@@ -83,13 +83,13 @@ python3 -c "..." | rune cast /tmp/landing-prod.yaml -n prod --create-namespace -
 
 ## 5. Update DNS
 
-Update the `withpropeller.com` A record in Cloudflare to point to the Reserved IP.
+Update the `hyphenmoney.com` A record in Cloudflare to point to the Reserved IP.
 ACME (Let's Encrypt) will auto-issue a certificate within a few minutes.
 
 Verify:
 ```bash
-curl -sH "Host: withpropeller.com" http://$RESERVED_IP/ | head -5
-curl -sI https://withpropeller.com
+curl -sH "Host: hyphenmoney.com" http://$RESERVED_IP/ | head -5
+curl -sI https://hyphenmoney.com
 ```
 
 ## Tear Down
@@ -107,7 +107,7 @@ The reserved IPs and volume will be released. Next `terraform apply` gets new on
 > **⚠️ Let's Encrypt rate limit:** LE allows **5 certificates per exact domain per 7 days**.
 > Destroying and recreating the server repeatedly will exhaust this quota.
 > After hitting the limit, cert issuance will fail with `429 rateLimited` and you must wait out the window.
-> Check remaining quota at: https://crt.sh/?q=withpropeller.com
+> Check remaining quota at: https://crt.sh/?q=hyphenmoney.com
 
 ## Terraform Resources
 

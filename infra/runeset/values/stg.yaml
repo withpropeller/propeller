@@ -10,7 +10,7 @@ logLevel: info
 landing:
   component:
     name: landing
-    host: stg.withpropeller.com
+    host: stg.hyphenmoney.com
     scale: 1
     port: 80
     healthPath: /healthz
@@ -26,13 +26,13 @@ landing:
 web:
   component:
     name: web
-    host: app.stg.withpropeller.com
+    host: app.stg.hyphenmoney.com
     scale: 1
     port: 3000
     healthPath: /health
     tls: { mode: manual, secret: shared/cf-origin-cert }
     buildArgs:
-      VITE_API_BASE_URL: https://gateway.stg.withpropeller.com
+      VITE_API_BASE_URL: https://gateway.stg.hyphenmoney.com
     env: { NODE_ENV: production }
     envFrom: []
     dependencies: []
@@ -44,7 +44,7 @@ web:
 docs:
   component:
     name: docs
-    host: docs.stg.withpropeller.com
+    host: docs.stg.hyphenmoney.com
     scale: 1
     port: 3000
     healthPath: /
@@ -60,7 +60,7 @@ docs:
 api:
   component:
     name: api
-    host: api.stg.withpropeller.com
+    host: api.stg.hyphenmoney.com
     scale: 1
     port: 3001
     healthPath: /health
@@ -80,7 +80,7 @@ api:
 gateway:
   component:
     name: gateway
-    host: gateway.stg.withpropeller.com
+    host: gateway.stg.hyphenmoney.com
     scale: 1
     port: 3002
     healthPath: /health

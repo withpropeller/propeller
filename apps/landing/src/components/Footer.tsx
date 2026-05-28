@@ -60,8 +60,8 @@ export default function Footer() {
               {['Documentation', 'API Reference', 'API Demonstration'].map((item) => (
                 <li key={item}>
                   <a href={
-                    item === 'Documentation' ? 'https://docs.withpropeller.com' :
-                    item === 'API Reference' ? 'https://docs.withpropeller.com/api' :
+                    item === 'Documentation' ? 'https://docs.hyphenmoney.com' :
+                    item === 'API Reference' ? 'https://docs.hyphenmoney.com/api' :
                     '#'
                   } className="text-xs text-warm-muted hover:text-warm-text transition-colors">
                     {item}

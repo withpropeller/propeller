@@ -24,7 +24,7 @@ toc:
 
 ## Base URL
 
-All endpoints live under `https://api.withpropeller.com/v1`. In sandbox mode,
+All endpoints live under `https://api.hyphenmoney.com/v1`. In sandbox mode,
 use the same URL — Propeller distinguishes sandbox vs. live by the API key
 prefix, not by hostname.
 
@@ -46,7 +46,7 @@ Create a business to get started:
 <CodeBlock snippets={[
   {
     lang: "curl",
-    code: `curl https://api.withpropeller.com/v1/businesses \\
+    code: `curl https://api.hyphenmoney.com/v1/businesses \\
   -H "Authorization: Bearer $PROPELLER_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -60,7 +60,7 @@ Create a business to get started:
     code: `import os, requests
 
 resp = requests.post(
-    "https://api.withpropeller.com/v1/businesses",
+    "https://api.hyphenmoney.com/v1/businesses",
     headers={"Authorization": f"Bearer {os.environ['PROPELLER_KEY']}"},
     json={
         "name": "Acme Exports Ltd",
@@ -107,7 +107,7 @@ Use the `Idempotency-Key` header to safely retry requests. Propeller
 deduplicates requests by this key for 24 hours.
 
 ```bash
-curl https://api.withpropeller.com/v1/businesses \
+curl https://api.hyphenmoney.com/v1/businesses \
   -H "Authorization: Bearer $PROPELLER_KEY" \
   -H "Content-Type: application/json" \
   -H "Idempotency-Key: a-unique-string" \

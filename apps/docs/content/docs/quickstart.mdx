@@ -22,7 +22,7 @@ toc:
 
 ## Get an API key
 
-Create an account at [console.withpropeller.com](https://console.withpropeller.com).
+Create an account at [console.hyphenmoney.com](https://console.hyphenmoney.com).
 Sandbox keys are available immediately with no KYC required — enough to explore
 the full API surface against test data.
 
@@ -45,7 +45,7 @@ export PROPELLER_KEY="prop_sk_sandbox_..."
 <CodeBlock snippets={[
   {
     lang: "curl",
-    code: `curl https://api.withpropeller.com/v1/businesses \\
+    code: `curl https://api.hyphenmoney.com/v1/businesses \\
   -H "Authorization: Bearer $PROPELLER_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -59,7 +59,7 @@ export PROPELLER_KEY="prop_sk_sandbox_..."
     code: `import os, requests
 
 resp = requests.post(
-    "https://api.withpropeller.com/v1/businesses",
+    "https://api.hyphenmoney.com/v1/businesses",
     headers={"Authorization": f"Bearer {os.environ['PROPELLER_KEY']}"},
     json={
         "name": "Acme Exports Ltd",
@@ -71,7 +71,7 @@ print(resp["id"], resp["status"])`,
   },
   {
     lang: "node",
-    code: `const resp = await fetch("https://api.withpropeller.com/v1/businesses", {
+    code: `const resp = await fetch("https://api.hyphenmoney.com/v1/businesses", {
   method: "POST",
   headers: {
     Authorization: \`Bearer \${process.env.PROPELLER_KEY}\`,

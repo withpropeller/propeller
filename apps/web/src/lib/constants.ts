@@ -1,9 +1,9 @@
 // API base URLs — swap via VITE_* env vars at build time
 export const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ?? 'https://gateway.withpropeller.com'
+  import.meta.env.VITE_API_BASE_URL ?? 'https://gateway.hyphenmoney.com'
 
 export const DOCS_URL =
-  import.meta.env.VITE_DOCS_URL ?? 'https://docs.withpropeller.com'
+  import.meta.env.VITE_DOCS_URL ?? 'https://docs.hyphenmoney.com'
 
 // localStorage keys
 export const STORAGE_KEYS = {

@@ -33,7 +33,7 @@ and payout belongs to a business. You can register a business directly
 <CodeBlock snippets={[
   {
     lang: "curl",
-    code: `curl https://api.withpropeller.com/v1/businesses \\
+    code: `curl https://api.hyphenmoney.com/v1/businesses \\
   -H "Authorization: Bearer $PROPELLER_KEY" \\
   -H "Content-Type: application/json" \\
   -H "Idempotency-Key: a-unique-key" \\
@@ -47,7 +47,7 @@ and payout belongs to a business. You can register a business directly
   {
     lang: "python",
     code: `resp = requests.post(
-    "https://api.withpropeller.com/v1/businesses",
+    "https://api.hyphenmoney.com/v1/businesses",
     headers={
         "Authorization": f"Bearer {PROPELLER_KEY}",
         "Idempotency-Key": str(uuid.uuid4()),
@@ -81,7 +81,7 @@ Typical turnaround: **2–4 business hours** for Chinese businesses, up to
 Set the `settlement_address` at creation time or update it later:
 
 ```bash
-curl -X PATCH https://api.withpropeller.com/v1/businesses/biz_01J... \\
+curl -X PATCH https://api.hyphenmoney.com/v1/businesses/biz_01J... \\
   -H "Authorization: Bearer $PROPELLER_KEY" \\
   -H "Content-Type: application/json" \\
   -d '{"settlement_address": "0x..."}'
@@ -90,7 +90,7 @@ curl -X PATCH https://api.withpropeller.com/v1/businesses/biz_01J... \\
 ## Checking status
 
 ```bash
-curl https://api.withpropeller.com/v1/businesses/biz_01J... \\
+curl https://api.hyphenmoney.com/v1/businesses/biz_01J... \\
   -H "Authorization: Bearer $PROPELLER_KEY"
 ```
 

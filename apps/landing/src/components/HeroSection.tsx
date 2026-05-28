@@ -66,13 +66,13 @@ export default function HeroSection() {
             className="flex flex-col sm:flex-row items-center justify-center gap-3"
           >
             <a
-              href="https://app.withpropeller.com"
+              href="https://app.hyphenmoney.com"
               className="inline-flex items-center justify-center px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-[#e85d4a] to-[#8b5cf6] hover:opacity-90 rounded-sharp transition-opacity"
             >
               Talk to a Human
             </a>
             <a
-              href="https://docs.withpropeller.com"
+              href="https://docs.hyphenmoney.com"
               className="inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold text-warm-text border border-warm-border hover:border-warm-muted rounded-sharp transition-colors bg-white/60 backdrop-blur-sm"
             >
               <span className="w-4 h-4 rounded-full border border-warm-muted flex items-center justify-center">

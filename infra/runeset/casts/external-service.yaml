@@ -13,7 +13,7 @@ service:
   expose:
     host: "{{ values:component.host }}"
     port: http
-    tls: { mode: manual, secret: shared/cf-origin-cert }
+    tls: { mode: manual, secret: common/cf-origin-cert }
   env: {{ values:component.env }}
   envFrom: {{ values:component.envFrom }}
   dependencies: {{ values:component.dependencies }}

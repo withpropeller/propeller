@@ -35,7 +35,7 @@ Payment collection in Propeller is a three-step flow:
 <CodeBlock snippets={[
   {
     lang: "curl",
-    code: `curl https://api.withpropeller.com/v1/invoices \\
+    code: `curl https://api.hyphenmoney.com/v1/invoices \\
   -H "Authorization: Bearer $PROPELLER_KEY" \\
   -H "Content-Type: application/json" \\
   -H "Idempotency-Key: inv-001" \\
@@ -55,7 +55,7 @@ The response includes:
 ```json
 {
   "id": "inv_01J...",
-  "payment_url": "https://withpropeller.com/pay/inv_01J...",
+  "payment_url": "https://hyphenmoney.com/pay/inv_01J...",
   "status": "pending",
   "virtual_account": {
     "bank": "Wema Bank",

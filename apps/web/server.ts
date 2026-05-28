@@ -12,7 +12,7 @@ import { readFile } from 'node:fs/promises'
 const DIST_DIR = resolve(import.meta.dir, 'dist')
 const PORT = Number(process.env.PORT ?? 3000)
 const API_BASE_URL =
-  process.env.VITE_API_BASE_URL ?? 'https://gateway.withpropeller.com'
+  process.env.VITE_API_BASE_URL ?? 'https://gateway.hyphenmoney.com'
 const ACCESS_TOKEN_COOKIE = 'alw_access_token'
 const IS_PROD = process.env.NODE_ENV === 'production'
 
