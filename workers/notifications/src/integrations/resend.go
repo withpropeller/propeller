@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/propeller/propeller/workers/notifications/config"
@@ -64,6 +66,15 @@ func (s *ResendService) Send(entities []models.NotificationEntity, job models.No
 	req.Header.Set("Authorization", "Bearer "+s.apiKey)
 	req.Header.Set("Content-Type", "application/json")
 
+	slog.Debug("sending email via resend",
+		"template", job.Template,
+		"from", s.from,
+		"recipients", len(toAddresses),
+		"subject", body.Subject,
+		"htmlBytes", len(body.HTML),
+		"hasApiKey", s.apiKey != "",
+	)
+
 	client := &http.Client{Timeout: 10 * time.Second}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -71,11 +82,36 @@ func (s *ResendService) Send(entities []models.NotificationEntity, job models.No
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode >= 300 {
-		return fmt.Errorf("resend returned %d", resp.StatusCode)
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Errorf("read resend response: %w", err)
 	}
 
-	slog.Info("email sent", "to", toAddresses, "template", job.Template)
+	if resp.StatusCode >= 300 {
+		requestID := resp.Header.Get("x-request-id")
+		if requestID == "" {
+			requestID = resp.Header.Get("x-resend-request-id")
+		}
+		bodySnippet := strings.TrimSpace(string(respBody))
+		if len(bodySnippet) > 512 {
+			bodySnippet = bodySnippet[:512] + "..."
+		}
+		slog.Error("resend rejected email",
+			"status", resp.StatusCode,
+			"requestId", requestID,
+			"template", job.Template,
+			"from", s.from,
+			"recipients", len(toAddresses),
+			"responseBody", bodySnippet,
+		)
+		return fmt.Errorf("resend returned %d request_id=%s body=%s", resp.StatusCode, requestID, bodySnippet)
+	}
+
+	requestID := resp.Header.Get("x-request-id")
+	if requestID == "" {
+		requestID = resp.Header.Get("x-resend-request-id")
+	}
+	slog.Info("email sent", "to", toAddresses, "template", job.Template, "requestId", requestID)
 	return nil
 }
 
