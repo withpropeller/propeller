@@ -42,6 +42,7 @@ func (h *ProcessHandler) handleSend(job models.NotificationJob) error {
 	if len(channels.Email) > 0 {
 		if err := h.Ref.EmailService.Send(channels.Email, job); err != nil {
 			slog.Error("email send failed", "template", job.Template, "error", err)
+			return err
 		}
 	}
 
