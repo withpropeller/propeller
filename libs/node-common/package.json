@@ -1,0 +1,27 @@
+{
+  "name": "@hyphen/node-common",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Propeller shared Node/TypeScript utilities with no framework dependencies — safe to import from any node service (api, gateway, …). The TS counterpart to libs/go-common.",
+  "license": "UNLICENSED",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
+    "prepare": "bun run build",
+    "test": "bunx vitest run",
+    "test:watch": "bunx vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  }
+}

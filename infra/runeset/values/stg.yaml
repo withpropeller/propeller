@@ -77,6 +77,26 @@ api:
     memRequest: "256Mi"
     memLimit: "512Mi"
 
+# Internal-only api (internal-service cast — no public expose). Reachable only at
+# api-internal.stg:3001. Accepts machine-key / infra-token auth from the gateway.
+api-internal:
+  component:
+    name: api-internal
+    scale: 1
+    port: 3001
+    healthPath: /health
+    env: { NODE_ENV: stg, API_ALLOW_MACHINE_KEY: "true" }
+    envFrom:
+      - secretRef: api-secrets
+      - configRef: api-config
+    dependencies:
+      - { service: mongo, namespace: shared, readyWhen: healthy }
+      - { service: flo,   namespace: shared, readyWhen: healthy }
+    cpuRequest: "100m"
+    cpuLimit: "1000m"
+    memRequest: "256Mi"
+    memLimit: "512Mi"
+
 gateway:
   component:
     name: gateway

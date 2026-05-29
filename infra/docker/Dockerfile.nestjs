@@ -1,9 +1,10 @@
 # Shared multi-stage Dockerfile for Propeller NestJS services (Bun runtime)
 #
 # Build arguments:
-#   APP_DIR       — path under services/ (e.g. api, gateway)
-#   PORT          — exposed port (e.g. 3001, 3002, 3003)
-#   LIBS_DIR      — path to shared libs (default: libs/core)
+#   APP_DIR          — path under services/ (e.g. api, gateway)
+#   PORT             — exposed port (e.g. 3001, 3002, 3003)
+#   LIBS_DIR         — NestJS/Mongoose shared lib (default: libs/core)
+#   NODE_COMMON_DIR  — framework-agnostic shared lib (default: libs/node-common)
 #
 # Usage:
 #   docker build \
@@ -17,20 +18,31 @@
 FROM oven/bun:1-alpine AS deps
 ARG APP_DIR
 ARG LIBS_DIR=libs/core
+ARG NODE_COMMON_DIR=libs/node-common
 WORKDIR /repo
 
-# ── Install shared lib deps + build ──
-# --ignore-scripts: libs/core has a `prepare` script that runs `tsc`; src/ isn't
-# COPYed yet, so let the explicit `bun run build` below handle the build.
-# tsconfig.base.json is required because libs/core/tsconfig.json extends it.
+# ── Build shared libs (must precede the app install, which references them as
+#    local file: deps). --ignore-scripts: each lib has a `prepare` script that
+#    runs `tsc`; src/ isn't COPYed yet, so the explicit `bun run build` handles
+#    it. tsconfig.base.json is required because each lib's tsconfig extends it.
 COPY tsconfig.base.json ./
+
+# libs/core (NestJS/Mongoose shared lib)
 COPY ${LIBS_DIR}/package.json ${LIBS_DIR}/bun.lock* ./${LIBS_DIR}/
 WORKDIR /repo/${LIBS_DIR}
 RUN bun install --frozen-lockfile --ignore-scripts --silent
 COPY ${LIBS_DIR} ./
 RUN bun run build
 
-# ── Install app deps ──
+# libs/node-common (framework-agnostic shared lib)
+WORKDIR /repo
+COPY ${NODE_COMMON_DIR}/package.json ${NODE_COMMON_DIR}/bun.lock* ./${NODE_COMMON_DIR}/
+WORKDIR /repo/${NODE_COMMON_DIR}
+RUN bun install --frozen-lockfile --ignore-scripts --silent
+COPY ${NODE_COMMON_DIR} ./
+RUN bun run build
+
+# ── Install app deps (copies the built file: libs into the app node_modules) ──
 WORKDIR /repo/services/${APP_DIR}
 COPY services/${APP_DIR}/package.json services/${APP_DIR}/bun.lock* ./
 RUN bun install --frozen-lockfile --ignore-scripts --silent
@@ -40,8 +52,10 @@ RUN bun install --frozen-lockfile --ignore-scripts --silent
 FROM oven/bun:1-alpine AS builder
 ARG APP_DIR
 ARG LIBS_DIR=libs/core
+ARG NODE_COMMON_DIR=libs/node-common
 WORKDIR /repo
 COPY --from=deps /repo/${LIBS_DIR} ./${LIBS_DIR}
+COPY --from=deps /repo/${NODE_COMMON_DIR} ./${NODE_COMMON_DIR}
 COPY --from=deps /repo/services/${APP_DIR}/node_modules ./services/${APP_DIR}/node_modules
 COPY tsconfig.base.json ./
 COPY services/${APP_DIR} ./services/${APP_DIR}

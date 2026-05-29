@@ -1,0 +1,38 @@
+# Internal (cluster-only) service cast.
+# Identical to external-service.yaml but with NO `expose` block — the service is
+# reachable only at its in-cluster address (<name>.<namespace>:<port>) and is not
+# routable from the internet. Used by components that must never accept public
+# traffic, e.g. api-internal (which accepts machine-key / infra-token auth).
+service:
+  name: "{{ values:component.name }}"
+  image: "{{ values:registry }}/{{ values:component.name }}:{{ values:app.tag }}"
+  imagePull: always
+  scale: {{ values:component.scale }}
+  ports:
+    - name: http
+      port: {{ values:component.port }}
+  env: {{ values:component.env }}
+  envFrom: {{ values:component.envFrom }}
+  dependencies: {{ values:component.dependencies }}
+  health:
+    liveness:
+      type: http
+      path: "{{ values:component.healthPath }}"
+      port: {{ values:component.port }}
+      initialDelaySeconds: 120
+      intervalSeconds: 10
+      timeoutSeconds: 3
+    readiness:
+      type: http
+      path: "{{ values:component.healthPath }}"
+      port: {{ values:component.port }}
+      initialDelaySeconds: 120
+      intervalSeconds: 10
+      timeoutSeconds: 3
+  resources:
+    cpu:
+      request: "{{ values:component.cpuRequest }}"
+      limit: "{{ values:component.cpuLimit }}"
+    memory:
+      request: "{{ values:component.memRequest }}"
+      limit: "{{ values:component.memLimit }}"

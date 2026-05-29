@@ -1,8 +1,10 @@
 import { JWTUser } from '@auth/jwt.strategy';
 import { MongoAPIPaging } from '@common/api-paging';
 import { ConfigService } from '@config/config.service';
+import { InfraToken } from '@hyphen/node-common';
 import { TenantRequestPayload } from '@core/helpers';
 import { HttpService } from '@nestjs/axios';
+import { randomBytes } from 'crypto';
 import { AxiosHeaders, AxiosRequestConfig } from 'axios';
 import { catchError, firstValueFrom, Observable } from 'rxjs';
 import { RequestService, RResponse } from './request.service';
@@ -18,11 +20,24 @@ export class InfraApiService extends RequestService {
     }
 
     public getHeaders(user: JWTUser): AxiosHeaders {
+        // Mint a short-lived, HMAC-signed token that binds the caller identity to
+        // the credential. The api verifies the signature + expiry and derives the
+        // machine AccessKey — identity can no longer be spoofed via loose headers.
+        const token = InfraToken.sign(
+            {
+                iss: 'gateway',
+                businessId: user.businessId,
+                userId: user.userId,
+                tenantId: this.request.tenantId,
+                // ObjectId-shaped so the api can adopt it as the request id verbatim.
+                requestId: randomBytes(12).toString('hex'),
+            },
+            this.config.INFRA_SIGNING_KEY,
+        );
+
         return new AxiosHeaders({
-            authorization: `Bearer ${this.config.MACHINE_KEY}`,
-            'hyphen-business-id': user.businessId,
-            'hyphen-user-id': user.userId,
-            'hyphen-tenant-id': this.request.tenantId,
+            authorization: `Infra ${token}`,
+            // Device context for audit logging only — never trusted for identity.
             'hyphen-forwarded-user-agent': this.request.forwardedUserAgent,
             'hyphen-forwarded-ip': this.request.forwardedIp,
         });

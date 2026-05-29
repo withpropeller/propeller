@@ -111,7 +111,6 @@ export enum FloKeys {
 
 export enum RedisKeys {
     Views = 'infra:views',
-    Assemble = 'infra:assemble',
     Envoy = 'infra:envoy',
     EnvoyStream = 'envoy:stream',
     TransferSettings = 'settings:transfer',

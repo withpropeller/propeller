@@ -47,7 +47,6 @@ export enum LocalRequestProperty {
 
 export enum RedisKeys {
     Views = 'views',
-    Assemble = 'infra:assemble',
     EnvoyStream = 'envoy:stream',
     CategorySettings = 'settings:transactions:categories',
     MainTransferSettings = 'settings:transfer:main',

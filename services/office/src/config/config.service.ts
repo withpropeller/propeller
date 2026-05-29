@@ -69,8 +69,6 @@ const EnvSchema = Joi.object({
     CAGE_SERVICE_URL: Joi.string(),
     EVERVAULT_API_KEY: Joi.string(),
 
-    MACHINE_KEY: Joi.string(),
-    API_SERVICE_URL: Joi.string(),
     SECURE_SERVICE_URL: Joi.string(),
     INTERSWITCH_SECRET_KEY: Joi.string(),
 
@@ -339,13 +337,6 @@ export class ConfigService {
             : ExtractURICredentials(this.envConfig.MAPLERAD_URI_SANDBOX);
     }
 
-    get MACHINE_KEY(): string {
-        return this.envConfig.MACHINE_KEY;
-    }
-
-    get API_SERVICE_URL(): string {
-        return this.envConfig.API_SERVICE_URL;
-    }
 
     get SECURE_SERVICE_URL(): string {
         return this.envConfig.SECURE_SERVICE_URL;

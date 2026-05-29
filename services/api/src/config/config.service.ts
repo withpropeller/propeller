@@ -33,6 +33,15 @@ const EnvSchema = Joi.object({
     // Security
     ENABLE_SWAGGER: Joi.string().optional(),
 
+    // Internal service-to-service auth (gateway/office → api-internal).
+    // INFRA_SIGNING_KEY verifies signed infra tokens; the *_PREVIOUS slot lets a
+    // new key be rolled out while the old one is still accepted (zero-downtime
+    // rotation). API_ALLOW_MACHINE_KEY is the network-split gate: it MUST stay
+    // false on the public `api` deployment and be set true only on `api-internal`.
+    INFRA_SIGNING_KEY: Joi.string().optional().default(''),
+    INFRA_SIGNING_KEY_PREVIOUS: Joi.string().optional().default(''),
+    API_ALLOW_MACHINE_KEY: Joi.boolean().optional().default(false),
+
     SLACK_TOKEN: Joi.string(),
 
     AWS_REGION: Joi.string(),
@@ -121,6 +130,20 @@ export class ConfigService {
 
     get FLO_NAMESPACE(): string {
         return this.envConfig.NODE_ENV;
+    }
+
+    /**
+     * Whether this deployment accepts internal machine-key (infra-token) auth.
+     * Fail-closed: only `api-internal` (network-isolated, no public expose) sets
+     * this true. The public `api` rejects all machine-key auth.
+     */
+    get API_ALLOW_MACHINE_KEY(): boolean {
+        return `${this.envConfig.API_ALLOW_MACHINE_KEY}` === 'true';
+    }
+
+    /** Signing secrets accepted for infra tokens — current first, then previous (rotation). */
+    get INFRA_SIGNING_KEYS(): string[] {
+        return [this.envConfig.INFRA_SIGNING_KEY, this.envConfig.INFRA_SIGNING_KEY_PREVIOUS].filter(Boolean);
     }
 
     get inProduction(): boolean {

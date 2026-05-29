@@ -23,6 +23,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.258.0",
     "@elastic/ecs-pino-format": "^1.3.0",
+    "@hyphen/node-common": "file:../../libs/node-common",
     "@floruntime/node": "0.1.0-dev.7",
     "@grpc/grpc-js": "^1.8.7",
     "@nestjs/apollo": "^10.1.7",

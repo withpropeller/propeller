@@ -73,6 +73,19 @@ components:
       - services/api/**
       - infra/docker/Dockerfile.nestjs
 
+  # Internal-only variant of the api (no public expose). Accepts machine-key /
+  # infra-token auth from gateway; the public `api` above rejects it. Same image.
+  api-internal:
+    dockerfile: infra/docker/Dockerfile.nestjs
+    context: .
+    cast: infra/runeset/casts/internal-service.yaml
+    build_args:
+      APP_DIR: api
+      PORT: "3001"
+    paths:
+      - services/api/**
+      - infra/docker/Dockerfile.nestjs
+
   # ── Background workers (worker cast) ───────────────────────────────
 
   notifications:

@@ -56,7 +56,7 @@ const EnvSchema = Joi.object({
     // Flo event bus
     FLO_ADDR: Joi.string().optional().default('localhost:9000'),
 
-    MACHINE_KEY: Joi.string(),
+    INFRA_SIGNING_KEY: Joi.string(),
     API_SERVICE_URL: Joi.string(),
     SECURE_SERVICE_URL: Joi.string(),
 });
@@ -198,8 +198,8 @@ export class ConfigService {
         return this.envConfig.S3_DOCUMENT_STORE_BUCKET;
     }
 
-    get MACHINE_KEY(): string {
-        return this.envConfig.MACHINE_KEY;
+    get INFRA_SIGNING_KEY(): string {
+        return this.envConfig.INFRA_SIGNING_KEY;
     }
 
     get API_SERVICE_URL(): string {
