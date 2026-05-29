@@ -414,7 +414,7 @@ export class AccountService {
         ];
 
         const csv = stringify(entries, { header: true, columns });
-        const fileName = `alw-account-balance-logs-generated-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+        const fileName = `hyphen-account-balance-logs-generated-${format(new Date(), 'yyyy-MM-dd')}.csv`;
 
         return [csv, fileName];
     }
@@ -496,7 +496,7 @@ export class AccountService {
         };
 
         const accountTagId = TagMongoId(ModelIdTag.Account, account.id);
-        const fileName = `alw-account-statement-generated-${accountTagId}-${format(new Date(), 'yyyy-MM-dd')}.pdf`;
+        const fileName = `hyphen-account-statement-generated-${accountTagId}-${format(new Date(), 'yyyy-MM-dd')}.pdf`;
 
         const response = await this._generateAccountStatementPDF(content);
         if (response && response.code === EnvoyResponseCode.Success) {

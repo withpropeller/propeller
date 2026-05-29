@@ -283,7 +283,7 @@ export class PaymentService {
         await page.waitForSelector('#dataWrapper');
 
         const buffer = await page.pdf({ printBackground: true });
-        const fileName = `alw-receipt-${paymentId}-${format(zonedDate, 'yyyy-MM-dd')}.pdf`;
+        const fileName = `hyphen-receipt-${paymentId}-${format(zonedDate, 'yyyy-MM-dd')}.pdf`;
 
         return [buffer, fileName];
     }

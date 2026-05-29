@@ -437,7 +437,7 @@ export class DisputeService {
         ];
 
         const csv = stringify(entries, { header: true, columns, quoted_string: true });
-        const fileName = `alw-dispute-generated-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+        const fileName = `hyphen-dispute-generated-${format(new Date(), 'yyyy-MM-dd')}.csv`;
 
         return [csv, fileName];
     }

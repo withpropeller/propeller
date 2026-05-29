@@ -53,6 +53,7 @@ RUN bun run build
 FROM oven/bun:1-alpine
 ARG APP_DIR
 ARG PORT
+RUN apk add --no-cache curl
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=builder /repo/services/${APP_DIR}/dist ./dist

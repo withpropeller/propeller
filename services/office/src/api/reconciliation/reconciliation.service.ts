@@ -341,7 +341,7 @@ export class ReconciliationService {
         ];
 
         const csv = stringify(data, { header: true, columns });
-        const fileName = `alw-providus-statement-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+        const fileName = `hyphen-providus-statement-${format(new Date(), 'yyyy-MM-dd')}.csv`;
         return [csv, fileName];
     }
 

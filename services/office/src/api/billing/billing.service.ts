@@ -73,7 +73,7 @@ export class BillingService extends Repository<Billing> {
         ];
 
         const csv = stringify(entries, { header: true, columns, quoted_string: true });
-        const fileName = `alw-billing-generated-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+        const fileName = `hyphen-billing-generated-${format(new Date(), 'yyyy-MM-dd')}.csv`;
 
         return [csv, fileName];
     }

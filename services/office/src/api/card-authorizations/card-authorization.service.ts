@@ -189,7 +189,7 @@ export class CardAuthorizationService {
         ];
 
         const csv = stringify(entries, { header: true, columns, quoted_string: true });
-        const fileName = `alw-authorization-generated-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+        const fileName = `hyphen-authorization-generated-${format(new Date(), 'yyyy-MM-dd')}.csv`;
 
         return [csv, fileName];
     }

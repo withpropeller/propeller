@@ -45,6 +45,7 @@ export class AuthListener {
         await this.authRegistry.registerEmail(user.email, user.id);
 
         const content = {
+            subject: 'Verify your email to activate your Hyphen account',
             email: user.email,
             firstName: user.firstName,
             businessName: onboard.businessName,
@@ -80,6 +81,7 @@ export class AuthListener {
         const business = event.data.business;
 
         const content = {
+            subject: 'Verify your email to activate your Hyphen account',
             email: user.email,
             firstName: user.firstName,
             businessName: business.name,
@@ -116,6 +118,7 @@ export class AuthListener {
         const stateToken = await this.usersService.setStateToken(user.id);
 
         const content = {
+            subject: 'Reset your password for your Hyphen account',
             firstName: user.firstName,
             email: user.email,
             resetLink: `${this.config.APP_DOMAIN}/reset?token=${stateToken}`,

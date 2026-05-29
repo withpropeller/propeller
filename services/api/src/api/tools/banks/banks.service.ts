@@ -129,7 +129,7 @@ export class TransferService {
                         code: ALLAWEE_SANDBOX_BANK_CODE,
                         abbr: 'ASB',
                         rank: 0,
-                        imageUrl: 'https://alw-cdn.s3.eu-west-1.amazonaws.com/bank-logos/default.png',
+                        imageUrl: 'https://hyphen-cdn.s3.eu-west-1.amazonaws.com/bank-logos/default.png',
                     },
                 },
                 null,

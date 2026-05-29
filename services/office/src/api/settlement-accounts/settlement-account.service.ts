@@ -131,7 +131,7 @@ export class SettlementAccountService {
 
         const csv = stringify(data, { header: true, columns });
 
-        const fileName = `alw-providus-settlement-account-logs-generated-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+        const fileName = `hyphen-providus-settlement-account-logs-generated-${format(new Date(), 'yyyy-MM-dd')}.csv`;
 
         return [csv, fileName];
     }

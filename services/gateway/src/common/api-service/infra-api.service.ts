@@ -20,11 +20,11 @@ export class InfraApiService extends RequestService {
     public getHeaders(user: JWTUser): AxiosHeaders {
         return new AxiosHeaders({
             authorization: `Bearer ${this.config.MACHINE_KEY}`,
-            'alw-business-id': user.businessId,
-            'alw-user-id': user.userId,
-            'alw-tenant-id': this.request.tenantId,
-            'alw-forwarded-user-agent': this.request.forwardedUserAgent,
-            'alw-forwarded-ip': this.request.forwardedIp,
+            'hyphen-business-id': user.businessId,
+            'hyphen-user-id': user.userId,
+            'hyphen-tenant-id': this.request.tenantId,
+            'hyphen-forwarded-user-agent': this.request.forwardedUserAgent,
+            'hyphen-forwarded-ip': this.request.forwardedIp,
         });
     }
 

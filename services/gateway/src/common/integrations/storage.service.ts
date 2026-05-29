@@ -16,7 +16,7 @@ export interface S3ObjectExpire {
 
 export const S3_EXPIRE_OBJECT_3_DAYS: S3ObjectExpire = {
     expires: addDays(new Date(), 3),
-    tagging: 'alw-expire-after=3d',
+    tagging: 'hyphen-expire-after=3d',
 };
 
 @Injectable()

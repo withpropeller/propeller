@@ -29,14 +29,14 @@ export enum ApiVersion {
 }
 
 export enum LocalRequestProperty {
-    User = 'alw-user',
-    AccessKey = 'alw-access-key',
-    TenantId = 'alw-tenant-id',
-    BusinessId = 'alw-business-id',
-    UserId = 'alw-user-id',
-    ForwardedIp = 'alw-forwarded-ip',
-    ForwardedUserAgent = 'alw-forwarded-user-agent',
-    ApiVersion = 'allawee-version',
+    User = 'hyphen-user',
+    AccessKey = 'hyphen-access-key',
+    TenantId = 'hyphen-tenant-id',
+    BusinessId = 'hyphen-business-id',
+    UserId = 'hyphen-user-id',
+    ForwardedIp = 'hyphen-forwarded-ip',
+    ForwardedUserAgent = 'hyphen-forwarded-user-agent',
+    ApiVersion = 'hyphen-version',
     RequestId = 'x-request-id',
     ApiMode = 'x-api-mode',
     DryRun = 'x-dry-run',

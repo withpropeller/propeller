@@ -170,7 +170,7 @@ export class AccountService {
         ];
 
         const csv = stringify(entries, { header: true, columns });
-        const fileName = `alw-account-balance-logs-generated-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+        const fileName = `hyphen-account-balance-logs-generated-${format(new Date(), 'yyyy-MM-dd')}.csv`;
 
         return [csv, fileName];
     }
@@ -242,7 +242,7 @@ export class AccountService {
 
         const csv = stringify(data, { header: true, columns });
 
-        const fileName = `alw-account-logs-generated-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+        const fileName = `hyphen-account-logs-generated-${format(new Date(), 'yyyy-MM-dd')}.csv`;
 
         return [csv, fileName];
     }
