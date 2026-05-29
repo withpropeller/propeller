@@ -66,6 +66,7 @@ RUN bun run build
 
 FROM oven/bun:1-alpine
 ARG APP_DIR
+ARG NODE_COMMON_DIR=libs/node-common
 ARG PORT
 RUN apk add --no-cache curl
 WORKDIR /app
@@ -73,5 +74,12 @@ ENV NODE_ENV=production
 COPY --from=builder /repo/services/${APP_DIR}/dist ./dist
 COPY --from=builder /repo/services/${APP_DIR}/node_modules ./node_modules
 COPY --from=builder /repo/services/${APP_DIR}/package.json ./
+# bun installs the local file: shared lib as a SYMLINK into node_modules
+# (node_modules/@hyphen/node-common -> ../../../../libs/node-common). That link
+# dangles once node_modules is copied away from the build tree, so replace it
+# with the real built package directory.
+RUN rm -rf node_modules/@hyphen/node-common
+COPY --from=builder /repo/${NODE_COMMON_DIR}/package.json ./node_modules/@hyphen/node-common/package.json
+COPY --from=builder /repo/${NODE_COMMON_DIR}/dist ./node_modules/@hyphen/node-common/dist
 EXPOSE ${PORT}
 CMD ["bun", "dist/main.js"]
