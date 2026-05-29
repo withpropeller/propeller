@@ -25,20 +25,9 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  BasicResponse,
-  BusinessKYCControllerAddDirectorsParams,
-  BusinessKYCControllerCompleteKYCParams,
-  BusinessKYCControllerDeleteDirectorsParams,
-  BusinessKYCControllerRemoveDocumentationsParams,
-  BusinessKYCControllerUpdateBusinessAddressParams,
-  BusinessKYCControllerUpdateBusinessInfoParams,
-  BusinessKYCControllerUpdateDirectorsParams,
-  BusinessKYCControllerUpdateDocumentationsUrlsParams,
   KYCBusinessAddressDto,
   KYCBusinessInformationDto,
-  KYCLeadershipDto,
-  ResponseWrapperApiHydratedBusinessKYC,
-  UpdateKYCDocumentationUrlDto
+  KYCLeadershipDto
 } from '../model';
 
 import { customInstance } from '../../lib/orvalClient';
@@ -49,37 +38,17 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 
-/**
- * @summary Create KYC
- */
 export type businessKYCControllerCreateKYCResponse201 = {
-  data: ResponseWrapperApiHydratedBusinessKYC
+  data: void
   status: 201
-}
-
-export type businessKYCControllerCreateKYCResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type businessKYCControllerCreateKYCResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type businessKYCControllerCreateKYCResponse403 = {
-  data: BasicResponse
-  status: 403
 }
 
 export type businessKYCControllerCreateKYCResponseSuccess = (businessKYCControllerCreateKYCResponse201) & {
   headers: Headers;
 };
-export type businessKYCControllerCreateKYCResponseError = (businessKYCControllerCreateKYCResponse400 | businessKYCControllerCreateKYCResponse401 | businessKYCControllerCreateKYCResponse403) & {
-  headers: Headers;
-};
+;
 
-export type businessKYCControllerCreateKYCResponse = (businessKYCControllerCreateKYCResponseSuccess | businessKYCControllerCreateKYCResponseError)
+export type businessKYCControllerCreateKYCResponse = (businessKYCControllerCreateKYCResponseSuccess)
 
 export const getBusinessKYCControllerCreateKYCUrl = () => {
 
@@ -104,7 +73,7 @@ export const businessKYCControllerCreateKYC = async (kYCBusinessInformationDto: 
 
 
 
-export const getBusinessKYCControllerCreateKYCMutationOptions = <TError = ErrorType<BasicResponse>,
+export const getBusinessKYCControllerCreateKYCMutationOptions = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerCreateKYC>>, TError,{data: KYCBusinessInformationDto}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerCreateKYC>>, TError,{data: KYCBusinessInformationDto}, TContext> => {
 
@@ -133,12 +102,9 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type BusinessKYCControllerCreateKYCMutationResult = NonNullable<Awaited<ReturnType<typeof businessKYCControllerCreateKYC>>>
     export type BusinessKYCControllerCreateKYCMutationBody = KYCBusinessInformationDto
-    export type BusinessKYCControllerCreateKYCMutationError = ErrorType<BasicResponse>
+    export type BusinessKYCControllerCreateKYCMutationError = ErrorType<unknown>
 
-    /**
- * @summary Create KYC
- */
-export const useBusinessKYCControllerCreateKYC = <TError = ErrorType<BasicResponse>,
+    export const useBusinessKYCControllerCreateKYC = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerCreateKYC>>, TError,{data: KYCBusinessInformationDto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof businessKYCControllerCreateKYC>>,
@@ -148,49 +114,29 @@ export const useBusinessKYCControllerCreateKYC = <TError = ErrorType<BasicRespon
       > => {
       return useMutation(getBusinessKYCControllerCreateKYCMutationOptions(options), queryClient);
     }
-    /**
- * @summary Get KYC
- */
-export type businessKYCControllerGetKycResponse200 = {
-  data: ResponseWrapperApiHydratedBusinessKYC
+    export type businessKYCControllerGetKycResponse200 = {
+  data: void
   status: 200
-}
-
-export type businessKYCControllerGetKycResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type businessKYCControllerGetKycResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type businessKYCControllerGetKycResponse403 = {
-  data: BasicResponse
-  status: 403
 }
 
 export type businessKYCControllerGetKycResponseSuccess = (businessKYCControllerGetKycResponse200) & {
   headers: Headers;
 };
-export type businessKYCControllerGetKycResponseError = (businessKYCControllerGetKycResponse400 | businessKYCControllerGetKycResponse401 | businessKYCControllerGetKycResponse403) & {
-  headers: Headers;
-};
+;
 
-export type businessKYCControllerGetKycResponse = (businessKYCControllerGetKycResponseSuccess | businessKYCControllerGetKycResponseError)
+export type businessKYCControllerGetKycResponse = (businessKYCControllerGetKycResponseSuccess)
 
-export const getBusinessKYCControllerGetKycUrl = () => {
+export const getBusinessKYCControllerGetKycUrl = (id: string,) => {
 
 
 
 
-  return `/business/kyc`
+  return `/business/kyc/${id}`
 }
 
-export const businessKYCControllerGetKyc = async ( options?: RequestInit): Promise<businessKYCControllerGetKycResponse> => {
+export const businessKYCControllerGetKyc = async (id: string, options?: RequestInit): Promise<businessKYCControllerGetKycResponse> => {
 
-  return customInstance<businessKYCControllerGetKycResponse>(getBusinessKYCControllerGetKycUrl(),
+  return customInstance<businessKYCControllerGetKycResponse>(getBusinessKYCControllerGetKycUrl(id),
   {
     ...options,
     method: 'GET'
@@ -203,37 +149,37 @@ export const businessKYCControllerGetKyc = async ( options?: RequestInit): Promi
 
 
 
-export const getBusinessKYCControllerGetKycQueryKey = () => {
+export const getBusinessKYCControllerGetKycQueryKey = (id: string,) => {
     return [
-    `/business/kyc`
+    `/business/kyc/${id}`
     ] as const;
     }
 
 
-export const getBusinessKYCControllerGetKycQueryOptions = <TData = Awaited<ReturnType<typeof businessKYCControllerGetKyc>>, TError = ErrorType<BasicResponse>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessKYCControllerGetKyc>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getBusinessKYCControllerGetKycQueryOptions = <TData = Awaited<ReturnType<typeof businessKYCControllerGetKyc>>, TError = ErrorType<unknown>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessKYCControllerGetKyc>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getBusinessKYCControllerGetKycQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getBusinessKYCControllerGetKycQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof businessKYCControllerGetKyc>>> = ({ signal }) => businessKYCControllerGetKyc({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof businessKYCControllerGetKyc>>> = ({ signal }) => businessKYCControllerGetKyc(id, { signal, ...requestOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof businessKYCControllerGetKyc>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof businessKYCControllerGetKyc>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type BusinessKYCControllerGetKycQueryResult = NonNullable<Awaited<ReturnType<typeof businessKYCControllerGetKyc>>>
-export type BusinessKYCControllerGetKycQueryError = ErrorType<BasicResponse>
+export type BusinessKYCControllerGetKycQueryError = ErrorType<unknown>
 
 
-export function useBusinessKYCControllerGetKyc<TData = Awaited<ReturnType<typeof businessKYCControllerGetKyc>>, TError = ErrorType<BasicResponse>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessKYCControllerGetKyc>>, TError, TData>> & Pick<
+export function useBusinessKYCControllerGetKyc<TData = Awaited<ReturnType<typeof businessKYCControllerGetKyc>>, TError = ErrorType<unknown>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessKYCControllerGetKyc>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof businessKYCControllerGetKyc>>,
           TError,
@@ -242,8 +188,8 @@ export function useBusinessKYCControllerGetKyc<TData = Awaited<ReturnType<typeof
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useBusinessKYCControllerGetKyc<TData = Awaited<ReturnType<typeof businessKYCControllerGetKyc>>, TError = ErrorType<BasicResponse>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessKYCControllerGetKyc>>, TError, TData>> & Pick<
+export function useBusinessKYCControllerGetKyc<TData = Awaited<ReturnType<typeof businessKYCControllerGetKyc>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessKYCControllerGetKyc>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof businessKYCControllerGetKyc>>,
           TError,
@@ -252,20 +198,17 @@ export function useBusinessKYCControllerGetKyc<TData = Awaited<ReturnType<typeof
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useBusinessKYCControllerGetKyc<TData = Awaited<ReturnType<typeof businessKYCControllerGetKyc>>, TError = ErrorType<BasicResponse>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessKYCControllerGetKyc>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useBusinessKYCControllerGetKyc<TData = Awaited<ReturnType<typeof businessKYCControllerGetKyc>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessKYCControllerGetKyc>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary Get KYC
- */
 
-export function useBusinessKYCControllerGetKyc<TData = Awaited<ReturnType<typeof businessKYCControllerGetKyc>>, TError = ErrorType<BasicResponse>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessKYCControllerGetKyc>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useBusinessKYCControllerGetKyc<TData = Awaited<ReturnType<typeof businessKYCControllerGetKyc>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessKYCControllerGetKyc>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getBusinessKYCControllerGetKycQueryOptions(options)
+  const queryOptions = getBusinessKYCControllerGetKycQueryOptions(id,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -275,57 +218,30 @@ export function useBusinessKYCControllerGetKyc<TData = Awaited<ReturnType<typeof
 
 
 
-/**
- * @summary Update Business Information
- */
 export type businessKYCControllerUpdateBusinessInfoResponse200 = {
-  data: ResponseWrapperApiHydratedBusinessKYC
+  data: void
   status: 200
-}
-
-export type businessKYCControllerUpdateBusinessInfoResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type businessKYCControllerUpdateBusinessInfoResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type businessKYCControllerUpdateBusinessInfoResponse403 = {
-  data: BasicResponse
-  status: 403
 }
 
 export type businessKYCControllerUpdateBusinessInfoResponseSuccess = (businessKYCControllerUpdateBusinessInfoResponse200) & {
   headers: Headers;
 };
-export type businessKYCControllerUpdateBusinessInfoResponseError = (businessKYCControllerUpdateBusinessInfoResponse400 | businessKYCControllerUpdateBusinessInfoResponse401 | businessKYCControllerUpdateBusinessInfoResponse403) & {
-  headers: Headers;
-};
+;
 
-export type businessKYCControllerUpdateBusinessInfoResponse = (businessKYCControllerUpdateBusinessInfoResponseSuccess | businessKYCControllerUpdateBusinessInfoResponseError)
+export type businessKYCControllerUpdateBusinessInfoResponse = (businessKYCControllerUpdateBusinessInfoResponseSuccess)
 
-export const getBusinessKYCControllerUpdateBusinessInfoUrl = (params?: BusinessKYCControllerUpdateBusinessInfoParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getBusinessKYCControllerUpdateBusinessInfoUrl = (id: string,) => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/business/kyc/information?${stringifiedParams}` : `/business/kyc/information`
+  return `/business/kyc/${id}/info`
 }
 
-export const businessKYCControllerUpdateBusinessInfo = async (kYCBusinessInformationDto: KYCBusinessInformationDto,
-    params?: BusinessKYCControllerUpdateBusinessInfoParams, options?: RequestInit): Promise<businessKYCControllerUpdateBusinessInfoResponse> => {
+export const businessKYCControllerUpdateBusinessInfo = async (id: string,
+    kYCBusinessInformationDto: KYCBusinessInformationDto, options?: RequestInit): Promise<businessKYCControllerUpdateBusinessInfoResponse> => {
 
-  return customInstance<businessKYCControllerUpdateBusinessInfoResponse>(getBusinessKYCControllerUpdateBusinessInfoUrl(params),
+  return customInstance<businessKYCControllerUpdateBusinessInfoResponse>(getBusinessKYCControllerUpdateBusinessInfoUrl(id),
   {
     ...options,
     method: 'PUT',
@@ -338,9 +254,9 @@ export const businessKYCControllerUpdateBusinessInfo = async (kYCBusinessInforma
 
 
 
-export const getBusinessKYCControllerUpdateBusinessInfoMutationOptions = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerUpdateBusinessInfo>>, TError,{data: KYCBusinessInformationDto;params?: BusinessKYCControllerUpdateBusinessInfoParams}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerUpdateBusinessInfo>>, TError,{data: KYCBusinessInformationDto;params?: BusinessKYCControllerUpdateBusinessInfoParams}, TContext> => {
+export const getBusinessKYCControllerUpdateBusinessInfoMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerUpdateBusinessInfo>>, TError,{id: string;data: KYCBusinessInformationDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerUpdateBusinessInfo>>, TError,{id: string;data: KYCBusinessInformationDto}, TContext> => {
 
 const mutationKey = ['businessKYCControllerUpdateBusinessInfo'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -352,10 +268,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof businessKYCControllerUpdateBusinessInfo>>, {data: KYCBusinessInformationDto;params?: BusinessKYCControllerUpdateBusinessInfoParams}> = (props) => {
-          const {data,params} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof businessKYCControllerUpdateBusinessInfo>>, {id: string;data: KYCBusinessInformationDto}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  businessKYCControllerUpdateBusinessInfo(data,params,requestOptions)
+          return  businessKYCControllerUpdateBusinessInfo(id,data,requestOptions)
         }
 
 
@@ -367,72 +283,42 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type BusinessKYCControllerUpdateBusinessInfoMutationResult = NonNullable<Awaited<ReturnType<typeof businessKYCControllerUpdateBusinessInfo>>>
     export type BusinessKYCControllerUpdateBusinessInfoMutationBody = KYCBusinessInformationDto
-    export type BusinessKYCControllerUpdateBusinessInfoMutationError = ErrorType<BasicResponse>
+    export type BusinessKYCControllerUpdateBusinessInfoMutationError = ErrorType<unknown>
 
-    /**
- * @summary Update Business Information
- */
-export const useBusinessKYCControllerUpdateBusinessInfo = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerUpdateBusinessInfo>>, TError,{data: KYCBusinessInformationDto;params?: BusinessKYCControllerUpdateBusinessInfoParams}, TContext>, request?: SecondParameter<typeof customInstance>}
+    export const useBusinessKYCControllerUpdateBusinessInfo = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerUpdateBusinessInfo>>, TError,{id: string;data: KYCBusinessInformationDto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof businessKYCControllerUpdateBusinessInfo>>,
         TError,
-        {data: KYCBusinessInformationDto;params?: BusinessKYCControllerUpdateBusinessInfoParams},
+        {id: string;data: KYCBusinessInformationDto},
         TContext
       > => {
       return useMutation(getBusinessKYCControllerUpdateBusinessInfoMutationOptions(options), queryClient);
     }
-    /**
- * @summary Update Business Address
- */
-export type businessKYCControllerUpdateBusinessAddressResponse200 = {
-  data: ResponseWrapperApiHydratedBusinessKYC
+    export type businessKYCControllerUpdateBusinessAddressResponse200 = {
+  data: void
   status: 200
-}
-
-export type businessKYCControllerUpdateBusinessAddressResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type businessKYCControllerUpdateBusinessAddressResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type businessKYCControllerUpdateBusinessAddressResponse403 = {
-  data: BasicResponse
-  status: 403
 }
 
 export type businessKYCControllerUpdateBusinessAddressResponseSuccess = (businessKYCControllerUpdateBusinessAddressResponse200) & {
   headers: Headers;
 };
-export type businessKYCControllerUpdateBusinessAddressResponseError = (businessKYCControllerUpdateBusinessAddressResponse400 | businessKYCControllerUpdateBusinessAddressResponse401 | businessKYCControllerUpdateBusinessAddressResponse403) & {
-  headers: Headers;
-};
+;
 
-export type businessKYCControllerUpdateBusinessAddressResponse = (businessKYCControllerUpdateBusinessAddressResponseSuccess | businessKYCControllerUpdateBusinessAddressResponseError)
+export type businessKYCControllerUpdateBusinessAddressResponse = (businessKYCControllerUpdateBusinessAddressResponseSuccess)
 
-export const getBusinessKYCControllerUpdateBusinessAddressUrl = (params?: BusinessKYCControllerUpdateBusinessAddressParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getBusinessKYCControllerUpdateBusinessAddressUrl = (id: string,) => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/business/kyc/address?${stringifiedParams}` : `/business/kyc/address`
+  return `/business/kyc/${id}/address`
 }
 
-export const businessKYCControllerUpdateBusinessAddress = async (kYCBusinessAddressDto: KYCBusinessAddressDto,
-    params?: BusinessKYCControllerUpdateBusinessAddressParams, options?: RequestInit): Promise<businessKYCControllerUpdateBusinessAddressResponse> => {
+export const businessKYCControllerUpdateBusinessAddress = async (id: string,
+    kYCBusinessAddressDto: KYCBusinessAddressDto, options?: RequestInit): Promise<businessKYCControllerUpdateBusinessAddressResponse> => {
 
-  return customInstance<businessKYCControllerUpdateBusinessAddressResponse>(getBusinessKYCControllerUpdateBusinessAddressUrl(params),
+  return customInstance<businessKYCControllerUpdateBusinessAddressResponse>(getBusinessKYCControllerUpdateBusinessAddressUrl(id),
   {
     ...options,
     method: 'PUT',
@@ -445,9 +331,9 @@ export const businessKYCControllerUpdateBusinessAddress = async (kYCBusinessAddr
 
 
 
-export const getBusinessKYCControllerUpdateBusinessAddressMutationOptions = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerUpdateBusinessAddress>>, TError,{data: KYCBusinessAddressDto;params?: BusinessKYCControllerUpdateBusinessAddressParams}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerUpdateBusinessAddress>>, TError,{data: KYCBusinessAddressDto;params?: BusinessKYCControllerUpdateBusinessAddressParams}, TContext> => {
+export const getBusinessKYCControllerUpdateBusinessAddressMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerUpdateBusinessAddress>>, TError,{id: string;data: KYCBusinessAddressDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerUpdateBusinessAddress>>, TError,{id: string;data: KYCBusinessAddressDto}, TContext> => {
 
 const mutationKey = ['businessKYCControllerUpdateBusinessAddress'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -459,10 +345,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof businessKYCControllerUpdateBusinessAddress>>, {data: KYCBusinessAddressDto;params?: BusinessKYCControllerUpdateBusinessAddressParams}> = (props) => {
-          const {data,params} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof businessKYCControllerUpdateBusinessAddress>>, {id: string;data: KYCBusinessAddressDto}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  businessKYCControllerUpdateBusinessAddress(data,params,requestOptions)
+          return  businessKYCControllerUpdateBusinessAddress(id,data,requestOptions)
         }
 
 
@@ -474,72 +360,42 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type BusinessKYCControllerUpdateBusinessAddressMutationResult = NonNullable<Awaited<ReturnType<typeof businessKYCControllerUpdateBusinessAddress>>>
     export type BusinessKYCControllerUpdateBusinessAddressMutationBody = KYCBusinessAddressDto
-    export type BusinessKYCControllerUpdateBusinessAddressMutationError = ErrorType<BasicResponse>
+    export type BusinessKYCControllerUpdateBusinessAddressMutationError = ErrorType<unknown>
 
-    /**
- * @summary Update Business Address
- */
-export const useBusinessKYCControllerUpdateBusinessAddress = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerUpdateBusinessAddress>>, TError,{data: KYCBusinessAddressDto;params?: BusinessKYCControllerUpdateBusinessAddressParams}, TContext>, request?: SecondParameter<typeof customInstance>}
+    export const useBusinessKYCControllerUpdateBusinessAddress = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerUpdateBusinessAddress>>, TError,{id: string;data: KYCBusinessAddressDto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof businessKYCControllerUpdateBusinessAddress>>,
         TError,
-        {data: KYCBusinessAddressDto;params?: BusinessKYCControllerUpdateBusinessAddressParams},
+        {id: string;data: KYCBusinessAddressDto},
         TContext
       > => {
       return useMutation(getBusinessKYCControllerUpdateBusinessAddressMutationOptions(options), queryClient);
     }
-    /**
- * @summary Add Director
- */
-export type businessKYCControllerAddDirectorsResponse201 = {
-  data: ResponseWrapperApiHydratedBusinessKYC
+    export type businessKYCControllerAddLeadershipResponse201 = {
+  data: void
   status: 201
 }
 
-export type businessKYCControllerAddDirectorsResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type businessKYCControllerAddDirectorsResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type businessKYCControllerAddDirectorsResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type businessKYCControllerAddDirectorsResponseSuccess = (businessKYCControllerAddDirectorsResponse201) & {
+export type businessKYCControllerAddLeadershipResponseSuccess = (businessKYCControllerAddLeadershipResponse201) & {
   headers: Headers;
 };
-export type businessKYCControllerAddDirectorsResponseError = (businessKYCControllerAddDirectorsResponse400 | businessKYCControllerAddDirectorsResponse401 | businessKYCControllerAddDirectorsResponse403) & {
-  headers: Headers;
-};
+;
 
-export type businessKYCControllerAddDirectorsResponse = (businessKYCControllerAddDirectorsResponseSuccess | businessKYCControllerAddDirectorsResponseError)
+export type businessKYCControllerAddLeadershipResponse = (businessKYCControllerAddLeadershipResponseSuccess)
 
-export const getBusinessKYCControllerAddDirectorsUrl = (params?: BusinessKYCControllerAddDirectorsParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getBusinessKYCControllerAddLeadershipUrl = (id: string,) => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/business/kyc/directors?${stringifiedParams}` : `/business/kyc/directors`
+  return `/business/kyc/${id}/leadership`
 }
 
-export const businessKYCControllerAddDirectors = async (kYCLeadershipDto: KYCLeadershipDto,
-    params?: BusinessKYCControllerAddDirectorsParams, options?: RequestInit): Promise<businessKYCControllerAddDirectorsResponse> => {
+export const businessKYCControllerAddLeadership = async (id: string,
+    kYCLeadershipDto: KYCLeadershipDto, options?: RequestInit): Promise<businessKYCControllerAddLeadershipResponse> => {
 
-  return customInstance<businessKYCControllerAddDirectorsResponse>(getBusinessKYCControllerAddDirectorsUrl(params),
+  return customInstance<businessKYCControllerAddLeadershipResponse>(getBusinessKYCControllerAddLeadershipUrl(id),
   {
     ...options,
     method: 'POST',
@@ -552,11 +408,11 @@ export const businessKYCControllerAddDirectors = async (kYCLeadershipDto: KYCLea
 
 
 
-export const getBusinessKYCControllerAddDirectorsMutationOptions = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerAddDirectors>>, TError,{data: KYCLeadershipDto;params?: BusinessKYCControllerAddDirectorsParams}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerAddDirectors>>, TError,{data: KYCLeadershipDto;params?: BusinessKYCControllerAddDirectorsParams}, TContext> => {
+export const getBusinessKYCControllerAddLeadershipMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerAddLeadership>>, TError,{id: string;data: KYCLeadershipDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerAddLeadership>>, TError,{id: string;data: KYCLeadershipDto}, TContext> => {
 
-const mutationKey = ['businessKYCControllerAddDirectors'];
+const mutationKey = ['businessKYCControllerAddLeadership'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -566,10 +422,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof businessKYCControllerAddDirectors>>, {data: KYCLeadershipDto;params?: BusinessKYCControllerAddDirectorsParams}> = (props) => {
-          const {data,params} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof businessKYCControllerAddLeadership>>, {id: string;data: KYCLeadershipDto}> = (props) => {
+          const {id,data} = props ?? {};
 
-          return  businessKYCControllerAddDirectors(data,params,requestOptions)
+          return  businessKYCControllerAddLeadership(id,data,requestOptions)
         }
 
 
@@ -579,194 +435,45 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type BusinessKYCControllerAddDirectorsMutationResult = NonNullable<Awaited<ReturnType<typeof businessKYCControllerAddDirectors>>>
-    export type BusinessKYCControllerAddDirectorsMutationBody = KYCLeadershipDto
-    export type BusinessKYCControllerAddDirectorsMutationError = ErrorType<BasicResponse>
+    export type BusinessKYCControllerAddLeadershipMutationResult = NonNullable<Awaited<ReturnType<typeof businessKYCControllerAddLeadership>>>
+    export type BusinessKYCControllerAddLeadershipMutationBody = KYCLeadershipDto
+    export type BusinessKYCControllerAddLeadershipMutationError = ErrorType<unknown>
 
-    /**
- * @summary Add Director
- */
-export const useBusinessKYCControllerAddDirectors = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerAddDirectors>>, TError,{data: KYCLeadershipDto;params?: BusinessKYCControllerAddDirectorsParams}, TContext>, request?: SecondParameter<typeof customInstance>}
+    export const useBusinessKYCControllerAddLeadership = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerAddLeadership>>, TError,{id: string;data: KYCLeadershipDto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof businessKYCControllerAddDirectors>>,
+        Awaited<ReturnType<typeof businessKYCControllerAddLeadership>>,
         TError,
-        {data: KYCLeadershipDto;params?: BusinessKYCControllerAddDirectorsParams},
+        {id: string;data: KYCLeadershipDto},
         TContext
       > => {
-      return useMutation(getBusinessKYCControllerAddDirectorsMutationOptions(options), queryClient);
+      return useMutation(getBusinessKYCControllerAddLeadershipMutationOptions(options), queryClient);
     }
-    /**
- * @summary Update Director
- */
-export type businessKYCControllerUpdateDirectorsResponse200 = {
-  data: ResponseWrapperApiHydratedBusinessKYC
+    export type businessKYCControllerDeleteLeadershipResponse200 = {
+  data: void
   status: 200
 }
 
-export type businessKYCControllerUpdateDirectorsResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type businessKYCControllerUpdateDirectorsResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type businessKYCControllerUpdateDirectorsResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type businessKYCControllerUpdateDirectorsResponse404 = {
-  data: BasicResponse
-  status: 404
-}
-
-export type businessKYCControllerUpdateDirectorsResponseSuccess = (businessKYCControllerUpdateDirectorsResponse200) & {
+export type businessKYCControllerDeleteLeadershipResponseSuccess = (businessKYCControllerDeleteLeadershipResponse200) & {
   headers: Headers;
 };
-export type businessKYCControllerUpdateDirectorsResponseError = (businessKYCControllerUpdateDirectorsResponse400 | businessKYCControllerUpdateDirectorsResponse401 | businessKYCControllerUpdateDirectorsResponse403 | businessKYCControllerUpdateDirectorsResponse404) & {
-  headers: Headers;
-};
+;
 
-export type businessKYCControllerUpdateDirectorsResponse = (businessKYCControllerUpdateDirectorsResponseSuccess | businessKYCControllerUpdateDirectorsResponseError)
+export type businessKYCControllerDeleteLeadershipResponse = (businessKYCControllerDeleteLeadershipResponseSuccess)
 
-export const getBusinessKYCControllerUpdateDirectorsUrl = (id: string,
-    params?: BusinessKYCControllerUpdateDirectorsParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getBusinessKYCControllerDeleteLeadershipUrl = (kycId: string,
+    leadershipId: string,) => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/business/kyc/directors/${id}?${stringifiedParams}` : `/business/kyc/directors/${id}`
+  return `/business/kyc/${kycId}/leadership/${leadershipId}`
 }
 
-export const businessKYCControllerUpdateDirectors = async (id: string,
-    kYCLeadershipDto: KYCLeadershipDto,
-    params?: BusinessKYCControllerUpdateDirectorsParams, options?: RequestInit): Promise<businessKYCControllerUpdateDirectorsResponse> => {
+export const businessKYCControllerDeleteLeadership = async (kycId: string,
+    leadershipId: string, options?: RequestInit): Promise<businessKYCControllerDeleteLeadershipResponse> => {
 
-  return customInstance<businessKYCControllerUpdateDirectorsResponse>(getBusinessKYCControllerUpdateDirectorsUrl(id,params),
-  {
-    ...options,
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      kYCLeadershipDto,)
-  }
-);}
-
-
-
-
-export const getBusinessKYCControllerUpdateDirectorsMutationOptions = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerUpdateDirectors>>, TError,{id: string;data: KYCLeadershipDto;params?: BusinessKYCControllerUpdateDirectorsParams}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerUpdateDirectors>>, TError,{id: string;data: KYCLeadershipDto;params?: BusinessKYCControllerUpdateDirectorsParams}, TContext> => {
-
-const mutationKey = ['businessKYCControllerUpdateDirectors'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof businessKYCControllerUpdateDirectors>>, {id: string;data: KYCLeadershipDto;params?: BusinessKYCControllerUpdateDirectorsParams}> = (props) => {
-          const {id,data,params} = props ?? {};
-
-          return  businessKYCControllerUpdateDirectors(id,data,params,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type BusinessKYCControllerUpdateDirectorsMutationResult = NonNullable<Awaited<ReturnType<typeof businessKYCControllerUpdateDirectors>>>
-    export type BusinessKYCControllerUpdateDirectorsMutationBody = KYCLeadershipDto
-    export type BusinessKYCControllerUpdateDirectorsMutationError = ErrorType<BasicResponse>
-
-    /**
- * @summary Update Director
- */
-export const useBusinessKYCControllerUpdateDirectors = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerUpdateDirectors>>, TError,{id: string;data: KYCLeadershipDto;params?: BusinessKYCControllerUpdateDirectorsParams}, TContext>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof businessKYCControllerUpdateDirectors>>,
-        TError,
-        {id: string;data: KYCLeadershipDto;params?: BusinessKYCControllerUpdateDirectorsParams},
-        TContext
-      > => {
-      return useMutation(getBusinessKYCControllerUpdateDirectorsMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Delete Director
- */
-export type businessKYCControllerDeleteDirectorsResponse200 = {
-  data: BasicResponse
-  status: 200
-}
-
-export type businessKYCControllerDeleteDirectorsResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type businessKYCControllerDeleteDirectorsResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type businessKYCControllerDeleteDirectorsResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type businessKYCControllerDeleteDirectorsResponse404 = {
-  data: BasicResponse
-  status: 404
-}
-
-export type businessKYCControllerDeleteDirectorsResponseSuccess = (businessKYCControllerDeleteDirectorsResponse200) & {
-  headers: Headers;
-};
-export type businessKYCControllerDeleteDirectorsResponseError = (businessKYCControllerDeleteDirectorsResponse400 | businessKYCControllerDeleteDirectorsResponse401 | businessKYCControllerDeleteDirectorsResponse403 | businessKYCControllerDeleteDirectorsResponse404) & {
-  headers: Headers;
-};
-
-export type businessKYCControllerDeleteDirectorsResponse = (businessKYCControllerDeleteDirectorsResponseSuccess | businessKYCControllerDeleteDirectorsResponseError)
-
-export const getBusinessKYCControllerDeleteDirectorsUrl = (id: string,
-    params?: BusinessKYCControllerDeleteDirectorsParams,) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/business/kyc/directors/${id}?${stringifiedParams}` : `/business/kyc/directors/${id}`
-}
-
-export const businessKYCControllerDeleteDirectors = async (id: string,
-    params?: BusinessKYCControllerDeleteDirectorsParams, options?: RequestInit): Promise<businessKYCControllerDeleteDirectorsResponse> => {
-
-  return customInstance<businessKYCControllerDeleteDirectorsResponse>(getBusinessKYCControllerDeleteDirectorsUrl(id,params),
+  return customInstance<businessKYCControllerDeleteLeadershipResponse>(getBusinessKYCControllerDeleteLeadershipUrl(kycId,leadershipId),
   {
     ...options,
     method: 'DELETE'
@@ -778,11 +485,11 @@ export const businessKYCControllerDeleteDirectors = async (id: string,
 
 
 
-export const getBusinessKYCControllerDeleteDirectorsMutationOptions = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerDeleteDirectors>>, TError,{id: string;params?: BusinessKYCControllerDeleteDirectorsParams}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerDeleteDirectors>>, TError,{id: string;params?: BusinessKYCControllerDeleteDirectorsParams}, TContext> => {
+export const getBusinessKYCControllerDeleteLeadershipMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerDeleteLeadership>>, TError,{kycId: string;leadershipId: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerDeleteLeadership>>, TError,{kycId: string;leadershipId: string}, TContext> => {
 
-const mutationKey = ['businessKYCControllerDeleteDirectors'];
+const mutationKey = ['businessKYCControllerDeleteLeadership'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -792,10 +499,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof businessKYCControllerDeleteDirectors>>, {id: string;params?: BusinessKYCControllerDeleteDirectorsParams}> = (props) => {
-          const {id,params} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof businessKYCControllerDeleteLeadership>>, {kycId: string;leadershipId: string}> = (props) => {
+          const {kycId,leadershipId} = props ?? {};
 
-          return  businessKYCControllerDeleteDirectors(id,params,requestOptions)
+          return  businessKYCControllerDeleteLeadership(kycId,leadershipId,requestOptions)
         }
 
 
@@ -805,292 +512,43 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type BusinessKYCControllerDeleteDirectorsMutationResult = NonNullable<Awaited<ReturnType<typeof businessKYCControllerDeleteDirectors>>>
+    export type BusinessKYCControllerDeleteLeadershipMutationResult = NonNullable<Awaited<ReturnType<typeof businessKYCControllerDeleteLeadership>>>
 
-    export type BusinessKYCControllerDeleteDirectorsMutationError = ErrorType<BasicResponse>
+    export type BusinessKYCControllerDeleteLeadershipMutationError = ErrorType<unknown>
 
-    /**
- * @summary Delete Director
- */
-export const useBusinessKYCControllerDeleteDirectors = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerDeleteDirectors>>, TError,{id: string;params?: BusinessKYCControllerDeleteDirectorsParams}, TContext>, request?: SecondParameter<typeof customInstance>}
+    export const useBusinessKYCControllerDeleteLeadership = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerDeleteLeadership>>, TError,{kycId: string;leadershipId: string}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof businessKYCControllerDeleteDirectors>>,
+        Awaited<ReturnType<typeof businessKYCControllerDeleteLeadership>>,
         TError,
-        {id: string;params?: BusinessKYCControllerDeleteDirectorsParams},
+        {kycId: string;leadershipId: string},
         TContext
       > => {
-      return useMutation(getBusinessKYCControllerDeleteDirectorsMutationOptions(options), queryClient);
+      return useMutation(getBusinessKYCControllerDeleteLeadershipMutationOptions(options), queryClient);
     }
-    /**
- * @summary Update KYC Documentation
- */
-export type businessKYCControllerUpdateDocumentationsUrlsResponse200 = {
-  data: ResponseWrapperApiHydratedBusinessKYC
-  status: 200
+    export type businessKYCControllerAddDocumentationsResponse201 = {
+  data: void
+  status: 201
 }
 
-export type businessKYCControllerUpdateDocumentationsUrlsResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type businessKYCControllerUpdateDocumentationsUrlsResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type businessKYCControllerUpdateDocumentationsUrlsResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type businessKYCControllerUpdateDocumentationsUrlsResponseSuccess = (businessKYCControllerUpdateDocumentationsUrlsResponse200) & {
+export type businessKYCControllerAddDocumentationsResponseSuccess = (businessKYCControllerAddDocumentationsResponse201) & {
   headers: Headers;
 };
-export type businessKYCControllerUpdateDocumentationsUrlsResponseError = (businessKYCControllerUpdateDocumentationsUrlsResponse400 | businessKYCControllerUpdateDocumentationsUrlsResponse401 | businessKYCControllerUpdateDocumentationsUrlsResponse403) & {
-  headers: Headers;
-};
+;
 
-export type businessKYCControllerUpdateDocumentationsUrlsResponse = (businessKYCControllerUpdateDocumentationsUrlsResponseSuccess | businessKYCControllerUpdateDocumentationsUrlsResponseError)
+export type businessKYCControllerAddDocumentationsResponse = (businessKYCControllerAddDocumentationsResponseSuccess)
 
-export const getBusinessKYCControllerUpdateDocumentationsUrlsUrl = (params?: BusinessKYCControllerUpdateDocumentationsUrlsParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getBusinessKYCControllerAddDocumentationsUrl = (id: string,) => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/business/kyc/documentation?${stringifiedParams}` : `/business/kyc/documentation`
+  return `/business/kyc/${id}/documentation`
 }
 
-export const businessKYCControllerUpdateDocumentationsUrls = async (updateKYCDocumentationUrlDto: UpdateKYCDocumentationUrlDto,
-    params?: BusinessKYCControllerUpdateDocumentationsUrlsParams, options?: RequestInit): Promise<businessKYCControllerUpdateDocumentationsUrlsResponse> => {
+export const businessKYCControllerAddDocumentations = async (id: string, options?: RequestInit): Promise<businessKYCControllerAddDocumentationsResponse> => {
 
-  return customInstance<businessKYCControllerUpdateDocumentationsUrlsResponse>(getBusinessKYCControllerUpdateDocumentationsUrlsUrl(params),
-  {
-    ...options,
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      updateKYCDocumentationUrlDto,)
-  }
-);}
-
-
-
-
-export const getBusinessKYCControllerUpdateDocumentationsUrlsMutationOptions = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerUpdateDocumentationsUrls>>, TError,{data: UpdateKYCDocumentationUrlDto;params?: BusinessKYCControllerUpdateDocumentationsUrlsParams}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerUpdateDocumentationsUrls>>, TError,{data: UpdateKYCDocumentationUrlDto;params?: BusinessKYCControllerUpdateDocumentationsUrlsParams}, TContext> => {
-
-const mutationKey = ['businessKYCControllerUpdateDocumentationsUrls'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof businessKYCControllerUpdateDocumentationsUrls>>, {data: UpdateKYCDocumentationUrlDto;params?: BusinessKYCControllerUpdateDocumentationsUrlsParams}> = (props) => {
-          const {data,params} = props ?? {};
-
-          return  businessKYCControllerUpdateDocumentationsUrls(data,params,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type BusinessKYCControllerUpdateDocumentationsUrlsMutationResult = NonNullable<Awaited<ReturnType<typeof businessKYCControllerUpdateDocumentationsUrls>>>
-    export type BusinessKYCControllerUpdateDocumentationsUrlsMutationBody = UpdateKYCDocumentationUrlDto
-    export type BusinessKYCControllerUpdateDocumentationsUrlsMutationError = ErrorType<BasicResponse>
-
-    /**
- * @summary Update KYC Documentation
- */
-export const useBusinessKYCControllerUpdateDocumentationsUrls = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerUpdateDocumentationsUrls>>, TError,{data: UpdateKYCDocumentationUrlDto;params?: BusinessKYCControllerUpdateDocumentationsUrlsParams}, TContext>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof businessKYCControllerUpdateDocumentationsUrls>>,
-        TError,
-        {data: UpdateKYCDocumentationUrlDto;params?: BusinessKYCControllerUpdateDocumentationsUrlsParams},
-        TContext
-      > => {
-      return useMutation(getBusinessKYCControllerUpdateDocumentationsUrlsMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Remove KYC Documentation
- */
-export type businessKYCControllerRemoveDocumentationsResponse200 = {
-  data: BasicResponse
-  status: 200
-}
-
-export type businessKYCControllerRemoveDocumentationsResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type businessKYCControllerRemoveDocumentationsResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type businessKYCControllerRemoveDocumentationsResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type businessKYCControllerRemoveDocumentationsResponse404 = {
-  data: BasicResponse
-  status: 404
-}
-
-export type businessKYCControllerRemoveDocumentationsResponseSuccess = (businessKYCControllerRemoveDocumentationsResponse200) & {
-  headers: Headers;
-};
-export type businessKYCControllerRemoveDocumentationsResponseError = (businessKYCControllerRemoveDocumentationsResponse400 | businessKYCControllerRemoveDocumentationsResponse401 | businessKYCControllerRemoveDocumentationsResponse403 | businessKYCControllerRemoveDocumentationsResponse404) & {
-  headers: Headers;
-};
-
-export type businessKYCControllerRemoveDocumentationsResponse = (businessKYCControllerRemoveDocumentationsResponseSuccess | businessKYCControllerRemoveDocumentationsResponseError)
-
-export const getBusinessKYCControllerRemoveDocumentationsUrl = (id: string,
-    params?: BusinessKYCControllerRemoveDocumentationsParams,) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/business/kyc/documentation/${id}?${stringifiedParams}` : `/business/kyc/documentation/${id}`
-}
-
-export const businessKYCControllerRemoveDocumentations = async (id: string,
-    params?: BusinessKYCControllerRemoveDocumentationsParams, options?: RequestInit): Promise<businessKYCControllerRemoveDocumentationsResponse> => {
-
-  return customInstance<businessKYCControllerRemoveDocumentationsResponse>(getBusinessKYCControllerRemoveDocumentationsUrl(id,params),
-  {
-    ...options,
-    method: 'DELETE'
-
-
-  }
-);}
-
-
-
-
-export const getBusinessKYCControllerRemoveDocumentationsMutationOptions = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerRemoveDocumentations>>, TError,{id: string;params?: BusinessKYCControllerRemoveDocumentationsParams}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerRemoveDocumentations>>, TError,{id: string;params?: BusinessKYCControllerRemoveDocumentationsParams}, TContext> => {
-
-const mutationKey = ['businessKYCControllerRemoveDocumentations'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof businessKYCControllerRemoveDocumentations>>, {id: string;params?: BusinessKYCControllerRemoveDocumentationsParams}> = (props) => {
-          const {id,params} = props ?? {};
-
-          return  businessKYCControllerRemoveDocumentations(id,params,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type BusinessKYCControllerRemoveDocumentationsMutationResult = NonNullable<Awaited<ReturnType<typeof businessKYCControllerRemoveDocumentations>>>
-
-    export type BusinessKYCControllerRemoveDocumentationsMutationError = ErrorType<BasicResponse>
-
-    /**
- * @summary Remove KYC Documentation
- */
-export const useBusinessKYCControllerRemoveDocumentations = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerRemoveDocumentations>>, TError,{id: string;params?: BusinessKYCControllerRemoveDocumentationsParams}, TContext>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof businessKYCControllerRemoveDocumentations>>,
-        TError,
-        {id: string;params?: BusinessKYCControllerRemoveDocumentationsParams},
-        TContext
-      > => {
-      return useMutation(getBusinessKYCControllerRemoveDocumentationsMutationOptions(options), queryClient);
-    }
-    /**
- * @summary Complete KYC
- */
-export type businessKYCControllerCompleteKYCResponse200 = {
-  data: BasicResponse
-  status: 200
-}
-
-export type businessKYCControllerCompleteKYCResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type businessKYCControllerCompleteKYCResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type businessKYCControllerCompleteKYCResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type businessKYCControllerCompleteKYCResponseSuccess = (businessKYCControllerCompleteKYCResponse200) & {
-  headers: Headers;
-};
-export type businessKYCControllerCompleteKYCResponseError = (businessKYCControllerCompleteKYCResponse400 | businessKYCControllerCompleteKYCResponse401 | businessKYCControllerCompleteKYCResponse403) & {
-  headers: Headers;
-};
-
-export type businessKYCControllerCompleteKYCResponse = (businessKYCControllerCompleteKYCResponseSuccess | businessKYCControllerCompleteKYCResponseError)
-
-export const getBusinessKYCControllerCompleteKYCUrl = (params?: BusinessKYCControllerCompleteKYCParams,) => {
-  const normalizedParams = new URLSearchParams();
-
-  Object.entries(params || {}).forEach(([key, value]) => {
-
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/business/kyc/complete?${stringifiedParams}` : `/business/kyc/complete`
-}
-
-export const businessKYCControllerCompleteKYC = async (params?: BusinessKYCControllerCompleteKYCParams, options?: RequestInit): Promise<businessKYCControllerCompleteKYCResponse> => {
-
-  return customInstance<businessKYCControllerCompleteKYCResponse>(getBusinessKYCControllerCompleteKYCUrl(params),
+  return customInstance<businessKYCControllerAddDocumentationsResponse>(getBusinessKYCControllerAddDocumentationsUrl(id),
   {
     ...options,
     method: 'POST'
@@ -1102,11 +560,11 @@ export const businessKYCControllerCompleteKYC = async (params?: BusinessKYCContr
 
 
 
-export const getBusinessKYCControllerCompleteKYCMutationOptions = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerCompleteKYC>>, TError,{params?: BusinessKYCControllerCompleteKYCParams}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerCompleteKYC>>, TError,{params?: BusinessKYCControllerCompleteKYCParams}, TContext> => {
+export const getBusinessKYCControllerAddDocumentationsMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerAddDocumentations>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerAddDocumentations>>, TError,{id: string}, TContext> => {
 
-const mutationKey = ['businessKYCControllerCompleteKYC'];
+const mutationKey = ['businessKYCControllerAddDocumentations'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -1116,10 +574,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof businessKYCControllerCompleteKYC>>, {params?: BusinessKYCControllerCompleteKYCParams}> = (props) => {
-          const {params} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof businessKYCControllerAddDocumentations>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
 
-          return  businessKYCControllerCompleteKYC(params,requestOptions)
+          return  businessKYCControllerAddDocumentations(id,requestOptions)
         }
 
 
@@ -1129,20 +587,167 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type BusinessKYCControllerCompleteKYCMutationResult = NonNullable<Awaited<ReturnType<typeof businessKYCControllerCompleteKYC>>>
+    export type BusinessKYCControllerAddDocumentationsMutationResult = NonNullable<Awaited<ReturnType<typeof businessKYCControllerAddDocumentations>>>
 
-    export type BusinessKYCControllerCompleteKYCMutationError = ErrorType<BasicResponse>
+    export type BusinessKYCControllerAddDocumentationsMutationError = ErrorType<unknown>
 
-    /**
- * @summary Complete KYC
- */
-export const useBusinessKYCControllerCompleteKYC = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerCompleteKYC>>, TError,{params?: BusinessKYCControllerCompleteKYCParams}, TContext>, request?: SecondParameter<typeof customInstance>}
+    export const useBusinessKYCControllerAddDocumentations = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerAddDocumentations>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof businessKYCControllerCompleteKYC>>,
+        Awaited<ReturnType<typeof businessKYCControllerAddDocumentations>>,
         TError,
-        {params?: BusinessKYCControllerCompleteKYCParams},
+        {id: string},
         TContext
       > => {
-      return useMutation(getBusinessKYCControllerCompleteKYCMutationOptions(options), queryClient);
+      return useMutation(getBusinessKYCControllerAddDocumentationsMutationOptions(options), queryClient);
+    }
+    export type businessKYCControllerUpdateDocumentationsResponse200 = {
+  data: void
+  status: 200
+}
+
+export type businessKYCControllerUpdateDocumentationsResponseSuccess = (businessKYCControllerUpdateDocumentationsResponse200) & {
+  headers: Headers;
+};
+;
+
+export type businessKYCControllerUpdateDocumentationsResponse = (businessKYCControllerUpdateDocumentationsResponseSuccess)
+
+export const getBusinessKYCControllerUpdateDocumentationsUrl = (id: string,) => {
+
+
+
+
+  return `/business/kyc/${id}/documentation`
+}
+
+export const businessKYCControllerUpdateDocumentations = async (id: string, options?: RequestInit): Promise<businessKYCControllerUpdateDocumentationsResponse> => {
+
+  return customInstance<businessKYCControllerUpdateDocumentationsResponse>(getBusinessKYCControllerUpdateDocumentationsUrl(id),
+  {
+    ...options,
+    method: 'PUT'
+
+
+  }
+);}
+
+
+
+
+export const getBusinessKYCControllerUpdateDocumentationsMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerUpdateDocumentations>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerUpdateDocumentations>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['businessKYCControllerUpdateDocumentations'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof businessKYCControllerUpdateDocumentations>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  businessKYCControllerUpdateDocumentations(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type BusinessKYCControllerUpdateDocumentationsMutationResult = NonNullable<Awaited<ReturnType<typeof businessKYCControllerUpdateDocumentations>>>
+
+    export type BusinessKYCControllerUpdateDocumentationsMutationError = ErrorType<unknown>
+
+    export const useBusinessKYCControllerUpdateDocumentations = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerUpdateDocumentations>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof businessKYCControllerUpdateDocumentations>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getBusinessKYCControllerUpdateDocumentationsMutationOptions(options), queryClient);
+    }
+    export type businessKYCControllerSubmitKycResponse201 = {
+  data: void
+  status: 201
+}
+
+export type businessKYCControllerSubmitKycResponseSuccess = (businessKYCControllerSubmitKycResponse201) & {
+  headers: Headers;
+};
+;
+
+export type businessKYCControllerSubmitKycResponse = (businessKYCControllerSubmitKycResponseSuccess)
+
+export const getBusinessKYCControllerSubmitKycUrl = (id: string,) => {
+
+
+
+
+  return `/business/kyc/${id}/submit`
+}
+
+export const businessKYCControllerSubmitKyc = async (id: string, options?: RequestInit): Promise<businessKYCControllerSubmitKycResponse> => {
+
+  return customInstance<businessKYCControllerSubmitKycResponse>(getBusinessKYCControllerSubmitKycUrl(id),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getBusinessKYCControllerSubmitKycMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerSubmitKyc>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerSubmitKyc>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['businessKYCControllerSubmitKyc'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof businessKYCControllerSubmitKyc>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  businessKYCControllerSubmitKyc(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type BusinessKYCControllerSubmitKycMutationResult = NonNullable<Awaited<ReturnType<typeof businessKYCControllerSubmitKyc>>>
+
+    export type BusinessKYCControllerSubmitKycMutationError = ErrorType<unknown>
+
+    export const useBusinessKYCControllerSubmitKyc = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessKYCControllerSubmitKyc>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof businessKYCControllerSubmitKyc>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getBusinessKYCControllerSubmitKycMutationOptions(options), queryClient);
     }

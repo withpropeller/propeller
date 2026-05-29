@@ -16,6 +16,6 @@ export interface OnboardSurveyDto {
   businessName: string;
   isIncorporated: boolean;
   businessWebsite: string;
-  /** Primary Country Code */
+  /** Country of incorporation (ISO 3166-1 alpha-2) */
   countryCode: string;
 }

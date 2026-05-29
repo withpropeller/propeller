@@ -11,11 +11,11 @@ Pages follow one of three patterns: **the dashboard home**, **list pages**, and 
 A standalone analytics page. Does not follow the list or detail pattern.
 
 Structure:
-1. **Greeting header** — time-of-day greeting + business name, quick action buttons (Add funds, Send funds — currently no-ops)
-2. **Row 1 — Transaction volume card** — full-width card, split left/right. Left: volume total, `Delta` trend indicator, `Sparkline` area chart. Right: three stat rows (Approved count, Declined count, Success rate) each with a `Delta`.
-3. **Row 2 — `grid grid-cols-1 lg:grid-cols-4` chart grid** — Spend by category bar chart (`lg:col-span-2`), Channel split donut chart, Top decline reasons list with stacked bar.
+1. **Greeting header** — time-of-day greeting + business name, period selector
+2. **Row 1 — Collections card** — pay-in volume, `Delta`, `Sparkline`; side stats: successful pay-ins, failed pay-ins, success rate
+3. **Row 2 — `grid grid-cols-1 lg:grid-cols-3`** — Pay-in vs pay-out donut, payments by status, available balance + pending payout
 
-All data is placeholder static arrays with `// TODO: wire to API` markers. Sub-components (`ChartCard`, `SpendBarsChart`, `ChartTooltip`) are defined inline in `dashboard/page.tsx` — not shared components.
+Data from `GET /dashboard/metrics` via gateway (`useDashboardControllerGetMetrics`). Sub-components (`ChartCard`, `ChartTooltip`) are defined inline in `dashboard/index.tsx`.
 
 Charts use Recharts: `AreaChart` (via `Sparkline`), `BarChart`, `PieChart`. Chart colour palette hardcoded (`#3EB4FF`, `#EC85C7`, `#43C66A`, etc.) — see `components.md` token rules for the data-viz exception.
 

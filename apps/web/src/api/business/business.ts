@@ -6,24 +6,28 @@
  * OpenAPI spec version: 0.0.1
  */
 import {
+  useMutation,
   useQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
   DefinedUseQueryResult,
+  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult
 } from '@tanstack/react-query';
 
 import type {
-  BasicResponse,
   BusinessControllerFindParams,
-  ResponseWrapperApiHydratedBusiness
+  BusinessControllerGetBusinessParams,
+  InviteUserDto
 } from '../model';
 
 import { customInstance } from '../../lib/orvalClient';
@@ -35,36 +39,19 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 /**
- * @summary Get Business
+ * @summary Get  Business
  */
 export type businessControllerFindResponse200 = {
-  data: ResponseWrapperApiHydratedBusiness
+  data: void
   status: 200
-}
-
-export type businessControllerFindResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type businessControllerFindResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type businessControllerFindResponse403 = {
-  data: BasicResponse
-  status: 403
 }
 
 export type businessControllerFindResponseSuccess = (businessControllerFindResponse200) & {
   headers: Headers;
 };
-export type businessControllerFindResponseError = (businessControllerFindResponse400 | businessControllerFindResponse401 | businessControllerFindResponse403) & {
-  headers: Headers;
-};
+;
 
-export type businessControllerFindResponse = (businessControllerFindResponseSuccess | businessControllerFindResponseError)
+export type businessControllerFindResponse = (businessControllerFindResponseSuccess)
 
 export const getBusinessControllerFindUrl = (params?: BusinessControllerFindParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -103,7 +90,7 @@ export const getBusinessControllerFindQueryKey = (params?: BusinessControllerFin
     }
 
 
-export const getBusinessControllerFindQueryOptions = <TData = Awaited<ReturnType<typeof businessControllerFind>>, TError = ErrorType<BasicResponse>>(params?: BusinessControllerFindParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessControllerFind>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getBusinessControllerFindQueryOptions = <TData = Awaited<ReturnType<typeof businessControllerFind>>, TError = ErrorType<unknown>>(params?: BusinessControllerFindParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessControllerFind>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -122,10 +109,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type BusinessControllerFindQueryResult = NonNullable<Awaited<ReturnType<typeof businessControllerFind>>>
-export type BusinessControllerFindQueryError = ErrorType<BasicResponse>
+export type BusinessControllerFindQueryError = ErrorType<unknown>
 
 
-export function useBusinessControllerFind<TData = Awaited<ReturnType<typeof businessControllerFind>>, TError = ErrorType<BasicResponse>>(
+export function useBusinessControllerFind<TData = Awaited<ReturnType<typeof businessControllerFind>>, TError = ErrorType<unknown>>(
  params: undefined |  BusinessControllerFindParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessControllerFind>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof businessControllerFind>>,
@@ -135,7 +122,7 @@ export function useBusinessControllerFind<TData = Awaited<ReturnType<typeof busi
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useBusinessControllerFind<TData = Awaited<ReturnType<typeof businessControllerFind>>, TError = ErrorType<BasicResponse>>(
+export function useBusinessControllerFind<TData = Awaited<ReturnType<typeof businessControllerFind>>, TError = ErrorType<unknown>>(
  params?: BusinessControllerFindParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessControllerFind>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof businessControllerFind>>,
@@ -145,15 +132,15 @@ export function useBusinessControllerFind<TData = Awaited<ReturnType<typeof busi
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useBusinessControllerFind<TData = Awaited<ReturnType<typeof businessControllerFind>>, TError = ErrorType<BasicResponse>>(
+export function useBusinessControllerFind<TData = Awaited<ReturnType<typeof businessControllerFind>>, TError = ErrorType<unknown>>(
  params?: BusinessControllerFindParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessControllerFind>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Get Business
+ * @summary Get  Business
  */
 
-export function useBusinessControllerFind<TData = Awaited<ReturnType<typeof businessControllerFind>>, TError = ErrorType<BasicResponse>>(
+export function useBusinessControllerFind<TData = Awaited<ReturnType<typeof businessControllerFind>>, TError = ErrorType<unknown>>(
  params?: BusinessControllerFindParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessControllerFind>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -169,36 +156,19 @@ export function useBusinessControllerFind<TData = Awaited<ReturnType<typeof busi
 
 
 /**
- * @summary Get Business Info
+ * @summary Get  Business
  */
 export type businessControllerGetInfoResponse200 = {
-  data: BasicResponse
+  data: void
   status: 200
-}
-
-export type businessControllerGetInfoResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type businessControllerGetInfoResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type businessControllerGetInfoResponse403 = {
-  data: BasicResponse
-  status: 403
 }
 
 export type businessControllerGetInfoResponseSuccess = (businessControllerGetInfoResponse200) & {
   headers: Headers;
 };
-export type businessControllerGetInfoResponseError = (businessControllerGetInfoResponse400 | businessControllerGetInfoResponse401 | businessControllerGetInfoResponse403) & {
-  headers: Headers;
-};
+;
 
-export type businessControllerGetInfoResponse = (businessControllerGetInfoResponseSuccess | businessControllerGetInfoResponseError)
+export type businessControllerGetInfoResponse = (businessControllerGetInfoResponseSuccess)
 
 export const getBusinessControllerGetInfoUrl = () => {
 
@@ -230,7 +200,7 @@ export const getBusinessControllerGetInfoQueryKey = () => {
     }
 
 
-export const getBusinessControllerGetInfoQueryOptions = <TData = Awaited<ReturnType<typeof businessControllerGetInfo>>, TError = ErrorType<BasicResponse>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessControllerGetInfo>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getBusinessControllerGetInfoQueryOptions = <TData = Awaited<ReturnType<typeof businessControllerGetInfo>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessControllerGetInfo>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -249,10 +219,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type BusinessControllerGetInfoQueryResult = NonNullable<Awaited<ReturnType<typeof businessControllerGetInfo>>>
-export type BusinessControllerGetInfoQueryError = ErrorType<BasicResponse>
+export type BusinessControllerGetInfoQueryError = ErrorType<unknown>
 
 
-export function useBusinessControllerGetInfo<TData = Awaited<ReturnType<typeof businessControllerGetInfo>>, TError = ErrorType<BasicResponse>>(
+export function useBusinessControllerGetInfo<TData = Awaited<ReturnType<typeof businessControllerGetInfo>>, TError = ErrorType<unknown>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessControllerGetInfo>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof businessControllerGetInfo>>,
@@ -262,7 +232,7 @@ export function useBusinessControllerGetInfo<TData = Awaited<ReturnType<typeof b
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useBusinessControllerGetInfo<TData = Awaited<ReturnType<typeof businessControllerGetInfo>>, TError = ErrorType<BasicResponse>>(
+export function useBusinessControllerGetInfo<TData = Awaited<ReturnType<typeof businessControllerGetInfo>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessControllerGetInfo>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof businessControllerGetInfo>>,
@@ -272,20 +242,300 @@ export function useBusinessControllerGetInfo<TData = Awaited<ReturnType<typeof b
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useBusinessControllerGetInfo<TData = Awaited<ReturnType<typeof businessControllerGetInfo>>, TError = ErrorType<BasicResponse>>(
+export function useBusinessControllerGetInfo<TData = Awaited<ReturnType<typeof businessControllerGetInfo>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessControllerGetInfo>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Get Business Info
+ * @summary Get  Business
  */
 
-export function useBusinessControllerGetInfo<TData = Awaited<ReturnType<typeof businessControllerGetInfo>>, TError = ErrorType<BasicResponse>>(
+export function useBusinessControllerGetInfo<TData = Awaited<ReturnType<typeof businessControllerGetInfo>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessControllerGetInfo>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getBusinessControllerGetInfoQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+/**
+ * @summary Invite User
+ */
+export type businessControllerCreateResponse201 = {
+  data: void
+  status: 201
+}
+
+export type businessControllerCreateResponseSuccess = (businessControllerCreateResponse201) & {
+  headers: Headers;
+};
+;
+
+export type businessControllerCreateResponse = (businessControllerCreateResponseSuccess)
+
+export const getBusinessControllerCreateUrl = () => {
+
+
+
+
+  return `/business/invite`
+}
+
+export const businessControllerCreate = async (inviteUserDto: InviteUserDto, options?: RequestInit): Promise<businessControllerCreateResponse> => {
+
+  return customInstance<businessControllerCreateResponse>(getBusinessControllerCreateUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      inviteUserDto,)
+  }
+);}
+
+
+
+
+export const getBusinessControllerCreateMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessControllerCreate>>, TError,{data: InviteUserDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof businessControllerCreate>>, TError,{data: InviteUserDto}, TContext> => {
+
+const mutationKey = ['businessControllerCreate'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof businessControllerCreate>>, {data: InviteUserDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  businessControllerCreate(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type BusinessControllerCreateMutationResult = NonNullable<Awaited<ReturnType<typeof businessControllerCreate>>>
+    export type BusinessControllerCreateMutationBody = InviteUserDto
+    export type BusinessControllerCreateMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Invite User
+ */
+export const useBusinessControllerCreate = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessControllerCreate>>, TError,{data: InviteUserDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof businessControllerCreate>>,
+        TError,
+        {data: InviteUserDto},
+        TContext
+      > => {
+      return useMutation(getBusinessControllerCreateMutationOptions(options), queryClient);
+    }
+    /**
+ * @summary Revoke User Invite
+ */
+export type businessControllerRevokeInviteResponse200 = {
+  data: void
+  status: 200
+}
+
+export type businessControllerRevokeInviteResponseSuccess = (businessControllerRevokeInviteResponse200) & {
+  headers: Headers;
+};
+;
+
+export type businessControllerRevokeInviteResponse = (businessControllerRevokeInviteResponseSuccess)
+
+export const getBusinessControllerRevokeInviteUrl = (id: string,) => {
+
+
+
+
+  return `/business/invite/${id}`
+}
+
+export const businessControllerRevokeInvite = async (id: string, options?: RequestInit): Promise<businessControllerRevokeInviteResponse> => {
+
+  return customInstance<businessControllerRevokeInviteResponse>(getBusinessControllerRevokeInviteUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+export const getBusinessControllerRevokeInviteMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessControllerRevokeInvite>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof businessControllerRevokeInvite>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['businessControllerRevokeInvite'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof businessControllerRevokeInvite>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  businessControllerRevokeInvite(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type BusinessControllerRevokeInviteMutationResult = NonNullable<Awaited<ReturnType<typeof businessControllerRevokeInvite>>>
+
+    export type BusinessControllerRevokeInviteMutationError = ErrorType<unknown>
+
+    /**
+ * @summary Revoke User Invite
+ */
+export const useBusinessControllerRevokeInvite = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof businessControllerRevokeInvite>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof businessControllerRevokeInvite>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getBusinessControllerRevokeInviteMutationOptions(options), queryClient);
+    }
+    /**
+ * @summary Get Business Members
+ */
+export type businessControllerGetBusinessResponse200 = {
+  data: void
+  status: 200
+}
+
+export type businessControllerGetBusinessResponseSuccess = (businessControllerGetBusinessResponse200) & {
+  headers: Headers;
+};
+;
+
+export type businessControllerGetBusinessResponse = (businessControllerGetBusinessResponseSuccess)
+
+export const getBusinessControllerGetBusinessUrl = (params?: BusinessControllerGetBusinessParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/business/members?${stringifiedParams}` : `/business/members`
+}
+
+export const businessControllerGetBusiness = async (params?: BusinessControllerGetBusinessParams, options?: RequestInit): Promise<businessControllerGetBusinessResponse> => {
+
+  return customInstance<businessControllerGetBusinessResponse>(getBusinessControllerGetBusinessUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getBusinessControllerGetBusinessQueryKey = (params?: BusinessControllerGetBusinessParams,) => {
+    return [
+    `/business/members`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getBusinessControllerGetBusinessQueryOptions = <TData = Awaited<ReturnType<typeof businessControllerGetBusiness>>, TError = ErrorType<unknown>>(params?: BusinessControllerGetBusinessParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessControllerGetBusiness>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getBusinessControllerGetBusinessQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof businessControllerGetBusiness>>> = ({ signal }) => businessControllerGetBusiness(params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof businessControllerGetBusiness>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type BusinessControllerGetBusinessQueryResult = NonNullable<Awaited<ReturnType<typeof businessControllerGetBusiness>>>
+export type BusinessControllerGetBusinessQueryError = ErrorType<unknown>
+
+
+export function useBusinessControllerGetBusiness<TData = Awaited<ReturnType<typeof businessControllerGetBusiness>>, TError = ErrorType<unknown>>(
+ params: undefined |  BusinessControllerGetBusinessParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessControllerGetBusiness>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof businessControllerGetBusiness>>,
+          TError,
+          Awaited<ReturnType<typeof businessControllerGetBusiness>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useBusinessControllerGetBusiness<TData = Awaited<ReturnType<typeof businessControllerGetBusiness>>, TError = ErrorType<unknown>>(
+ params?: BusinessControllerGetBusinessParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessControllerGetBusiness>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof businessControllerGetBusiness>>,
+          TError,
+          Awaited<ReturnType<typeof businessControllerGetBusiness>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useBusinessControllerGetBusiness<TData = Awaited<ReturnType<typeof businessControllerGetBusiness>>, TError = ErrorType<unknown>>(
+ params?: BusinessControllerGetBusinessParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessControllerGetBusiness>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Business Members
+ */
+
+export function useBusinessControllerGetBusiness<TData = Awaited<ReturnType<typeof businessControllerGetBusiness>>, TError = ErrorType<unknown>>(
+ params?: BusinessControllerGetBusinessParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof businessControllerGetBusiness>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getBusinessControllerGetBusinessQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

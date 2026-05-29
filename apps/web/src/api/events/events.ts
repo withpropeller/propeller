@@ -25,11 +25,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  BasicResponse,
-  EventsControllerGetOneParams,
-  EventsControllerGetParams,
-  ResponseWrapperApiHydratedEvent,
-  ResponseWrapperApiHydratedEventList
+  EventsControllerGetAllParams
 } from '../model';
 
 import { customInstance } from '../../lib/orvalClient';
@@ -43,36 +39,19 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Get Events
  */
-export type eventsControllerGetResponse200 = {
-  data: ResponseWrapperApiHydratedEventList
+export type eventsControllerGetAllResponse200 = {
+  data: void
   status: 200
 }
 
-export type eventsControllerGetResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type eventsControllerGetResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type eventsControllerGetResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type eventsControllerGetResponseSuccess = (eventsControllerGetResponse200) & {
+export type eventsControllerGetAllResponseSuccess = (eventsControllerGetAllResponse200) & {
   headers: Headers;
 };
-export type eventsControllerGetResponseError = (eventsControllerGetResponse400 | eventsControllerGetResponse401 | eventsControllerGetResponse403) & {
-  headers: Headers;
-};
+;
 
-export type eventsControllerGetResponse = (eventsControllerGetResponseSuccess | eventsControllerGetResponseError)
+export type eventsControllerGetAllResponse = (eventsControllerGetAllResponseSuccess)
 
-export const getEventsControllerGetUrl = (params?: EventsControllerGetParams,) => {
+export const getEventsControllerGetAllUrl = (params?: EventsControllerGetAllParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -87,9 +66,9 @@ export const getEventsControllerGetUrl = (params?: EventsControllerGetParams,) =
   return stringifiedParams.length > 0 ? `/events?${stringifiedParams}` : `/events`
 }
 
-export const eventsControllerGet = async (params?: EventsControllerGetParams, options?: RequestInit): Promise<eventsControllerGetResponse> => {
+export const eventsControllerGetAll = async (params?: EventsControllerGetAllParams, options?: RequestInit): Promise<eventsControllerGetAllResponse> => {
 
-  return customInstance<eventsControllerGetResponse>(getEventsControllerGetUrl(params),
+  return customInstance<eventsControllerGetAllResponse>(getEventsControllerGetAllUrl(params),
   {
     ...options,
     method: 'GET'
@@ -102,69 +81,69 @@ export const eventsControllerGet = async (params?: EventsControllerGetParams, op
 
 
 
-export const getEventsControllerGetQueryKey = (params?: EventsControllerGetParams,) => {
+export const getEventsControllerGetAllQueryKey = (params?: EventsControllerGetAllParams,) => {
     return [
     `/events`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getEventsControllerGetQueryOptions = <TData = Awaited<ReturnType<typeof eventsControllerGet>>, TError = ErrorType<BasicResponse>>(params?: EventsControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof eventsControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getEventsControllerGetAllQueryOptions = <TData = Awaited<ReturnType<typeof eventsControllerGetAll>>, TError = ErrorType<unknown>>(params?: EventsControllerGetAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof eventsControllerGetAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getEventsControllerGetQueryKey(params);
+  const queryKey =  queryOptions?.queryKey ?? getEventsControllerGetAllQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof eventsControllerGet>>> = ({ signal }) => eventsControllerGet(params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof eventsControllerGetAll>>> = ({ signal }) => eventsControllerGetAll(params, { signal, ...requestOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof eventsControllerGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof eventsControllerGetAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type EventsControllerGetQueryResult = NonNullable<Awaited<ReturnType<typeof eventsControllerGet>>>
-export type EventsControllerGetQueryError = ErrorType<BasicResponse>
+export type EventsControllerGetAllQueryResult = NonNullable<Awaited<ReturnType<typeof eventsControllerGetAll>>>
+export type EventsControllerGetAllQueryError = ErrorType<unknown>
 
 
-export function useEventsControllerGet<TData = Awaited<ReturnType<typeof eventsControllerGet>>, TError = ErrorType<BasicResponse>>(
- params: undefined |  EventsControllerGetParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof eventsControllerGet>>, TError, TData>> & Pick<
+export function useEventsControllerGetAll<TData = Awaited<ReturnType<typeof eventsControllerGetAll>>, TError = ErrorType<unknown>>(
+ params: undefined |  EventsControllerGetAllParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof eventsControllerGetAll>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof eventsControllerGet>>,
+          Awaited<ReturnType<typeof eventsControllerGetAll>>,
           TError,
-          Awaited<ReturnType<typeof eventsControllerGet>>
+          Awaited<ReturnType<typeof eventsControllerGetAll>>
         > , 'initialData'
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useEventsControllerGet<TData = Awaited<ReturnType<typeof eventsControllerGet>>, TError = ErrorType<BasicResponse>>(
- params?: EventsControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof eventsControllerGet>>, TError, TData>> & Pick<
+export function useEventsControllerGetAll<TData = Awaited<ReturnType<typeof eventsControllerGetAll>>, TError = ErrorType<unknown>>(
+ params?: EventsControllerGetAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof eventsControllerGetAll>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof eventsControllerGet>>,
+          Awaited<ReturnType<typeof eventsControllerGetAll>>,
           TError,
-          Awaited<ReturnType<typeof eventsControllerGet>>
+          Awaited<ReturnType<typeof eventsControllerGetAll>>
         > , 'initialData'
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useEventsControllerGet<TData = Awaited<ReturnType<typeof eventsControllerGet>>, TError = ErrorType<BasicResponse>>(
- params?: EventsControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof eventsControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useEventsControllerGetAll<TData = Awaited<ReturnType<typeof eventsControllerGetAll>>, TError = ErrorType<unknown>>(
+ params?: EventsControllerGetAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof eventsControllerGetAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get Events
  */
 
-export function useEventsControllerGet<TData = Awaited<ReturnType<typeof eventsControllerGet>>, TError = ErrorType<BasicResponse>>(
- params?: EventsControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof eventsControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useEventsControllerGetAll<TData = Awaited<ReturnType<typeof eventsControllerGetAll>>, TError = ErrorType<unknown>>(
+ params?: EventsControllerGetAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof eventsControllerGetAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getEventsControllerGetQueryOptions(params,options)
+  const queryOptions = getEventsControllerGetAllQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -178,59 +157,28 @@ export function useEventsControllerGet<TData = Awaited<ReturnType<typeof eventsC
  * @summary Get One Event
  */
 export type eventsControllerGetOneResponse200 = {
-  data: ResponseWrapperApiHydratedEvent
+  data: void
   status: 200
-}
-
-export type eventsControllerGetOneResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type eventsControllerGetOneResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type eventsControllerGetOneResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type eventsControllerGetOneResponse404 = {
-  data: BasicResponse
-  status: 404
 }
 
 export type eventsControllerGetOneResponseSuccess = (eventsControllerGetOneResponse200) & {
   headers: Headers;
 };
-export type eventsControllerGetOneResponseError = (eventsControllerGetOneResponse400 | eventsControllerGetOneResponse401 | eventsControllerGetOneResponse403 | eventsControllerGetOneResponse404) & {
-  headers: Headers;
-};
+;
 
-export type eventsControllerGetOneResponse = (eventsControllerGetOneResponseSuccess | eventsControllerGetOneResponseError)
+export type eventsControllerGetOneResponse = (eventsControllerGetOneResponseSuccess)
 
-export const getEventsControllerGetOneUrl = (id: string,
-    params?: EventsControllerGetOneParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getEventsControllerGetOneUrl = (id: string,) => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/events/${id}?${stringifiedParams}` : `/events/${id}`
+  return `/events/${id}`
 }
 
-export const eventsControllerGetOne = async (id: string,
-    params?: EventsControllerGetOneParams, options?: RequestInit): Promise<eventsControllerGetOneResponse> => {
+export const eventsControllerGetOne = async (id: string, options?: RequestInit): Promise<eventsControllerGetOneResponse> => {
 
-  return customInstance<eventsControllerGetOneResponse>(getEventsControllerGetOneUrl(id,params),
+  return customInstance<eventsControllerGetOneResponse>(getEventsControllerGetOneUrl(id),
   {
     ...options,
     method: 'GET'
@@ -243,25 +191,23 @@ export const eventsControllerGetOne = async (id: string,
 
 
 
-export const getEventsControllerGetOneQueryKey = (id: string,
-    params?: EventsControllerGetOneParams,) => {
+export const getEventsControllerGetOneQueryKey = (id: string,) => {
     return [
-    `/events/${id}`, ...(params ? [params] : [])
+    `/events/${id}`
     ] as const;
     }
 
 
-export const getEventsControllerGetOneQueryOptions = <TData = Awaited<ReturnType<typeof eventsControllerGetOne>>, TError = ErrorType<BasicResponse>>(id: string,
-    params?: EventsControllerGetOneParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof eventsControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getEventsControllerGetOneQueryOptions = <TData = Awaited<ReturnType<typeof eventsControllerGetOne>>, TError = ErrorType<unknown>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof eventsControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getEventsControllerGetOneQueryKey(id,params);
+  const queryKey =  queryOptions?.queryKey ?? getEventsControllerGetOneQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof eventsControllerGetOne>>> = ({ signal }) => eventsControllerGetOne(id,params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof eventsControllerGetOne>>> = ({ signal }) => eventsControllerGetOne(id, { signal, ...requestOptions });
 
 
 
@@ -271,12 +217,11 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type EventsControllerGetOneQueryResult = NonNullable<Awaited<ReturnType<typeof eventsControllerGetOne>>>
-export type EventsControllerGetOneQueryError = ErrorType<BasicResponse>
+export type EventsControllerGetOneQueryError = ErrorType<unknown>
 
 
-export function useEventsControllerGetOne<TData = Awaited<ReturnType<typeof eventsControllerGetOne>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params: undefined |  EventsControllerGetOneParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof eventsControllerGetOne>>, TError, TData>> & Pick<
+export function useEventsControllerGetOne<TData = Awaited<ReturnType<typeof eventsControllerGetOne>>, TError = ErrorType<unknown>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof eventsControllerGetOne>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof eventsControllerGetOne>>,
           TError,
@@ -285,9 +230,8 @@ export function useEventsControllerGetOne<TData = Awaited<ReturnType<typeof even
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useEventsControllerGetOne<TData = Awaited<ReturnType<typeof eventsControllerGetOne>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params?: EventsControllerGetOneParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof eventsControllerGetOne>>, TError, TData>> & Pick<
+export function useEventsControllerGetOne<TData = Awaited<ReturnType<typeof eventsControllerGetOne>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof eventsControllerGetOne>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof eventsControllerGetOne>>,
           TError,
@@ -296,22 +240,20 @@ export function useEventsControllerGetOne<TData = Awaited<ReturnType<typeof even
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useEventsControllerGetOne<TData = Awaited<ReturnType<typeof eventsControllerGetOne>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params?: EventsControllerGetOneParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof eventsControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useEventsControllerGetOne<TData = Awaited<ReturnType<typeof eventsControllerGetOne>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof eventsControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get One Event
  */
 
-export function useEventsControllerGetOne<TData = Awaited<ReturnType<typeof eventsControllerGetOne>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params?: EventsControllerGetOneParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof eventsControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useEventsControllerGetOne<TData = Awaited<ReturnType<typeof eventsControllerGetOne>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof eventsControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getEventsControllerGetOneQueryOptions(id,params,options)
+  const queryOptions = getEventsControllerGetOneQueryOptions(id,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -324,39 +266,17 @@ export function useEventsControllerGetOne<TData = Awaited<ReturnType<typeof even
 /**
  * @summary Retry Event
  */
-export type eventsControllerRetryEventResponse200 = {
-  data: BasicResponse
-  status: 200
+export type eventsControllerRetryEventResponse201 = {
+  data: void
+  status: 201
 }
 
-export type eventsControllerRetryEventResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type eventsControllerRetryEventResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type eventsControllerRetryEventResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type eventsControllerRetryEventResponse404 = {
-  data: BasicResponse
-  status: 404
-}
-
-export type eventsControllerRetryEventResponseSuccess = (eventsControllerRetryEventResponse200) & {
+export type eventsControllerRetryEventResponseSuccess = (eventsControllerRetryEventResponse201) & {
   headers: Headers;
 };
-export type eventsControllerRetryEventResponseError = (eventsControllerRetryEventResponse400 | eventsControllerRetryEventResponse401 | eventsControllerRetryEventResponse403 | eventsControllerRetryEventResponse404) & {
-  headers: Headers;
-};
+;
 
-export type eventsControllerRetryEventResponse = (eventsControllerRetryEventResponseSuccess | eventsControllerRetryEventResponseError)
+export type eventsControllerRetryEventResponse = (eventsControllerRetryEventResponseSuccess)
 
 export const getEventsControllerRetryEventUrl = (id: string,) => {
 
@@ -380,7 +300,7 @@ export const eventsControllerRetryEvent = async (id: string, options?: RequestIn
 
 
 
-export const getEventsControllerRetryEventMutationOptions = <TError = ErrorType<BasicResponse>,
+export const getEventsControllerRetryEventMutationOptions = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof eventsControllerRetryEvent>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof eventsControllerRetryEvent>>, TError,{id: string}, TContext> => {
 
@@ -409,12 +329,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type EventsControllerRetryEventMutationResult = NonNullable<Awaited<ReturnType<typeof eventsControllerRetryEvent>>>
 
-    export type EventsControllerRetryEventMutationError = ErrorType<BasicResponse>
+    export type EventsControllerRetryEventMutationError = ErrorType<unknown>
 
     /**
  * @summary Retry Event
  */
-export const useEventsControllerRetryEvent = <TError = ErrorType<BasicResponse>,
+export const useEventsControllerRetryEvent = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof eventsControllerRetryEvent>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof eventsControllerRetryEvent>>,

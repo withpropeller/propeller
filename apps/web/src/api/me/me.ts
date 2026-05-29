@@ -26,11 +26,9 @@ import type {
 
 import type {
   Activated2FADto,
-  BasicResponse,
   PatchProfileDto,
   ProfileControllerGetParams,
   RegisterServiceIntegrationDto,
-  ResponseWrapperApiHydratedUser,
   SendMFADto,
   SetDefaultMFADto,
   Setup2FADto
@@ -48,33 +46,16 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Get profile details
  */
 export type profileControllerGetResponse200 = {
-  data: ResponseWrapperApiHydratedUser
+  data: void
   status: 200
-}
-
-export type profileControllerGetResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type profileControllerGetResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type profileControllerGetResponse403 = {
-  data: BasicResponse
-  status: 403
 }
 
 export type profileControllerGetResponseSuccess = (profileControllerGetResponse200) & {
   headers: Headers;
 };
-export type profileControllerGetResponseError = (profileControllerGetResponse400 | profileControllerGetResponse401 | profileControllerGetResponse403) & {
-  headers: Headers;
-};
+;
 
-export type profileControllerGetResponse = (profileControllerGetResponseSuccess | profileControllerGetResponseError)
+export type profileControllerGetResponse = (profileControllerGetResponseSuccess)
 
 export const getProfileControllerGetUrl = (params?: ProfileControllerGetParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -113,7 +94,7 @@ export const getProfileControllerGetQueryKey = (params?: ProfileControllerGetPar
     }
 
 
-export const getProfileControllerGetQueryOptions = <TData = Awaited<ReturnType<typeof profileControllerGet>>, TError = ErrorType<BasicResponse>>(params?: ProfileControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profileControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getProfileControllerGetQueryOptions = <TData = Awaited<ReturnType<typeof profileControllerGet>>, TError = ErrorType<unknown>>(params?: ProfileControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profileControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -132,10 +113,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ProfileControllerGetQueryResult = NonNullable<Awaited<ReturnType<typeof profileControllerGet>>>
-export type ProfileControllerGetQueryError = ErrorType<BasicResponse>
+export type ProfileControllerGetQueryError = ErrorType<unknown>
 
 
-export function useProfileControllerGet<TData = Awaited<ReturnType<typeof profileControllerGet>>, TError = ErrorType<BasicResponse>>(
+export function useProfileControllerGet<TData = Awaited<ReturnType<typeof profileControllerGet>>, TError = ErrorType<unknown>>(
  params: undefined |  ProfileControllerGetParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof profileControllerGet>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof profileControllerGet>>,
@@ -145,7 +126,7 @@ export function useProfileControllerGet<TData = Awaited<ReturnType<typeof profil
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useProfileControllerGet<TData = Awaited<ReturnType<typeof profileControllerGet>>, TError = ErrorType<BasicResponse>>(
+export function useProfileControllerGet<TData = Awaited<ReturnType<typeof profileControllerGet>>, TError = ErrorType<unknown>>(
  params?: ProfileControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profileControllerGet>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof profileControllerGet>>,
@@ -155,7 +136,7 @@ export function useProfileControllerGet<TData = Awaited<ReturnType<typeof profil
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useProfileControllerGet<TData = Awaited<ReturnType<typeof profileControllerGet>>, TError = ErrorType<BasicResponse>>(
+export function useProfileControllerGet<TData = Awaited<ReturnType<typeof profileControllerGet>>, TError = ErrorType<unknown>>(
  params?: ProfileControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profileControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
@@ -163,7 +144,7 @@ export function useProfileControllerGet<TData = Awaited<ReturnType<typeof profil
  * @summary Get profile details
  */
 
-export function useProfileControllerGet<TData = Awaited<ReturnType<typeof profileControllerGet>>, TError = ErrorType<BasicResponse>>(
+export function useProfileControllerGet<TData = Awaited<ReturnType<typeof profileControllerGet>>, TError = ErrorType<unknown>>(
  params?: ProfileControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profileControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -182,33 +163,16 @@ export function useProfileControllerGet<TData = Awaited<ReturnType<typeof profil
  * @summary Profile Update Route
  */
 export type profileControllerUpdateProfileResponse200 = {
-  data: BasicResponse
+  data: void
   status: 200
-}
-
-export type profileControllerUpdateProfileResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type profileControllerUpdateProfileResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type profileControllerUpdateProfileResponse403 = {
-  data: BasicResponse
-  status: 403
 }
 
 export type profileControllerUpdateProfileResponseSuccess = (profileControllerUpdateProfileResponse200) & {
   headers: Headers;
 };
-export type profileControllerUpdateProfileResponseError = (profileControllerUpdateProfileResponse400 | profileControllerUpdateProfileResponse401 | profileControllerUpdateProfileResponse403) & {
-  headers: Headers;
-};
+;
 
-export type profileControllerUpdateProfileResponse = (profileControllerUpdateProfileResponseSuccess | profileControllerUpdateProfileResponseError)
+export type profileControllerUpdateProfileResponse = (profileControllerUpdateProfileResponseSuccess)
 
 export const getProfileControllerUpdateProfileUrl = () => {
 
@@ -233,7 +197,7 @@ export const profileControllerUpdateProfile = async (patchProfileDto: PatchProfi
 
 
 
-export const getProfileControllerUpdateProfileMutationOptions = <TError = ErrorType<BasicResponse>,
+export const getProfileControllerUpdateProfileMutationOptions = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profileControllerUpdateProfile>>, TError,{data: PatchProfileDto}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof profileControllerUpdateProfile>>, TError,{data: PatchProfileDto}, TContext> => {
 
@@ -262,12 +226,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ProfileControllerUpdateProfileMutationResult = NonNullable<Awaited<ReturnType<typeof profileControllerUpdateProfile>>>
     export type ProfileControllerUpdateProfileMutationBody = PatchProfileDto
-    export type ProfileControllerUpdateProfileMutationError = ErrorType<BasicResponse>
+    export type ProfileControllerUpdateProfileMutationError = ErrorType<unknown>
 
     /**
  * @summary Profile Update Route
  */
-export const useProfileControllerUpdateProfile = <TError = ErrorType<BasicResponse>,
+export const useProfileControllerUpdateProfile = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profileControllerUpdateProfile>>, TError,{data: PatchProfileDto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof profileControllerUpdateProfile>>,
@@ -281,33 +245,16 @@ export const useProfileControllerUpdateProfile = <TError = ErrorType<BasicRespon
  * @summary Get MFA profile
  */
 export type profileControllerGetMFAResponse200 = {
-  data: BasicResponse
+  data: void
   status: 200
-}
-
-export type profileControllerGetMFAResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type profileControllerGetMFAResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type profileControllerGetMFAResponse403 = {
-  data: BasicResponse
-  status: 403
 }
 
 export type profileControllerGetMFAResponseSuccess = (profileControllerGetMFAResponse200) & {
   headers: Headers;
 };
-export type profileControllerGetMFAResponseError = (profileControllerGetMFAResponse400 | profileControllerGetMFAResponse401 | profileControllerGetMFAResponse403) & {
-  headers: Headers;
-};
+;
 
-export type profileControllerGetMFAResponse = (profileControllerGetMFAResponseSuccess | profileControllerGetMFAResponseError)
+export type profileControllerGetMFAResponse = (profileControllerGetMFAResponseSuccess)
 
 export const getProfileControllerGetMFAUrl = () => {
 
@@ -339,7 +286,7 @@ export const getProfileControllerGetMFAQueryKey = () => {
     }
 
 
-export const getProfileControllerGetMFAQueryOptions = <TData = Awaited<ReturnType<typeof profileControllerGetMFA>>, TError = ErrorType<BasicResponse>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profileControllerGetMFA>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getProfileControllerGetMFAQueryOptions = <TData = Awaited<ReturnType<typeof profileControllerGetMFA>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profileControllerGetMFA>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -358,10 +305,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ProfileControllerGetMFAQueryResult = NonNullable<Awaited<ReturnType<typeof profileControllerGetMFA>>>
-export type ProfileControllerGetMFAQueryError = ErrorType<BasicResponse>
+export type ProfileControllerGetMFAQueryError = ErrorType<unknown>
 
 
-export function useProfileControllerGetMFA<TData = Awaited<ReturnType<typeof profileControllerGetMFA>>, TError = ErrorType<BasicResponse>>(
+export function useProfileControllerGetMFA<TData = Awaited<ReturnType<typeof profileControllerGetMFA>>, TError = ErrorType<unknown>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof profileControllerGetMFA>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof profileControllerGetMFA>>,
@@ -371,7 +318,7 @@ export function useProfileControllerGetMFA<TData = Awaited<ReturnType<typeof pro
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useProfileControllerGetMFA<TData = Awaited<ReturnType<typeof profileControllerGetMFA>>, TError = ErrorType<BasicResponse>>(
+export function useProfileControllerGetMFA<TData = Awaited<ReturnType<typeof profileControllerGetMFA>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profileControllerGetMFA>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof profileControllerGetMFA>>,
@@ -381,7 +328,7 @@ export function useProfileControllerGetMFA<TData = Awaited<ReturnType<typeof pro
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useProfileControllerGetMFA<TData = Awaited<ReturnType<typeof profileControllerGetMFA>>, TError = ErrorType<BasicResponse>>(
+export function useProfileControllerGetMFA<TData = Awaited<ReturnType<typeof profileControllerGetMFA>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profileControllerGetMFA>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
@@ -389,7 +336,7 @@ export function useProfileControllerGetMFA<TData = Awaited<ReturnType<typeof pro
  * @summary Get MFA profile
  */
 
-export function useProfileControllerGetMFA<TData = Awaited<ReturnType<typeof profileControllerGetMFA>>, TError = ErrorType<BasicResponse>>(
+export function useProfileControllerGetMFA<TData = Awaited<ReturnType<typeof profileControllerGetMFA>>, TError = ErrorType<unknown>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profileControllerGetMFA>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -408,33 +355,16 @@ export function useProfileControllerGetMFA<TData = Awaited<ReturnType<typeof pro
  * @summary Set up 2FA
  */
 export type profileControllerSetup2FAResponse201 = {
-  data: BasicResponse
+  data: void
   status: 201
-}
-
-export type profileControllerSetup2FAResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type profileControllerSetup2FAResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type profileControllerSetup2FAResponse403 = {
-  data: BasicResponse
-  status: 403
 }
 
 export type profileControllerSetup2FAResponseSuccess = (profileControllerSetup2FAResponse201) & {
   headers: Headers;
 };
-export type profileControllerSetup2FAResponseError = (profileControllerSetup2FAResponse400 | profileControllerSetup2FAResponse401 | profileControllerSetup2FAResponse403) & {
-  headers: Headers;
-};
+;
 
-export type profileControllerSetup2FAResponse = (profileControllerSetup2FAResponseSuccess | profileControllerSetup2FAResponseError)
+export type profileControllerSetup2FAResponse = (profileControllerSetup2FAResponseSuccess)
 
 export const getProfileControllerSetup2FAUrl = () => {
 
@@ -459,7 +389,7 @@ export const profileControllerSetup2FA = async (setup2FADto: Setup2FADto, option
 
 
 
-export const getProfileControllerSetup2FAMutationOptions = <TError = ErrorType<BasicResponse>,
+export const getProfileControllerSetup2FAMutationOptions = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profileControllerSetup2FA>>, TError,{data: Setup2FADto}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof profileControllerSetup2FA>>, TError,{data: Setup2FADto}, TContext> => {
 
@@ -488,12 +418,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ProfileControllerSetup2FAMutationResult = NonNullable<Awaited<ReturnType<typeof profileControllerSetup2FA>>>
     export type ProfileControllerSetup2FAMutationBody = Setup2FADto
-    export type ProfileControllerSetup2FAMutationError = ErrorType<BasicResponse>
+    export type ProfileControllerSetup2FAMutationError = ErrorType<unknown>
 
     /**
  * @summary Set up 2FA
  */
-export const useProfileControllerSetup2FA = <TError = ErrorType<BasicResponse>,
+export const useProfileControllerSetup2FA = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profileControllerSetup2FA>>, TError,{data: Setup2FADto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof profileControllerSetup2FA>>,
@@ -506,34 +436,17 @@ export const useProfileControllerSetup2FA = <TError = ErrorType<BasicResponse>,
     /**
  * @summary Deactivate 2FA
  */
-export type profileControllerDeactivate2FAResponse200 = {
-  data: BasicResponse
-  status: 200
+export type profileControllerDeactivate2FAResponse201 = {
+  data: void
+  status: 201
 }
 
-export type profileControllerDeactivate2FAResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type profileControllerDeactivate2FAResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type profileControllerDeactivate2FAResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type profileControllerDeactivate2FAResponseSuccess = (profileControllerDeactivate2FAResponse200) & {
+export type profileControllerDeactivate2FAResponseSuccess = (profileControllerDeactivate2FAResponse201) & {
   headers: Headers;
 };
-export type profileControllerDeactivate2FAResponseError = (profileControllerDeactivate2FAResponse400 | profileControllerDeactivate2FAResponse401 | profileControllerDeactivate2FAResponse403) & {
-  headers: Headers;
-};
+;
 
-export type profileControllerDeactivate2FAResponse = (profileControllerDeactivate2FAResponseSuccess | profileControllerDeactivate2FAResponseError)
+export type profileControllerDeactivate2FAResponse = (profileControllerDeactivate2FAResponseSuccess)
 
 export const getProfileControllerDeactivate2FAUrl = () => {
 
@@ -558,7 +471,7 @@ export const profileControllerDeactivate2FA = async (setup2FADto: Setup2FADto, o
 
 
 
-export const getProfileControllerDeactivate2FAMutationOptions = <TError = ErrorType<BasicResponse>,
+export const getProfileControllerDeactivate2FAMutationOptions = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profileControllerDeactivate2FA>>, TError,{data: Setup2FADto}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof profileControllerDeactivate2FA>>, TError,{data: Setup2FADto}, TContext> => {
 
@@ -587,12 +500,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ProfileControllerDeactivate2FAMutationResult = NonNullable<Awaited<ReturnType<typeof profileControllerDeactivate2FA>>>
     export type ProfileControllerDeactivate2FAMutationBody = Setup2FADto
-    export type ProfileControllerDeactivate2FAMutationError = ErrorType<BasicResponse>
+    export type ProfileControllerDeactivate2FAMutationError = ErrorType<unknown>
 
     /**
  * @summary Deactivate 2FA
  */
-export const useProfileControllerDeactivate2FA = <TError = ErrorType<BasicResponse>,
+export const useProfileControllerDeactivate2FA = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profileControllerDeactivate2FA>>, TError,{data: Setup2FADto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof profileControllerDeactivate2FA>>,
@@ -603,36 +516,19 @@ export const useProfileControllerDeactivate2FA = <TError = ErrorType<BasicRespon
       return useMutation(getProfileControllerDeactivate2FAMutationOptions(options), queryClient);
     }
     /**
- * @summary Set default MFA channel
+ * @summary Confirm User Email
  */
-export type profileControllerUpdate2FAResponse200 = {
-  data: BasicResponse
-  status: 200
+export type profileControllerUpdate2FAResponse201 = {
+  data: void
+  status: 201
 }
 
-export type profileControllerUpdate2FAResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type profileControllerUpdate2FAResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type profileControllerUpdate2FAResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type profileControllerUpdate2FAResponseSuccess = (profileControllerUpdate2FAResponse200) & {
+export type profileControllerUpdate2FAResponseSuccess = (profileControllerUpdate2FAResponse201) & {
   headers: Headers;
 };
-export type profileControllerUpdate2FAResponseError = (profileControllerUpdate2FAResponse400 | profileControllerUpdate2FAResponse401 | profileControllerUpdate2FAResponse403) & {
-  headers: Headers;
-};
+;
 
-export type profileControllerUpdate2FAResponse = (profileControllerUpdate2FAResponseSuccess | profileControllerUpdate2FAResponseError)
+export type profileControllerUpdate2FAResponse = (profileControllerUpdate2FAResponseSuccess)
 
 export const getProfileControllerUpdate2FAUrl = () => {
 
@@ -657,7 +553,7 @@ export const profileControllerUpdate2FA = async (setDefaultMFADto: SetDefaultMFA
 
 
 
-export const getProfileControllerUpdate2FAMutationOptions = <TError = ErrorType<BasicResponse>,
+export const getProfileControllerUpdate2FAMutationOptions = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profileControllerUpdate2FA>>, TError,{data: SetDefaultMFADto}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof profileControllerUpdate2FA>>, TError,{data: SetDefaultMFADto}, TContext> => {
 
@@ -686,12 +582,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ProfileControllerUpdate2FAMutationResult = NonNullable<Awaited<ReturnType<typeof profileControllerUpdate2FA>>>
     export type ProfileControllerUpdate2FAMutationBody = SetDefaultMFADto
-    export type ProfileControllerUpdate2FAMutationError = ErrorType<BasicResponse>
+    export type ProfileControllerUpdate2FAMutationError = ErrorType<unknown>
 
     /**
- * @summary Set default MFA channel
+ * @summary Confirm User Email
  */
-export const useProfileControllerUpdate2FA = <TError = ErrorType<BasicResponse>,
+export const useProfileControllerUpdate2FA = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profileControllerUpdate2FA>>, TError,{data: SetDefaultMFADto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof profileControllerUpdate2FA>>,
@@ -702,36 +598,19 @@ export const useProfileControllerUpdate2FA = <TError = ErrorType<BasicResponse>,
       return useMutation(getProfileControllerUpdate2FAMutationOptions(options), queryClient);
     }
     /**
- * @summary Activate 2FA
+ * @summary Confirm User Email
  */
-export type profileControllerActivate2FAResponse200 = {
-  data: BasicResponse
-  status: 200
+export type profileControllerActivate2FAResponse201 = {
+  data: void
+  status: 201
 }
 
-export type profileControllerActivate2FAResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type profileControllerActivate2FAResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type profileControllerActivate2FAResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type profileControllerActivate2FAResponseSuccess = (profileControllerActivate2FAResponse200) & {
+export type profileControllerActivate2FAResponseSuccess = (profileControllerActivate2FAResponse201) & {
   headers: Headers;
 };
-export type profileControllerActivate2FAResponseError = (profileControllerActivate2FAResponse400 | profileControllerActivate2FAResponse401 | profileControllerActivate2FAResponse403) & {
-  headers: Headers;
-};
+;
 
-export type profileControllerActivate2FAResponse = (profileControllerActivate2FAResponseSuccess | profileControllerActivate2FAResponseError)
+export type profileControllerActivate2FAResponse = (profileControllerActivate2FAResponseSuccess)
 
 export const getProfileControllerActivate2FAUrl = () => {
 
@@ -756,7 +635,7 @@ export const profileControllerActivate2FA = async (activated2FADto: Activated2FA
 
 
 
-export const getProfileControllerActivate2FAMutationOptions = <TError = ErrorType<BasicResponse>,
+export const getProfileControllerActivate2FAMutationOptions = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profileControllerActivate2FA>>, TError,{data: Activated2FADto}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof profileControllerActivate2FA>>, TError,{data: Activated2FADto}, TContext> => {
 
@@ -785,12 +664,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ProfileControllerActivate2FAMutationResult = NonNullable<Awaited<ReturnType<typeof profileControllerActivate2FA>>>
     export type ProfileControllerActivate2FAMutationBody = Activated2FADto
-    export type ProfileControllerActivate2FAMutationError = ErrorType<BasicResponse>
+    export type ProfileControllerActivate2FAMutationError = ErrorType<unknown>
 
     /**
- * @summary Activate 2FA
+ * @summary Confirm User Email
  */
-export const useProfileControllerActivate2FA = <TError = ErrorType<BasicResponse>,
+export const useProfileControllerActivate2FA = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profileControllerActivate2FA>>, TError,{data: Activated2FADto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof profileControllerActivate2FA>>,
@@ -801,36 +680,19 @@ export const useProfileControllerActivate2FA = <TError = ErrorType<BasicResponse
       return useMutation(getProfileControllerActivate2FAMutationOptions(options), queryClient);
     }
     /**
- * @summary Send MFA code
+ * @summary Confirm User Email
  */
-export type profileControllerSend2FAResponse200 = {
-  data: BasicResponse
-  status: 200
+export type profileControllerSend2FAResponse201 = {
+  data: void
+  status: 201
 }
 
-export type profileControllerSend2FAResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type profileControllerSend2FAResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type profileControllerSend2FAResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type profileControllerSend2FAResponseSuccess = (profileControllerSend2FAResponse200) & {
+export type profileControllerSend2FAResponseSuccess = (profileControllerSend2FAResponse201) & {
   headers: Headers;
 };
-export type profileControllerSend2FAResponseError = (profileControllerSend2FAResponse400 | profileControllerSend2FAResponse401 | profileControllerSend2FAResponse403) & {
-  headers: Headers;
-};
+;
 
-export type profileControllerSend2FAResponse = (profileControllerSend2FAResponseSuccess | profileControllerSend2FAResponseError)
+export type profileControllerSend2FAResponse = (profileControllerSend2FAResponseSuccess)
 
 export const getProfileControllerSend2FAUrl = () => {
 
@@ -855,7 +717,7 @@ export const profileControllerSend2FA = async (sendMFADto: SendMFADto, options?:
 
 
 
-export const getProfileControllerSend2FAMutationOptions = <TError = ErrorType<BasicResponse>,
+export const getProfileControllerSend2FAMutationOptions = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profileControllerSend2FA>>, TError,{data: SendMFADto}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof profileControllerSend2FA>>, TError,{data: SendMFADto}, TContext> => {
 
@@ -884,12 +746,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ProfileControllerSend2FAMutationResult = NonNullable<Awaited<ReturnType<typeof profileControllerSend2FA>>>
     export type ProfileControllerSend2FAMutationBody = SendMFADto
-    export type ProfileControllerSend2FAMutationError = ErrorType<BasicResponse>
+    export type ProfileControllerSend2FAMutationError = ErrorType<unknown>
 
     /**
- * @summary Send MFA code
+ * @summary Confirm User Email
  */
-export const useProfileControllerSend2FA = <TError = ErrorType<BasicResponse>,
+export const useProfileControllerSend2FA = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profileControllerSend2FA>>, TError,{data: SendMFADto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof profileControllerSend2FA>>,
@@ -903,33 +765,16 @@ export const useProfileControllerSend2FA = <TError = ErrorType<BasicResponse>,
  * @summary Register Service Integration
  */
 export type profileControllerRegisterServiceIntegrationResponse201 = {
-  data: BasicResponse
+  data: void
   status: 201
-}
-
-export type profileControllerRegisterServiceIntegrationResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type profileControllerRegisterServiceIntegrationResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type profileControllerRegisterServiceIntegrationResponse403 = {
-  data: BasicResponse
-  status: 403
 }
 
 export type profileControllerRegisterServiceIntegrationResponseSuccess = (profileControllerRegisterServiceIntegrationResponse201) & {
   headers: Headers;
 };
-export type profileControllerRegisterServiceIntegrationResponseError = (profileControllerRegisterServiceIntegrationResponse400 | profileControllerRegisterServiceIntegrationResponse401 | profileControllerRegisterServiceIntegrationResponse403) & {
-  headers: Headers;
-};
+;
 
-export type profileControllerRegisterServiceIntegrationResponse = (profileControllerRegisterServiceIntegrationResponseSuccess | profileControllerRegisterServiceIntegrationResponseError)
+export type profileControllerRegisterServiceIntegrationResponse = (profileControllerRegisterServiceIntegrationResponseSuccess)
 
 export const getProfileControllerRegisterServiceIntegrationUrl = () => {
 
@@ -954,7 +799,7 @@ export const profileControllerRegisterServiceIntegration = async (registerServic
 
 
 
-export const getProfileControllerRegisterServiceIntegrationMutationOptions = <TError = ErrorType<BasicResponse>,
+export const getProfileControllerRegisterServiceIntegrationMutationOptions = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profileControllerRegisterServiceIntegration>>, TError,{data: RegisterServiceIntegrationDto}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof profileControllerRegisterServiceIntegration>>, TError,{data: RegisterServiceIntegrationDto}, TContext> => {
 
@@ -983,12 +828,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ProfileControllerRegisterServiceIntegrationMutationResult = NonNullable<Awaited<ReturnType<typeof profileControllerRegisterServiceIntegration>>>
     export type ProfileControllerRegisterServiceIntegrationMutationBody = RegisterServiceIntegrationDto
-    export type ProfileControllerRegisterServiceIntegrationMutationError = ErrorType<BasicResponse>
+    export type ProfileControllerRegisterServiceIntegrationMutationError = ErrorType<unknown>
 
     /**
  * @summary Register Service Integration
  */
-export const useProfileControllerRegisterServiceIntegration = <TError = ErrorType<BasicResponse>,
+export const useProfileControllerRegisterServiceIntegration = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profileControllerRegisterServiceIntegration>>, TError,{data: RegisterServiceIntegrationDto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof profileControllerRegisterServiceIntegration>>,

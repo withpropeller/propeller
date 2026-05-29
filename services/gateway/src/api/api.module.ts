@@ -14,6 +14,7 @@ import { EventsModule } from './events/event.module';
 import { PaymentModule } from './payments/payment.module';
 import { PaymentRequestModule } from './payment-requests/payment-requests.module';
 import { ToolsModule } from './tools/tools.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
     imports: [
@@ -31,6 +32,7 @@ import { ToolsModule } from './tools/tools.module';
         PaymentModule,
         PaymentRequestModule,
         ToolsModule,
+        DashboardModule,
     ],
     controllers: [E2EController],
 })

@@ -6,9 +6,12 @@
  * OpenAPI spec version: 0.0.1
  */
 
-export interface ActivateAccountDto {
-  firstName: string;
-  lastName: string;
-  password: string;
-  businessId: string;
+export interface TreasuryCountChangeStatsDto {
+  /** Count */
+  count: number;
+  /**
+     * Percentage change vs previous period
+     * @nullable
+     */
+  change: number | null;
 }

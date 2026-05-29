@@ -47,6 +47,14 @@ purely as a filesystem convention; the path-to-param mapping lives in
 
 ## Codegen
 
+API clients under `src/api/` are generated — do not edit them by hand.
+
 ```bash
-bun run generate     # orval — regenerate API client from docs/openapi.json
+# 1. Run gateway locally (ENABLE_SWAGGER=true in services/gateway/env/dev.env)
+cd services/gateway && bun run start:dev
+
+# 2. Refresh spec + hooks (Node 22+ required for orval)
+cd apps/web && make fetch-spec && make generate
 ```
+
+`make fetch-spec` pulls `http://localhost:4000/openapi.json`. Hook names follow gateway controller method names (e.g. `getOne` → `useEventsControllerGetOne`).

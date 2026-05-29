@@ -6,7 +6,7 @@
  * OpenAPI spec version: 0.0.1
  */
 
-export type ApiLogsControllerGetOneParams = {
+export type PaymentRequestControllerGetAllParams = {
 limit?: number;
 sort?: string;
 /**

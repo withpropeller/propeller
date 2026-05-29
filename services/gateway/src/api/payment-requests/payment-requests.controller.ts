@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Post, Query, Res } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CurrentUser, Permission } from '@common/decorators';
+import { APIPagingDto } from '@common/api-paging';
 import { Permissions } from '@api/roles';
 import { Response } from 'express'
 import { JWTUser } from '@auth/jwt.strategy';
@@ -15,7 +16,7 @@ export class PaymentRequestController {
     @ApiOperation({ summary: 'Get Payment Requests' })
     @Get()
     @Permission(Permissions.PaymentRequestRead)
-    public async getAll(@Res() res: Response, @CurrentUser() user: JWTUser, @Query() query: any) {
+    public async getAll(@Res() res: Response, @CurrentUser() user: JWTUser, @Query() query: APIPagingDto) {
         const response = await this.service.get(user, query);
         res.status(response.status).send(response.data);
     }
@@ -23,7 +24,7 @@ export class PaymentRequestController {
     @ApiOperation({ summary: 'Get One Payment Request' })
     @Permission(Permissions.PaymentRequestRead)
     @Get('/:id')
-    public async get(
+    public async getOne(
         @CurrentUser() user: JWTUser, 
         @Param() param: any, 
         @Query() query: any,

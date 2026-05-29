@@ -26,7 +26,6 @@ import type {
 
 import type {
   ActivateAccountDto,
-  AuthControllerCreateParams,
   ChangePasswordDto,
   ForgotPasswordDto,
   OnboardSurveyDto,
@@ -416,25 +415,17 @@ export type authControllerCreateResponseSuccess = (authControllerCreateResponse2
 
 export type authControllerCreateResponse = (authControllerCreateResponseSuccess)
 
-export const getAuthControllerCreateUrl = (params?: AuthControllerCreateParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getAuthControllerCreateUrl = () => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/auth/onboard?${stringifiedParams}` : `/auth/onboard`
+  return `/auth/onboard`
 }
 
-export const authControllerCreate = async (onboardSurveyDto: OnboardSurveyDto,
-    params?: AuthControllerCreateParams, options?: RequestInit): Promise<authControllerCreateResponse> => {
+export const authControllerCreate = async (onboardSurveyDto: OnboardSurveyDto, options?: RequestInit): Promise<authControllerCreateResponse> => {
 
-  return customInstance<authControllerCreateResponse>(getAuthControllerCreateUrl(params),
+  return customInstance<authControllerCreateResponse>(getAuthControllerCreateUrl(),
   {
     ...options,
     method: 'POST',
@@ -448,8 +439,8 @@ export const authControllerCreate = async (onboardSurveyDto: OnboardSurveyDto,
 
 
 export const getAuthControllerCreateMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof authControllerCreate>>, TError,{data: OnboardSurveyDto;params?: AuthControllerCreateParams}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof authControllerCreate>>, TError,{data: OnboardSurveyDto;params?: AuthControllerCreateParams}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof authControllerCreate>>, TError,{data: OnboardSurveyDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof authControllerCreate>>, TError,{data: OnboardSurveyDto}, TContext> => {
 
 const mutationKey = ['authControllerCreate'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -461,10 +452,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof authControllerCreate>>, {data: OnboardSurveyDto;params?: AuthControllerCreateParams}> = (props) => {
-          const {data,params} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof authControllerCreate>>, {data: OnboardSurveyDto}> = (props) => {
+          const {data} = props ?? {};
 
-          return  authControllerCreate(data,params,requestOptions)
+          return  authControllerCreate(data,requestOptions)
         }
 
 
@@ -482,11 +473,11 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Create Onboard Wizard
  */
 export const useAuthControllerCreate = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof authControllerCreate>>, TError,{data: OnboardSurveyDto;params?: AuthControllerCreateParams}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof authControllerCreate>>, TError,{data: OnboardSurveyDto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof authControllerCreate>>,
         TError,
-        {data: OnboardSurveyDto;params?: AuthControllerCreateParams},
+        {data: OnboardSurveyDto},
         TContext
       > => {
       return useMutation(getAuthControllerCreateMutationOptions(options), queryClient);

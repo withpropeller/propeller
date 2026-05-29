@@ -25,10 +25,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  BasicResponse,
-  CreatePaymentRequestDto,
-  PaymentRequestControllerGetOneParams,
-  PaymentRequestControllerGetParams
+  PaymentRequestControllerGetAllParams
 } from '../model';
 
 import { customInstance } from '../../lib/orvalClient';
@@ -42,36 +39,19 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Get Payment Requests
  */
-export type paymentRequestControllerGetResponse200 = {
-  data: BasicResponse
+export type paymentRequestControllerGetAllResponse200 = {
+  data: void
   status: 200
 }
 
-export type paymentRequestControllerGetResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type paymentRequestControllerGetResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type paymentRequestControllerGetResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type paymentRequestControllerGetResponseSuccess = (paymentRequestControllerGetResponse200) & {
+export type paymentRequestControllerGetAllResponseSuccess = (paymentRequestControllerGetAllResponse200) & {
   headers: Headers;
 };
-export type paymentRequestControllerGetResponseError = (paymentRequestControllerGetResponse400 | paymentRequestControllerGetResponse401 | paymentRequestControllerGetResponse403) & {
-  headers: Headers;
-};
+;
 
-export type paymentRequestControllerGetResponse = (paymentRequestControllerGetResponseSuccess | paymentRequestControllerGetResponseError)
+export type paymentRequestControllerGetAllResponse = (paymentRequestControllerGetAllResponseSuccess)
 
-export const getPaymentRequestControllerGetUrl = (params?: PaymentRequestControllerGetParams,) => {
+export const getPaymentRequestControllerGetAllUrl = (params?: PaymentRequestControllerGetAllParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
@@ -86,9 +66,9 @@ export const getPaymentRequestControllerGetUrl = (params?: PaymentRequestControl
   return stringifiedParams.length > 0 ? `/payment-requests?${stringifiedParams}` : `/payment-requests`
 }
 
-export const paymentRequestControllerGet = async (params?: PaymentRequestControllerGetParams, options?: RequestInit): Promise<paymentRequestControllerGetResponse> => {
+export const paymentRequestControllerGetAll = async (params?: PaymentRequestControllerGetAllParams, options?: RequestInit): Promise<paymentRequestControllerGetAllResponse> => {
 
-  return customInstance<paymentRequestControllerGetResponse>(getPaymentRequestControllerGetUrl(params),
+  return customInstance<paymentRequestControllerGetAllResponse>(getPaymentRequestControllerGetAllUrl(params),
   {
     ...options,
     method: 'GET'
@@ -101,69 +81,69 @@ export const paymentRequestControllerGet = async (params?: PaymentRequestControl
 
 
 
-export const getPaymentRequestControllerGetQueryKey = (params?: PaymentRequestControllerGetParams,) => {
+export const getPaymentRequestControllerGetAllQueryKey = (params?: PaymentRequestControllerGetAllParams,) => {
     return [
     `/payment-requests`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getPaymentRequestControllerGetQueryOptions = <TData = Awaited<ReturnType<typeof paymentRequestControllerGet>>, TError = ErrorType<BasicResponse>>(params?: PaymentRequestControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRequestControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getPaymentRequestControllerGetAllQueryOptions = <TData = Awaited<ReturnType<typeof paymentRequestControllerGetAll>>, TError = ErrorType<unknown>>(params?: PaymentRequestControllerGetAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRequestControllerGetAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getPaymentRequestControllerGetQueryKey(params);
+  const queryKey =  queryOptions?.queryKey ?? getPaymentRequestControllerGetAllQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof paymentRequestControllerGet>>> = ({ signal }) => paymentRequestControllerGet(params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof paymentRequestControllerGetAll>>> = ({ signal }) => paymentRequestControllerGetAll(params, { signal, ...requestOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof paymentRequestControllerGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof paymentRequestControllerGetAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type PaymentRequestControllerGetQueryResult = NonNullable<Awaited<ReturnType<typeof paymentRequestControllerGet>>>
-export type PaymentRequestControllerGetQueryError = ErrorType<BasicResponse>
+export type PaymentRequestControllerGetAllQueryResult = NonNullable<Awaited<ReturnType<typeof paymentRequestControllerGetAll>>>
+export type PaymentRequestControllerGetAllQueryError = ErrorType<unknown>
 
 
-export function usePaymentRequestControllerGet<TData = Awaited<ReturnType<typeof paymentRequestControllerGet>>, TError = ErrorType<BasicResponse>>(
- params: undefined |  PaymentRequestControllerGetParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRequestControllerGet>>, TError, TData>> & Pick<
+export function usePaymentRequestControllerGetAll<TData = Awaited<ReturnType<typeof paymentRequestControllerGetAll>>, TError = ErrorType<unknown>>(
+ params: undefined |  PaymentRequestControllerGetAllParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRequestControllerGetAll>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof paymentRequestControllerGet>>,
+          Awaited<ReturnType<typeof paymentRequestControllerGetAll>>,
           TError,
-          Awaited<ReturnType<typeof paymentRequestControllerGet>>
+          Awaited<ReturnType<typeof paymentRequestControllerGetAll>>
         > , 'initialData'
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function usePaymentRequestControllerGet<TData = Awaited<ReturnType<typeof paymentRequestControllerGet>>, TError = ErrorType<BasicResponse>>(
- params?: PaymentRequestControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRequestControllerGet>>, TError, TData>> & Pick<
+export function usePaymentRequestControllerGetAll<TData = Awaited<ReturnType<typeof paymentRequestControllerGetAll>>, TError = ErrorType<unknown>>(
+ params?: PaymentRequestControllerGetAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRequestControllerGetAll>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof paymentRequestControllerGet>>,
+          Awaited<ReturnType<typeof paymentRequestControllerGetAll>>,
           TError,
-          Awaited<ReturnType<typeof paymentRequestControllerGet>>
+          Awaited<ReturnType<typeof paymentRequestControllerGetAll>>
         > , 'initialData'
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function usePaymentRequestControllerGet<TData = Awaited<ReturnType<typeof paymentRequestControllerGet>>, TError = ErrorType<BasicResponse>>(
- params?: PaymentRequestControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRequestControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function usePaymentRequestControllerGetAll<TData = Awaited<ReturnType<typeof paymentRequestControllerGetAll>>, TError = ErrorType<unknown>>(
+ params?: PaymentRequestControllerGetAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRequestControllerGetAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get Payment Requests
  */
 
-export function usePaymentRequestControllerGet<TData = Awaited<ReturnType<typeof paymentRequestControllerGet>>, TError = ErrorType<BasicResponse>>(
- params?: PaymentRequestControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRequestControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function usePaymentRequestControllerGetAll<TData = Awaited<ReturnType<typeof paymentRequestControllerGetAll>>, TError = ErrorType<unknown>>(
+ params?: PaymentRequestControllerGetAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRequestControllerGetAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getPaymentRequestControllerGetQueryOptions(params,options)
+  const queryOptions = getPaymentRequestControllerGetAllQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -177,33 +157,16 @@ export function usePaymentRequestControllerGet<TData = Awaited<ReturnType<typeof
  * @summary Create Payment Request
  */
 export type paymentRequestControllerCreateResponse201 = {
-  data: BasicResponse
+  data: void
   status: 201
-}
-
-export type paymentRequestControllerCreateResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type paymentRequestControllerCreateResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type paymentRequestControllerCreateResponse403 = {
-  data: BasicResponse
-  status: 403
 }
 
 export type paymentRequestControllerCreateResponseSuccess = (paymentRequestControllerCreateResponse201) & {
   headers: Headers;
 };
-export type paymentRequestControllerCreateResponseError = (paymentRequestControllerCreateResponse400 | paymentRequestControllerCreateResponse401 | paymentRequestControllerCreateResponse403) & {
-  headers: Headers;
-};
+;
 
-export type paymentRequestControllerCreateResponse = (paymentRequestControllerCreateResponseSuccess | paymentRequestControllerCreateResponseError)
+export type paymentRequestControllerCreateResponse = (paymentRequestControllerCreateResponseSuccess)
 
 export const getPaymentRequestControllerCreateUrl = () => {
 
@@ -213,24 +176,23 @@ export const getPaymentRequestControllerCreateUrl = () => {
   return `/payment-requests`
 }
 
-export const paymentRequestControllerCreate = async (createPaymentRequestDto: CreatePaymentRequestDto, options?: RequestInit): Promise<paymentRequestControllerCreateResponse> => {
+export const paymentRequestControllerCreate = async ( options?: RequestInit): Promise<paymentRequestControllerCreateResponse> => {
 
   return customInstance<paymentRequestControllerCreateResponse>(getPaymentRequestControllerCreateUrl(),
   {
     ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      createPaymentRequestDto,)
+    method: 'POST'
+
+
   }
 );}
 
 
 
 
-export const getPaymentRequestControllerCreateMutationOptions = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentRequestControllerCreate>>, TError,{data: CreatePaymentRequestDto}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof paymentRequestControllerCreate>>, TError,{data: CreatePaymentRequestDto}, TContext> => {
+export const getPaymentRequestControllerCreateMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentRequestControllerCreate>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof paymentRequestControllerCreate>>, TError,void, TContext> => {
 
 const mutationKey = ['paymentRequestControllerCreate'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -242,10 +204,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof paymentRequestControllerCreate>>, {data: CreatePaymentRequestDto}> = (props) => {
-          const {data} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof paymentRequestControllerCreate>>, void> = () => {
 
-          return  paymentRequestControllerCreate(data,requestOptions)
+
+          return  paymentRequestControllerCreate(requestOptions)
         }
 
 
@@ -256,18 +218,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PaymentRequestControllerCreateMutationResult = NonNullable<Awaited<ReturnType<typeof paymentRequestControllerCreate>>>
-    export type PaymentRequestControllerCreateMutationBody = CreatePaymentRequestDto
-    export type PaymentRequestControllerCreateMutationError = ErrorType<BasicResponse>
+
+    export type PaymentRequestControllerCreateMutationError = ErrorType<unknown>
 
     /**
  * @summary Create Payment Request
  */
-export const usePaymentRequestControllerCreate = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentRequestControllerCreate>>, TError,{data: CreatePaymentRequestDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+export const usePaymentRequestControllerCreate = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof paymentRequestControllerCreate>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof paymentRequestControllerCreate>>,
         TError,
-        {data: CreatePaymentRequestDto},
+        void,
         TContext
       > => {
       return useMutation(getPaymentRequestControllerCreateMutationOptions(options), queryClient);
@@ -276,59 +238,28 @@ export const usePaymentRequestControllerCreate = <TError = ErrorType<BasicRespon
  * @summary Get One Payment Request
  */
 export type paymentRequestControllerGetOneResponse200 = {
-  data: BasicResponse
+  data: void
   status: 200
-}
-
-export type paymentRequestControllerGetOneResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type paymentRequestControllerGetOneResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type paymentRequestControllerGetOneResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type paymentRequestControllerGetOneResponse404 = {
-  data: BasicResponse
-  status: 404
 }
 
 export type paymentRequestControllerGetOneResponseSuccess = (paymentRequestControllerGetOneResponse200) & {
   headers: Headers;
 };
-export type paymentRequestControllerGetOneResponseError = (paymentRequestControllerGetOneResponse400 | paymentRequestControllerGetOneResponse401 | paymentRequestControllerGetOneResponse403 | paymentRequestControllerGetOneResponse404) & {
-  headers: Headers;
-};
+;
 
-export type paymentRequestControllerGetOneResponse = (paymentRequestControllerGetOneResponseSuccess | paymentRequestControllerGetOneResponseError)
+export type paymentRequestControllerGetOneResponse = (paymentRequestControllerGetOneResponseSuccess)
 
-export const getPaymentRequestControllerGetOneUrl = (id: string,
-    params?: PaymentRequestControllerGetOneParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getPaymentRequestControllerGetOneUrl = (id: string,) => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/payment-requests/${id}?${stringifiedParams}` : `/payment-requests/${id}`
+  return `/payment-requests/${id}`
 }
 
-export const paymentRequestControllerGetOne = async (id: string,
-    params?: PaymentRequestControllerGetOneParams, options?: RequestInit): Promise<paymentRequestControllerGetOneResponse> => {
+export const paymentRequestControllerGetOne = async (id: string, options?: RequestInit): Promise<paymentRequestControllerGetOneResponse> => {
 
-  return customInstance<paymentRequestControllerGetOneResponse>(getPaymentRequestControllerGetOneUrl(id,params),
+  return customInstance<paymentRequestControllerGetOneResponse>(getPaymentRequestControllerGetOneUrl(id),
   {
     ...options,
     method: 'GET'
@@ -341,25 +272,23 @@ export const paymentRequestControllerGetOne = async (id: string,
 
 
 
-export const getPaymentRequestControllerGetOneQueryKey = (id: string,
-    params?: PaymentRequestControllerGetOneParams,) => {
+export const getPaymentRequestControllerGetOneQueryKey = (id: string,) => {
     return [
-    `/payment-requests/${id}`, ...(params ? [params] : [])
+    `/payment-requests/${id}`
     ] as const;
     }
 
 
-export const getPaymentRequestControllerGetOneQueryOptions = <TData = Awaited<ReturnType<typeof paymentRequestControllerGetOne>>, TError = ErrorType<BasicResponse>>(id: string,
-    params?: PaymentRequestControllerGetOneParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRequestControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getPaymentRequestControllerGetOneQueryOptions = <TData = Awaited<ReturnType<typeof paymentRequestControllerGetOne>>, TError = ErrorType<unknown>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRequestControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getPaymentRequestControllerGetOneQueryKey(id,params);
+  const queryKey =  queryOptions?.queryKey ?? getPaymentRequestControllerGetOneQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof paymentRequestControllerGetOne>>> = ({ signal }) => paymentRequestControllerGetOne(id,params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof paymentRequestControllerGetOne>>> = ({ signal }) => paymentRequestControllerGetOne(id, { signal, ...requestOptions });
 
 
 
@@ -369,12 +298,11 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type PaymentRequestControllerGetOneQueryResult = NonNullable<Awaited<ReturnType<typeof paymentRequestControllerGetOne>>>
-export type PaymentRequestControllerGetOneQueryError = ErrorType<BasicResponse>
+export type PaymentRequestControllerGetOneQueryError = ErrorType<unknown>
 
 
-export function usePaymentRequestControllerGetOne<TData = Awaited<ReturnType<typeof paymentRequestControllerGetOne>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params: undefined |  PaymentRequestControllerGetOneParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRequestControllerGetOne>>, TError, TData>> & Pick<
+export function usePaymentRequestControllerGetOne<TData = Awaited<ReturnType<typeof paymentRequestControllerGetOne>>, TError = ErrorType<unknown>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRequestControllerGetOne>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof paymentRequestControllerGetOne>>,
           TError,
@@ -383,9 +311,8 @@ export function usePaymentRequestControllerGetOne<TData = Awaited<ReturnType<typ
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function usePaymentRequestControllerGetOne<TData = Awaited<ReturnType<typeof paymentRequestControllerGetOne>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params?: PaymentRequestControllerGetOneParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRequestControllerGetOne>>, TError, TData>> & Pick<
+export function usePaymentRequestControllerGetOne<TData = Awaited<ReturnType<typeof paymentRequestControllerGetOne>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRequestControllerGetOne>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof paymentRequestControllerGetOne>>,
           TError,
@@ -394,22 +321,20 @@ export function usePaymentRequestControllerGetOne<TData = Awaited<ReturnType<typ
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function usePaymentRequestControllerGetOne<TData = Awaited<ReturnType<typeof paymentRequestControllerGetOne>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params?: PaymentRequestControllerGetOneParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRequestControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function usePaymentRequestControllerGetOne<TData = Awaited<ReturnType<typeof paymentRequestControllerGetOne>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRequestControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get One Payment Request
  */
 
-export function usePaymentRequestControllerGetOne<TData = Awaited<ReturnType<typeof paymentRequestControllerGetOne>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params?: PaymentRequestControllerGetOneParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRequestControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function usePaymentRequestControllerGetOne<TData = Awaited<ReturnType<typeof paymentRequestControllerGetOne>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof paymentRequestControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getPaymentRequestControllerGetOneQueryOptions(id,params,options)
+  const queryOptions = getPaymentRequestControllerGetOneQueryOptions(id,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

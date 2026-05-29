@@ -45,7 +45,9 @@ async function bootstrap() {
             .addBearerAuth()
             .build();
         const document = SwaggerModule.createDocument(app, options);
-        SwaggerModule.setup('', app, document);
+        SwaggerModule.setup('', app, document, {
+            jsonDocumentUrl: '/openapi.json',
+        });
     }
 
     app.enableShutdownHooks();

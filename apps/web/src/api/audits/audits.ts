@@ -21,9 +21,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  AuditControllerGetAllParams,
-  BasicResponse,
-  ResponseWrapperApiHydratedAuditList
+  AuditControllerGetAllParams
 } from '../model';
 
 import { customInstance } from '../../lib/orvalClient';
@@ -35,36 +33,19 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 /**
- * @summary Get All Audits
+ * @summary Read All Audits
  */
 export type auditControllerGetAllResponse200 = {
-  data: ResponseWrapperApiHydratedAuditList
+  data: void
   status: 200
-}
-
-export type auditControllerGetAllResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type auditControllerGetAllResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type auditControllerGetAllResponse403 = {
-  data: BasicResponse
-  status: 403
 }
 
 export type auditControllerGetAllResponseSuccess = (auditControllerGetAllResponse200) & {
   headers: Headers;
 };
-export type auditControllerGetAllResponseError = (auditControllerGetAllResponse400 | auditControllerGetAllResponse401 | auditControllerGetAllResponse403) & {
-  headers: Headers;
-};
+;
 
-export type auditControllerGetAllResponse = (auditControllerGetAllResponseSuccess | auditControllerGetAllResponseError)
+export type auditControllerGetAllResponse = (auditControllerGetAllResponseSuccess)
 
 export const getAuditControllerGetAllUrl = (params?: AuditControllerGetAllParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -103,7 +84,7 @@ export const getAuditControllerGetAllQueryKey = (params?: AuditControllerGetAllP
     }
 
 
-export const getAuditControllerGetAllQueryOptions = <TData = Awaited<ReturnType<typeof auditControllerGetAll>>, TError = ErrorType<BasicResponse>>(params?: AuditControllerGetAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof auditControllerGetAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getAuditControllerGetAllQueryOptions = <TData = Awaited<ReturnType<typeof auditControllerGetAll>>, TError = ErrorType<unknown>>(params?: AuditControllerGetAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof auditControllerGetAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -122,10 +103,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AuditControllerGetAllQueryResult = NonNullable<Awaited<ReturnType<typeof auditControllerGetAll>>>
-export type AuditControllerGetAllQueryError = ErrorType<BasicResponse>
+export type AuditControllerGetAllQueryError = ErrorType<unknown>
 
 
-export function useAuditControllerGetAll<TData = Awaited<ReturnType<typeof auditControllerGetAll>>, TError = ErrorType<BasicResponse>>(
+export function useAuditControllerGetAll<TData = Awaited<ReturnType<typeof auditControllerGetAll>>, TError = ErrorType<unknown>>(
  params: undefined |  AuditControllerGetAllParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof auditControllerGetAll>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof auditControllerGetAll>>,
@@ -135,7 +116,7 @@ export function useAuditControllerGetAll<TData = Awaited<ReturnType<typeof audit
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useAuditControllerGetAll<TData = Awaited<ReturnType<typeof auditControllerGetAll>>, TError = ErrorType<BasicResponse>>(
+export function useAuditControllerGetAll<TData = Awaited<ReturnType<typeof auditControllerGetAll>>, TError = ErrorType<unknown>>(
  params?: AuditControllerGetAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof auditControllerGetAll>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof auditControllerGetAll>>,
@@ -145,15 +126,15 @@ export function useAuditControllerGetAll<TData = Awaited<ReturnType<typeof audit
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useAuditControllerGetAll<TData = Awaited<ReturnType<typeof auditControllerGetAll>>, TError = ErrorType<BasicResponse>>(
+export function useAuditControllerGetAll<TData = Awaited<ReturnType<typeof auditControllerGetAll>>, TError = ErrorType<unknown>>(
  params?: AuditControllerGetAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof auditControllerGetAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Get All Audits
+ * @summary Read All Audits
  */
 
-export function useAuditControllerGetAll<TData = Awaited<ReturnType<typeof auditControllerGetAll>>, TError = ErrorType<BasicResponse>>(
+export function useAuditControllerGetAll<TData = Awaited<ReturnType<typeof auditControllerGetAll>>, TError = ErrorType<unknown>>(
  params?: AuditControllerGetAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof auditControllerGetAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {

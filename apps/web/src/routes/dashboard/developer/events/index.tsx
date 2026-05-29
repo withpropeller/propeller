@@ -12,7 +12,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from '@/lib/pax'
-import { useEventsControllerGet } from '@/api/events/events'
+import { useEventsControllerGetAll } from '@/api/events/events'
 import { DataTable } from '@/components/ui/DataTable'
 import { formatDatetime } from '@/lib/format'
 
@@ -124,7 +124,7 @@ export default function EventsPage() {
   if (before) queryParams.before = before
   if (after)  queryParams.after  = after
 
-  const { data, isLoading, error, refetch } = useEventsControllerGet(queryParams as any)
+  const { data, isLoading, error, refetch } = useEventsControllerGetAll(queryParams as any)
   const events: any[] = (data?.data as any) ?? []
   const hasMore = (data as any)?.metadata?.hasMore ?? false
   const hasPrevious = !!before

@@ -15,7 +15,7 @@ import {
   DropdownMenuRadioItem,
 } from '@/lib/pax'
 import { Search, ArrowUpRight, ArrowDownLeft, CreditCard, Landmark, Banknote, Settings2, Download, X } from 'lucide-react'
-import { usePaymentControllerGet, getPaymentControllerGetCSVUrl } from '@/api/payments/payments'
+import { usePaymentControllerGetAll, getPaymentControllerGetCSVUrl } from '@/api/payments/payments'
 import { API_BASE_URL, STORAGE_KEYS } from '@/lib/constants'
 import { usePanelContext } from '@/context/PanelContext'
 import { Badge } from '@/components/ui/Badge'
@@ -116,7 +116,7 @@ export default function PaymentsPage() {
     router.push(`/dashboard/payments?${params.toString()}`)
   }
 
-  const { data, isLoading, error, refetch } = usePaymentControllerGet({
+  const { data, isLoading, error, refetch } = usePaymentControllerGetAll({
     limit: 20,
     expand: 'account dispute' as any,
     sort: 'createdAt_desc' as any,

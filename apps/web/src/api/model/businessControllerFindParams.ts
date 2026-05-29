@@ -17,11 +17,8 @@ expand?: string[];
  * List of fields to select.
  */
 select?: string[];
-/**
- * Search query
- */
-search?: string;
+before?: string;
+after?: string;
 countTotal?: boolean;
 dryRun?: boolean;
-passcode?: string;
 };

@@ -7,12 +7,22 @@
  */
 
 export interface KYCLeadershipDto {
+  /** First name */
+  firstName: string;
+  /** Middle name */
+  middleName?: string;
+  /** Last name */
+  lastName: string;
   /** Role of Individual */
   role: string;
   /** Nationality in ISO Country Code */
   nationalityCode: string;
+  /** Phone Number with Calling Code */
+  phone: string;
   /** Email Address */
   email: string;
+  /** Date of birth (YYYY-MM-DD) */
+  dateOfBirth: string;
   /** BVN Identification Number */
   bvn?: string;
 }

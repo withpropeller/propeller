@@ -24,24 +24,6 @@ import type {
   UseQueryResult
 } from '@tanstack/react-query';
 
-import type {
-  BasicResponse,
-  FxBuyQuoteDto,
-  FxQuoteDto,
-  FxSellQuoteDto,
-  ResponseWrapperBankList,
-  ResponseWrapperFxQuote,
-  ResponseWrapperFxRate,
-  ResponseWrapperMerchant,
-  ResponseWrapperMerchantList,
-  ResponseWrapperResolvedAccount,
-  ResponseWrapperTempFileUploadResult,
-  ToolsControllerGetFxRateParams,
-  ToolsControllerGetMerchantsParams,
-  ToolsControllerGetOneMerchantParams,
-  ToolsControllerResolveBankAccountParams
-} from '../model';
-
 import { customInstance } from '../../lib/orvalClient';
 import type { ErrorType } from '../../lib/orvalClient';
 
@@ -53,36 +35,19 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 /**
  * @summary Get Bank list
  */
-export type toolsControllerGetBanksResponse200 = {
-  data: ResponseWrapperBankList
+export type toolsControllerGetResponse200 = {
+  data: void
   status: 200
 }
 
-export type toolsControllerGetBanksResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type toolsControllerGetBanksResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type toolsControllerGetBanksResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type toolsControllerGetBanksResponseSuccess = (toolsControllerGetBanksResponse200) & {
+export type toolsControllerGetResponseSuccess = (toolsControllerGetResponse200) & {
   headers: Headers;
 };
-export type toolsControllerGetBanksResponseError = (toolsControllerGetBanksResponse400 | toolsControllerGetBanksResponse401 | toolsControllerGetBanksResponse403) & {
-  headers: Headers;
-};
+;
 
-export type toolsControllerGetBanksResponse = (toolsControllerGetBanksResponseSuccess | toolsControllerGetBanksResponseError)
+export type toolsControllerGetResponse = (toolsControllerGetResponseSuccess)
 
-export const getToolsControllerGetBanksUrl = () => {
+export const getToolsControllerGetUrl = () => {
 
 
 
@@ -90,9 +55,9 @@ export const getToolsControllerGetBanksUrl = () => {
   return `/tools/banks`
 }
 
-export const toolsControllerGetBanks = async ( options?: RequestInit): Promise<toolsControllerGetBanksResponse> => {
+export const toolsControllerGet = async ( options?: RequestInit): Promise<toolsControllerGetResponse> => {
 
-  return customInstance<toolsControllerGetBanksResponse>(getToolsControllerGetBanksUrl(),
+  return customInstance<toolsControllerGetResponse>(getToolsControllerGetUrl(),
   {
     ...options,
     method: 'GET'
@@ -105,69 +70,69 @@ export const toolsControllerGetBanks = async ( options?: RequestInit): Promise<t
 
 
 
-export const getToolsControllerGetBanksQueryKey = () => {
+export const getToolsControllerGetQueryKey = () => {
     return [
     `/tools/banks`
     ] as const;
     }
 
 
-export const getToolsControllerGetBanksQueryOptions = <TData = Awaited<ReturnType<typeof toolsControllerGetBanks>>, TError = ErrorType<BasicResponse>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetBanks>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getToolsControllerGetQueryOptions = <TData = Awaited<ReturnType<typeof toolsControllerGet>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getToolsControllerGetBanksQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getToolsControllerGetQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof toolsControllerGetBanks>>> = ({ signal }) => toolsControllerGetBanks({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof toolsControllerGet>>> = ({ signal }) => toolsControllerGet({ signal, ...requestOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetBanks>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGet>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type ToolsControllerGetBanksQueryResult = NonNullable<Awaited<ReturnType<typeof toolsControllerGetBanks>>>
-export type ToolsControllerGetBanksQueryError = ErrorType<BasicResponse>
+export type ToolsControllerGetQueryResult = NonNullable<Awaited<ReturnType<typeof toolsControllerGet>>>
+export type ToolsControllerGetQueryError = ErrorType<unknown>
 
 
-export function useToolsControllerGetBanks<TData = Awaited<ReturnType<typeof toolsControllerGetBanks>>, TError = ErrorType<BasicResponse>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetBanks>>, TError, TData>> & Pick<
+export function useToolsControllerGet<TData = Awaited<ReturnType<typeof toolsControllerGet>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGet>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof toolsControllerGetBanks>>,
+          Awaited<ReturnType<typeof toolsControllerGet>>,
           TError,
-          Awaited<ReturnType<typeof toolsControllerGetBanks>>
+          Awaited<ReturnType<typeof toolsControllerGet>>
         > , 'initialData'
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useToolsControllerGetBanks<TData = Awaited<ReturnType<typeof toolsControllerGetBanks>>, TError = ErrorType<BasicResponse>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetBanks>>, TError, TData>> & Pick<
+export function useToolsControllerGet<TData = Awaited<ReturnType<typeof toolsControllerGet>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGet>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof toolsControllerGetBanks>>,
+          Awaited<ReturnType<typeof toolsControllerGet>>,
           TError,
-          Awaited<ReturnType<typeof toolsControllerGetBanks>>
+          Awaited<ReturnType<typeof toolsControllerGet>>
         > , 'initialData'
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useToolsControllerGetBanks<TData = Awaited<ReturnType<typeof toolsControllerGetBanks>>, TError = ErrorType<BasicResponse>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetBanks>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useToolsControllerGet<TData = Awaited<ReturnType<typeof toolsControllerGet>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get Bank list
  */
 
-export function useToolsControllerGetBanks<TData = Awaited<ReturnType<typeof toolsControllerGetBanks>>, TError = ErrorType<BasicResponse>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetBanks>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useToolsControllerGet<TData = Awaited<ReturnType<typeof toolsControllerGet>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getToolsControllerGetBanksQueryOptions(options)
+  const queryOptions = getToolsControllerGetQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -181,33 +146,16 @@ export function useToolsControllerGetBanks<TData = Awaited<ReturnType<typeof too
  * @summary Get Bank Short List
  */
 export type toolsControllerGetShortBankListResponse200 = {
-  data: ResponseWrapperBankList
+  data: void
   status: 200
-}
-
-export type toolsControllerGetShortBankListResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type toolsControllerGetShortBankListResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type toolsControllerGetShortBankListResponse403 = {
-  data: BasicResponse
-  status: 403
 }
 
 export type toolsControllerGetShortBankListResponseSuccess = (toolsControllerGetShortBankListResponse200) & {
   headers: Headers;
 };
-export type toolsControllerGetShortBankListResponseError = (toolsControllerGetShortBankListResponse400 | toolsControllerGetShortBankListResponse401 | toolsControllerGetShortBankListResponse403) & {
-  headers: Headers;
-};
+;
 
-export type toolsControllerGetShortBankListResponse = (toolsControllerGetShortBankListResponseSuccess | toolsControllerGetShortBankListResponseError)
+export type toolsControllerGetShortBankListResponse = (toolsControllerGetShortBankListResponseSuccess)
 
 export const getToolsControllerGetShortBankListUrl = (id: string,) => {
 
@@ -239,7 +187,7 @@ export const getToolsControllerGetShortBankListQueryKey = (id: string,) => {
     }
 
 
-export const getToolsControllerGetShortBankListQueryOptions = <TData = Awaited<ReturnType<typeof toolsControllerGetShortBankList>>, TError = ErrorType<BasicResponse>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetShortBankList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getToolsControllerGetShortBankListQueryOptions = <TData = Awaited<ReturnType<typeof toolsControllerGetShortBankList>>, TError = ErrorType<unknown>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetShortBankList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -258,10 +206,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ToolsControllerGetShortBankListQueryResult = NonNullable<Awaited<ReturnType<typeof toolsControllerGetShortBankList>>>
-export type ToolsControllerGetShortBankListQueryError = ErrorType<BasicResponse>
+export type ToolsControllerGetShortBankListQueryError = ErrorType<unknown>
 
 
-export function useToolsControllerGetShortBankList<TData = Awaited<ReturnType<typeof toolsControllerGetShortBankList>>, TError = ErrorType<BasicResponse>>(
+export function useToolsControllerGetShortBankList<TData = Awaited<ReturnType<typeof toolsControllerGetShortBankList>>, TError = ErrorType<unknown>>(
  id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetShortBankList>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof toolsControllerGetShortBankList>>,
@@ -271,7 +219,7 @@ export function useToolsControllerGetShortBankList<TData = Awaited<ReturnType<ty
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useToolsControllerGetShortBankList<TData = Awaited<ReturnType<typeof toolsControllerGetShortBankList>>, TError = ErrorType<BasicResponse>>(
+export function useToolsControllerGetShortBankList<TData = Awaited<ReturnType<typeof toolsControllerGetShortBankList>>, TError = ErrorType<unknown>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetShortBankList>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof toolsControllerGetShortBankList>>,
@@ -281,7 +229,7 @@ export function useToolsControllerGetShortBankList<TData = Awaited<ReturnType<ty
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useToolsControllerGetShortBankList<TData = Awaited<ReturnType<typeof toolsControllerGetShortBankList>>, TError = ErrorType<BasicResponse>>(
+export function useToolsControllerGetShortBankList<TData = Awaited<ReturnType<typeof toolsControllerGetShortBankList>>, TError = ErrorType<unknown>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetShortBankList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
@@ -289,7 +237,7 @@ export function useToolsControllerGetShortBankList<TData = Awaited<ReturnType<ty
  * @summary Get Bank Short List
  */
 
-export function useToolsControllerGetShortBankList<TData = Awaited<ReturnType<typeof toolsControllerGetShortBankList>>, TError = ErrorType<BasicResponse>>(
+export function useToolsControllerGetShortBankList<TData = Awaited<ReturnType<typeof toolsControllerGetShortBankList>>, TError = ErrorType<unknown>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetShortBankList>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -307,53 +255,29 @@ export function useToolsControllerGetShortBankList<TData = Awaited<ReturnType<ty
 /**
  * @summary Resolve Bank Account
  */
-export type toolsControllerResolveBankAccountResponse200 = {
-  data: ResponseWrapperResolvedAccount
+export type toolsControllerResolveResponse200 = {
+  data: void
   status: 200
 }
 
-export type toolsControllerResolveBankAccountResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type toolsControllerResolveBankAccountResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type toolsControllerResolveBankAccountResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type toolsControllerResolveBankAccountResponseSuccess = (toolsControllerResolveBankAccountResponse200) & {
+export type toolsControllerResolveResponseSuccess = (toolsControllerResolveResponse200) & {
   headers: Headers;
 };
-export type toolsControllerResolveBankAccountResponseError = (toolsControllerResolveBankAccountResponse400 | toolsControllerResolveBankAccountResponse401 | toolsControllerResolveBankAccountResponse403) & {
-  headers: Headers;
-};
+;
 
-export type toolsControllerResolveBankAccountResponse = (toolsControllerResolveBankAccountResponseSuccess | toolsControllerResolveBankAccountResponseError)
+export type toolsControllerResolveResponse = (toolsControllerResolveResponseSuccess)
 
-export const getToolsControllerResolveBankAccountUrl = (params: ToolsControllerResolveBankAccountParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getToolsControllerResolveUrl = () => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/tools/banks/resolve?${stringifiedParams}` : `/tools/banks/resolve`
+  return `/tools/banks/resolve`
 }
 
-export const toolsControllerResolveBankAccount = async (params: ToolsControllerResolveBankAccountParams, options?: RequestInit): Promise<toolsControllerResolveBankAccountResponse> => {
+export const toolsControllerResolve = async ( options?: RequestInit): Promise<toolsControllerResolveResponse> => {
 
-  return customInstance<toolsControllerResolveBankAccountResponse>(getToolsControllerResolveBankAccountUrl(params),
+  return customInstance<toolsControllerResolveResponse>(getToolsControllerResolveUrl(),
   {
     ...options,
     method: 'GET'
@@ -366,69 +290,69 @@ export const toolsControllerResolveBankAccount = async (params: ToolsControllerR
 
 
 
-export const getToolsControllerResolveBankAccountQueryKey = (params?: ToolsControllerResolveBankAccountParams,) => {
+export const getToolsControllerResolveQueryKey = () => {
     return [
-    `/tools/banks/resolve`, ...(params ? [params] : [])
+    `/tools/banks/resolve`
     ] as const;
     }
 
 
-export const getToolsControllerResolveBankAccountQueryOptions = <TData = Awaited<ReturnType<typeof toolsControllerResolveBankAccount>>, TError = ErrorType<BasicResponse>>(params: ToolsControllerResolveBankAccountParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerResolveBankAccount>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getToolsControllerResolveQueryOptions = <TData = Awaited<ReturnType<typeof toolsControllerResolve>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerResolve>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getToolsControllerResolveBankAccountQueryKey(params);
+  const queryKey =  queryOptions?.queryKey ?? getToolsControllerResolveQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof toolsControllerResolveBankAccount>>> = ({ signal }) => toolsControllerResolveBankAccount(params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof toolsControllerResolve>>> = ({ signal }) => toolsControllerResolve({ signal, ...requestOptions });
 
 
 
 
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof toolsControllerResolveBankAccount>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof toolsControllerResolve>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type ToolsControllerResolveBankAccountQueryResult = NonNullable<Awaited<ReturnType<typeof toolsControllerResolveBankAccount>>>
-export type ToolsControllerResolveBankAccountQueryError = ErrorType<BasicResponse>
+export type ToolsControllerResolveQueryResult = NonNullable<Awaited<ReturnType<typeof toolsControllerResolve>>>
+export type ToolsControllerResolveQueryError = ErrorType<unknown>
 
 
-export function useToolsControllerResolveBankAccount<TData = Awaited<ReturnType<typeof toolsControllerResolveBankAccount>>, TError = ErrorType<BasicResponse>>(
- params: ToolsControllerResolveBankAccountParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerResolveBankAccount>>, TError, TData>> & Pick<
+export function useToolsControllerResolve<TData = Awaited<ReturnType<typeof toolsControllerResolve>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerResolve>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof toolsControllerResolveBankAccount>>,
+          Awaited<ReturnType<typeof toolsControllerResolve>>,
           TError,
-          Awaited<ReturnType<typeof toolsControllerResolveBankAccount>>
+          Awaited<ReturnType<typeof toolsControllerResolve>>
         > , 'initialData'
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useToolsControllerResolveBankAccount<TData = Awaited<ReturnType<typeof toolsControllerResolveBankAccount>>, TError = ErrorType<BasicResponse>>(
- params: ToolsControllerResolveBankAccountParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerResolveBankAccount>>, TError, TData>> & Pick<
+export function useToolsControllerResolve<TData = Awaited<ReturnType<typeof toolsControllerResolve>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerResolve>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof toolsControllerResolveBankAccount>>,
+          Awaited<ReturnType<typeof toolsControllerResolve>>,
           TError,
-          Awaited<ReturnType<typeof toolsControllerResolveBankAccount>>
+          Awaited<ReturnType<typeof toolsControllerResolve>>
         > , 'initialData'
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useToolsControllerResolveBankAccount<TData = Awaited<ReturnType<typeof toolsControllerResolveBankAccount>>, TError = ErrorType<BasicResponse>>(
- params: ToolsControllerResolveBankAccountParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerResolveBankAccount>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useToolsControllerResolve<TData = Awaited<ReturnType<typeof toolsControllerResolve>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerResolve>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Resolve Bank Account
  */
 
-export function useToolsControllerResolveBankAccount<TData = Awaited<ReturnType<typeof toolsControllerResolveBankAccount>>, TError = ErrorType<BasicResponse>>(
- params: ToolsControllerResolveBankAccountParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerResolveBankAccount>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useToolsControllerResolve<TData = Awaited<ReturnType<typeof toolsControllerResolve>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerResolve>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getToolsControllerResolveBankAccountQueryOptions(params,options)
+  const queryOptions = getToolsControllerResolveQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -439,55 +363,31 @@ export function useToolsControllerResolveBankAccount<TData = Awaited<ReturnType<
 
 
 /**
- * @summary Get Merchants
+ * @summary Get Bank list
  */
 export type toolsControllerGetMerchantsResponse200 = {
-  data: ResponseWrapperMerchantList
+  data: void
   status: 200
-}
-
-export type toolsControllerGetMerchantsResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type toolsControllerGetMerchantsResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type toolsControllerGetMerchantsResponse403 = {
-  data: BasicResponse
-  status: 403
 }
 
 export type toolsControllerGetMerchantsResponseSuccess = (toolsControllerGetMerchantsResponse200) & {
   headers: Headers;
 };
-export type toolsControllerGetMerchantsResponseError = (toolsControllerGetMerchantsResponse400 | toolsControllerGetMerchantsResponse401 | toolsControllerGetMerchantsResponse403) & {
-  headers: Headers;
-};
+;
 
-export type toolsControllerGetMerchantsResponse = (toolsControllerGetMerchantsResponseSuccess | toolsControllerGetMerchantsResponseError)
+export type toolsControllerGetMerchantsResponse = (toolsControllerGetMerchantsResponseSuccess)
 
-export const getToolsControllerGetMerchantsUrl = (params?: ToolsControllerGetMerchantsParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getToolsControllerGetMerchantsUrl = () => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/tools/merchants?${stringifiedParams}` : `/tools/merchants`
+  return `/tools/merchants`
 }
 
-export const toolsControllerGetMerchants = async (params?: ToolsControllerGetMerchantsParams, options?: RequestInit): Promise<toolsControllerGetMerchantsResponse> => {
+export const toolsControllerGetMerchants = async ( options?: RequestInit): Promise<toolsControllerGetMerchantsResponse> => {
 
-  return customInstance<toolsControllerGetMerchantsResponse>(getToolsControllerGetMerchantsUrl(params),
+  return customInstance<toolsControllerGetMerchantsResponse>(getToolsControllerGetMerchantsUrl(),
   {
     ...options,
     method: 'GET'
@@ -500,23 +400,23 @@ export const toolsControllerGetMerchants = async (params?: ToolsControllerGetMer
 
 
 
-export const getToolsControllerGetMerchantsQueryKey = (params?: ToolsControllerGetMerchantsParams,) => {
+export const getToolsControllerGetMerchantsQueryKey = () => {
     return [
-    `/tools/merchants`, ...(params ? [params] : [])
+    `/tools/merchants`
     ] as const;
     }
 
 
-export const getToolsControllerGetMerchantsQueryOptions = <TData = Awaited<ReturnType<typeof toolsControllerGetMerchants>>, TError = ErrorType<BasicResponse>>(params?: ToolsControllerGetMerchantsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetMerchants>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getToolsControllerGetMerchantsQueryOptions = <TData = Awaited<ReturnType<typeof toolsControllerGetMerchants>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetMerchants>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getToolsControllerGetMerchantsQueryKey(params);
+  const queryKey =  queryOptions?.queryKey ?? getToolsControllerGetMerchantsQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof toolsControllerGetMerchants>>> = ({ signal }) => toolsControllerGetMerchants(params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof toolsControllerGetMerchants>>> = ({ signal }) => toolsControllerGetMerchants({ signal, ...requestOptions });
 
 
 
@@ -526,11 +426,11 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ToolsControllerGetMerchantsQueryResult = NonNullable<Awaited<ReturnType<typeof toolsControllerGetMerchants>>>
-export type ToolsControllerGetMerchantsQueryError = ErrorType<BasicResponse>
+export type ToolsControllerGetMerchantsQueryError = ErrorType<unknown>
 
 
-export function useToolsControllerGetMerchants<TData = Awaited<ReturnType<typeof toolsControllerGetMerchants>>, TError = ErrorType<BasicResponse>>(
- params: undefined |  ToolsControllerGetMerchantsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetMerchants>>, TError, TData>> & Pick<
+export function useToolsControllerGetMerchants<TData = Awaited<ReturnType<typeof toolsControllerGetMerchants>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetMerchants>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof toolsControllerGetMerchants>>,
           TError,
@@ -539,8 +439,8 @@ export function useToolsControllerGetMerchants<TData = Awaited<ReturnType<typeof
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useToolsControllerGetMerchants<TData = Awaited<ReturnType<typeof toolsControllerGetMerchants>>, TError = ErrorType<BasicResponse>>(
- params?: ToolsControllerGetMerchantsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetMerchants>>, TError, TData>> & Pick<
+export function useToolsControllerGetMerchants<TData = Awaited<ReturnType<typeof toolsControllerGetMerchants>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetMerchants>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof toolsControllerGetMerchants>>,
           TError,
@@ -549,20 +449,20 @@ export function useToolsControllerGetMerchants<TData = Awaited<ReturnType<typeof
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useToolsControllerGetMerchants<TData = Awaited<ReturnType<typeof toolsControllerGetMerchants>>, TError = ErrorType<BasicResponse>>(
- params?: ToolsControllerGetMerchantsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetMerchants>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useToolsControllerGetMerchants<TData = Awaited<ReturnType<typeof toolsControllerGetMerchants>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetMerchants>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Get Merchants
+ * @summary Get Bank list
  */
 
-export function useToolsControllerGetMerchants<TData = Awaited<ReturnType<typeof toolsControllerGetMerchants>>, TError = ErrorType<BasicResponse>>(
- params?: ToolsControllerGetMerchantsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetMerchants>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useToolsControllerGetMerchants<TData = Awaited<ReturnType<typeof toolsControllerGetMerchants>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetMerchants>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getToolsControllerGetMerchantsQueryOptions(params,options)
+  const queryOptions = getToolsControllerGetMerchantsQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -573,62 +473,31 @@ export function useToolsControllerGetMerchants<TData = Awaited<ReturnType<typeof
 
 
 /**
- * @summary Get One Merchant
+ * @summary Get Bank list
  */
 export type toolsControllerGetOneMerchantResponse200 = {
-  data: ResponseWrapperMerchant
+  data: void
   status: 200
-}
-
-export type toolsControllerGetOneMerchantResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type toolsControllerGetOneMerchantResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type toolsControllerGetOneMerchantResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type toolsControllerGetOneMerchantResponse404 = {
-  data: BasicResponse
-  status: 404
 }
 
 export type toolsControllerGetOneMerchantResponseSuccess = (toolsControllerGetOneMerchantResponse200) & {
   headers: Headers;
 };
-export type toolsControllerGetOneMerchantResponseError = (toolsControllerGetOneMerchantResponse400 | toolsControllerGetOneMerchantResponse401 | toolsControllerGetOneMerchantResponse403 | toolsControllerGetOneMerchantResponse404) & {
-  headers: Headers;
-};
+;
 
-export type toolsControllerGetOneMerchantResponse = (toolsControllerGetOneMerchantResponseSuccess | toolsControllerGetOneMerchantResponseError)
+export type toolsControllerGetOneMerchantResponse = (toolsControllerGetOneMerchantResponseSuccess)
 
-export const getToolsControllerGetOneMerchantUrl = (id: string,
-    params?: ToolsControllerGetOneMerchantParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getToolsControllerGetOneMerchantUrl = (id: string,) => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/tools/merchants/${id}?${stringifiedParams}` : `/tools/merchants/${id}`
+  return `/tools/merchants/${id}`
 }
 
-export const toolsControllerGetOneMerchant = async (id: string,
-    params?: ToolsControllerGetOneMerchantParams, options?: RequestInit): Promise<toolsControllerGetOneMerchantResponse> => {
+export const toolsControllerGetOneMerchant = async (id: string, options?: RequestInit): Promise<toolsControllerGetOneMerchantResponse> => {
 
-  return customInstance<toolsControllerGetOneMerchantResponse>(getToolsControllerGetOneMerchantUrl(id,params),
+  return customInstance<toolsControllerGetOneMerchantResponse>(getToolsControllerGetOneMerchantUrl(id),
   {
     ...options,
     method: 'GET'
@@ -641,25 +510,23 @@ export const toolsControllerGetOneMerchant = async (id: string,
 
 
 
-export const getToolsControllerGetOneMerchantQueryKey = (id: string,
-    params?: ToolsControllerGetOneMerchantParams,) => {
+export const getToolsControllerGetOneMerchantQueryKey = (id: string,) => {
     return [
-    `/tools/merchants/${id}`, ...(params ? [params] : [])
+    `/tools/merchants/${id}`
     ] as const;
     }
 
 
-export const getToolsControllerGetOneMerchantQueryOptions = <TData = Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>, TError = ErrorType<BasicResponse>>(id: string,
-    params?: ToolsControllerGetOneMerchantParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getToolsControllerGetOneMerchantQueryOptions = <TData = Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>, TError = ErrorType<unknown>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getToolsControllerGetOneMerchantQueryKey(id,params);
+  const queryKey =  queryOptions?.queryKey ?? getToolsControllerGetOneMerchantQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>> = ({ signal }) => toolsControllerGetOneMerchant(id,params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>> = ({ signal }) => toolsControllerGetOneMerchant(id, { signal, ...requestOptions });
 
 
 
@@ -669,12 +536,11 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ToolsControllerGetOneMerchantQueryResult = NonNullable<Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>>
-export type ToolsControllerGetOneMerchantQueryError = ErrorType<BasicResponse>
+export type ToolsControllerGetOneMerchantQueryError = ErrorType<unknown>
 
 
-export function useToolsControllerGetOneMerchant<TData = Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params: undefined |  ToolsControllerGetOneMerchantParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>, TError, TData>> & Pick<
+export function useToolsControllerGetOneMerchant<TData = Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>, TError = ErrorType<unknown>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>,
           TError,
@@ -683,9 +549,8 @@ export function useToolsControllerGetOneMerchant<TData = Awaited<ReturnType<type
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useToolsControllerGetOneMerchant<TData = Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params?: ToolsControllerGetOneMerchantParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>, TError, TData>> & Pick<
+export function useToolsControllerGetOneMerchant<TData = Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>,
           TError,
@@ -694,22 +559,20 @@ export function useToolsControllerGetOneMerchant<TData = Awaited<ReturnType<type
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useToolsControllerGetOneMerchant<TData = Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params?: ToolsControllerGetOneMerchantParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useToolsControllerGetOneMerchant<TData = Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Get One Merchant
+ * @summary Get Bank list
  */
 
-export function useToolsControllerGetOneMerchant<TData = Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params?: ToolsControllerGetOneMerchantParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useToolsControllerGetOneMerchant<TData = Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetOneMerchant>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getToolsControllerGetOneMerchantQueryOptions(id,params,options)
+  const queryOptions = getToolsControllerGetOneMerchantQueryOptions(id,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -723,52 +586,28 @@ export function useToolsControllerGetOneMerchant<TData = Awaited<ReturnType<type
  * @summary Get Current FX Rate
  */
 export type toolsControllerGetFxRateResponse200 = {
-  data: ResponseWrapperFxRate
+  data: void
   status: 200
-}
-
-export type toolsControllerGetFxRateResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type toolsControllerGetFxRateResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type toolsControllerGetFxRateResponse403 = {
-  data: BasicResponse
-  status: 403
 }
 
 export type toolsControllerGetFxRateResponseSuccess = (toolsControllerGetFxRateResponse200) & {
   headers: Headers;
 };
-export type toolsControllerGetFxRateResponseError = (toolsControllerGetFxRateResponse400 | toolsControllerGetFxRateResponse401 | toolsControllerGetFxRateResponse403) & {
-  headers: Headers;
-};
+;
 
-export type toolsControllerGetFxRateResponse = (toolsControllerGetFxRateResponseSuccess | toolsControllerGetFxRateResponseError)
+export type toolsControllerGetFxRateResponse = (toolsControllerGetFxRateResponseSuccess)
 
-export const getToolsControllerGetFxRateUrl = (params?: ToolsControllerGetFxRateParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getToolsControllerGetFxRateUrl = () => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/tools/fx/rate?${stringifiedParams}` : `/tools/fx/rate`
+  return `/tools/fx/rate`
 }
 
-export const toolsControllerGetFxRate = async (params?: ToolsControllerGetFxRateParams, options?: RequestInit): Promise<toolsControllerGetFxRateResponse> => {
+export const toolsControllerGetFxRate = async ( options?: RequestInit): Promise<toolsControllerGetFxRateResponse> => {
 
-  return customInstance<toolsControllerGetFxRateResponse>(getToolsControllerGetFxRateUrl(params),
+  return customInstance<toolsControllerGetFxRateResponse>(getToolsControllerGetFxRateUrl(),
   {
     ...options,
     method: 'GET'
@@ -781,23 +620,23 @@ export const toolsControllerGetFxRate = async (params?: ToolsControllerGetFxRate
 
 
 
-export const getToolsControllerGetFxRateQueryKey = (params?: ToolsControllerGetFxRateParams,) => {
+export const getToolsControllerGetFxRateQueryKey = () => {
     return [
-    `/tools/fx/rate`, ...(params ? [params] : [])
+    `/tools/fx/rate`
     ] as const;
     }
 
 
-export const getToolsControllerGetFxRateQueryOptions = <TData = Awaited<ReturnType<typeof toolsControllerGetFxRate>>, TError = ErrorType<BasicResponse>>(params?: ToolsControllerGetFxRateParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetFxRate>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getToolsControllerGetFxRateQueryOptions = <TData = Awaited<ReturnType<typeof toolsControllerGetFxRate>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetFxRate>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getToolsControllerGetFxRateQueryKey(params);
+  const queryKey =  queryOptions?.queryKey ?? getToolsControllerGetFxRateQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof toolsControllerGetFxRate>>> = ({ signal }) => toolsControllerGetFxRate(params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof toolsControllerGetFxRate>>> = ({ signal }) => toolsControllerGetFxRate({ signal, ...requestOptions });
 
 
 
@@ -807,11 +646,11 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ToolsControllerGetFxRateQueryResult = NonNullable<Awaited<ReturnType<typeof toolsControllerGetFxRate>>>
-export type ToolsControllerGetFxRateQueryError = ErrorType<BasicResponse>
+export type ToolsControllerGetFxRateQueryError = ErrorType<unknown>
 
 
-export function useToolsControllerGetFxRate<TData = Awaited<ReturnType<typeof toolsControllerGetFxRate>>, TError = ErrorType<BasicResponse>>(
- params: undefined |  ToolsControllerGetFxRateParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetFxRate>>, TError, TData>> & Pick<
+export function useToolsControllerGetFxRate<TData = Awaited<ReturnType<typeof toolsControllerGetFxRate>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetFxRate>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof toolsControllerGetFxRate>>,
           TError,
@@ -820,8 +659,8 @@ export function useToolsControllerGetFxRate<TData = Awaited<ReturnType<typeof to
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useToolsControllerGetFxRate<TData = Awaited<ReturnType<typeof toolsControllerGetFxRate>>, TError = ErrorType<BasicResponse>>(
- params?: ToolsControllerGetFxRateParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetFxRate>>, TError, TData>> & Pick<
+export function useToolsControllerGetFxRate<TData = Awaited<ReturnType<typeof toolsControllerGetFxRate>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetFxRate>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof toolsControllerGetFxRate>>,
           TError,
@@ -830,20 +669,20 @@ export function useToolsControllerGetFxRate<TData = Awaited<ReturnType<typeof to
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useToolsControllerGetFxRate<TData = Awaited<ReturnType<typeof toolsControllerGetFxRate>>, TError = ErrorType<BasicResponse>>(
- params?: ToolsControllerGetFxRateParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetFxRate>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useToolsControllerGetFxRate<TData = Awaited<ReturnType<typeof toolsControllerGetFxRate>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetFxRate>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get Current FX Rate
  */
 
-export function useToolsControllerGetFxRate<TData = Awaited<ReturnType<typeof toolsControllerGetFxRate>>, TError = ErrorType<BasicResponse>>(
- params?: ToolsControllerGetFxRateParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetFxRate>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useToolsControllerGetFxRate<TData = Awaited<ReturnType<typeof toolsControllerGetFxRate>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof toolsControllerGetFxRate>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getToolsControllerGetFxRateQueryOptions(params,options)
+  const queryOptions = getToolsControllerGetFxRateQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -856,34 +695,17 @@ export function useToolsControllerGetFxRate<TData = Awaited<ReturnType<typeof to
 /**
  * @summary Get FX Quote
  */
-export type toolsControllerGetFxQuoteResponse200 = {
-  data: ResponseWrapperFxQuote
-  status: 200
+export type toolsControllerGetFxQuoteResponse201 = {
+  data: void
+  status: 201
 }
 
-export type toolsControllerGetFxQuoteResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type toolsControllerGetFxQuoteResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type toolsControllerGetFxQuoteResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type toolsControllerGetFxQuoteResponseSuccess = (toolsControllerGetFxQuoteResponse200) & {
+export type toolsControllerGetFxQuoteResponseSuccess = (toolsControllerGetFxQuoteResponse201) & {
   headers: Headers;
 };
-export type toolsControllerGetFxQuoteResponseError = (toolsControllerGetFxQuoteResponse400 | toolsControllerGetFxQuoteResponse401 | toolsControllerGetFxQuoteResponse403) & {
-  headers: Headers;
-};
+;
 
-export type toolsControllerGetFxQuoteResponse = (toolsControllerGetFxQuoteResponseSuccess | toolsControllerGetFxQuoteResponseError)
+export type toolsControllerGetFxQuoteResponse = (toolsControllerGetFxQuoteResponseSuccess)
 
 export const getToolsControllerGetFxQuoteUrl = () => {
 
@@ -893,24 +715,23 @@ export const getToolsControllerGetFxQuoteUrl = () => {
   return `/tools/fx/quote`
 }
 
-export const toolsControllerGetFxQuote = async (fxQuoteDto: FxQuoteDto, options?: RequestInit): Promise<toolsControllerGetFxQuoteResponse> => {
+export const toolsControllerGetFxQuote = async ( options?: RequestInit): Promise<toolsControllerGetFxQuoteResponse> => {
 
   return customInstance<toolsControllerGetFxQuoteResponse>(getToolsControllerGetFxQuoteUrl(),
   {
     ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      fxQuoteDto,)
+    method: 'POST'
+
+
   }
 );}
 
 
 
 
-export const getToolsControllerGetFxQuoteMutationOptions = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof toolsControllerGetFxQuote>>, TError,{data: FxQuoteDto}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof toolsControllerGetFxQuote>>, TError,{data: FxQuoteDto}, TContext> => {
+export const getToolsControllerGetFxQuoteMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof toolsControllerGetFxQuote>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof toolsControllerGetFxQuote>>, TError,void, TContext> => {
 
 const mutationKey = ['toolsControllerGetFxQuote'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -922,10 +743,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof toolsControllerGetFxQuote>>, {data: FxQuoteDto}> = (props) => {
-          const {data} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof toolsControllerGetFxQuote>>, void> = () => {
 
-          return  toolsControllerGetFxQuote(data,requestOptions)
+
+          return  toolsControllerGetFxQuote(requestOptions)
         }
 
 
@@ -936,18 +757,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type ToolsControllerGetFxQuoteMutationResult = NonNullable<Awaited<ReturnType<typeof toolsControllerGetFxQuote>>>
-    export type ToolsControllerGetFxQuoteMutationBody = FxQuoteDto
-    export type ToolsControllerGetFxQuoteMutationError = ErrorType<BasicResponse>
+
+    export type ToolsControllerGetFxQuoteMutationError = ErrorType<unknown>
 
     /**
  * @summary Get FX Quote
  */
-export const useToolsControllerGetFxQuote = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof toolsControllerGetFxQuote>>, TError,{data: FxQuoteDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+export const useToolsControllerGetFxQuote = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof toolsControllerGetFxQuote>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof toolsControllerGetFxQuote>>,
         TError,
-        {data: FxQuoteDto},
+        void,
         TContext
       > => {
       return useMutation(getToolsControllerGetFxQuoteMutationOptions(options), queryClient);
@@ -955,34 +776,17 @@ export const useToolsControllerGetFxQuote = <TError = ErrorType<BasicResponse>,
     /**
  * @summary Get FX Buy Quote
  */
-export type toolsControllerGetFxBuyQuoteResponse200 = {
-  data: ResponseWrapperFxQuote
-  status: 200
+export type toolsControllerGetFxBuyQuoteResponse201 = {
+  data: void
+  status: 201
 }
 
-export type toolsControllerGetFxBuyQuoteResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type toolsControllerGetFxBuyQuoteResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type toolsControllerGetFxBuyQuoteResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type toolsControllerGetFxBuyQuoteResponseSuccess = (toolsControllerGetFxBuyQuoteResponse200) & {
+export type toolsControllerGetFxBuyQuoteResponseSuccess = (toolsControllerGetFxBuyQuoteResponse201) & {
   headers: Headers;
 };
-export type toolsControllerGetFxBuyQuoteResponseError = (toolsControllerGetFxBuyQuoteResponse400 | toolsControllerGetFxBuyQuoteResponse401 | toolsControllerGetFxBuyQuoteResponse403) & {
-  headers: Headers;
-};
+;
 
-export type toolsControllerGetFxBuyQuoteResponse = (toolsControllerGetFxBuyQuoteResponseSuccess | toolsControllerGetFxBuyQuoteResponseError)
+export type toolsControllerGetFxBuyQuoteResponse = (toolsControllerGetFxBuyQuoteResponseSuccess)
 
 export const getToolsControllerGetFxBuyQuoteUrl = () => {
 
@@ -992,24 +796,23 @@ export const getToolsControllerGetFxBuyQuoteUrl = () => {
   return `/tools/fx/quote/buy`
 }
 
-export const toolsControllerGetFxBuyQuote = async (fxBuyQuoteDto: FxBuyQuoteDto, options?: RequestInit): Promise<toolsControllerGetFxBuyQuoteResponse> => {
+export const toolsControllerGetFxBuyQuote = async ( options?: RequestInit): Promise<toolsControllerGetFxBuyQuoteResponse> => {
 
   return customInstance<toolsControllerGetFxBuyQuoteResponse>(getToolsControllerGetFxBuyQuoteUrl(),
   {
     ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      fxBuyQuoteDto,)
+    method: 'POST'
+
+
   }
 );}
 
 
 
 
-export const getToolsControllerGetFxBuyQuoteMutationOptions = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof toolsControllerGetFxBuyQuote>>, TError,{data: FxBuyQuoteDto}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof toolsControllerGetFxBuyQuote>>, TError,{data: FxBuyQuoteDto}, TContext> => {
+export const getToolsControllerGetFxBuyQuoteMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof toolsControllerGetFxBuyQuote>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof toolsControllerGetFxBuyQuote>>, TError,void, TContext> => {
 
 const mutationKey = ['toolsControllerGetFxBuyQuote'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -1021,10 +824,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof toolsControllerGetFxBuyQuote>>, {data: FxBuyQuoteDto}> = (props) => {
-          const {data} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof toolsControllerGetFxBuyQuote>>, void> = () => {
 
-          return  toolsControllerGetFxBuyQuote(data,requestOptions)
+
+          return  toolsControllerGetFxBuyQuote(requestOptions)
         }
 
 
@@ -1035,18 +838,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type ToolsControllerGetFxBuyQuoteMutationResult = NonNullable<Awaited<ReturnType<typeof toolsControllerGetFxBuyQuote>>>
-    export type ToolsControllerGetFxBuyQuoteMutationBody = FxBuyQuoteDto
-    export type ToolsControllerGetFxBuyQuoteMutationError = ErrorType<BasicResponse>
+
+    export type ToolsControllerGetFxBuyQuoteMutationError = ErrorType<unknown>
 
     /**
  * @summary Get FX Buy Quote
  */
-export const useToolsControllerGetFxBuyQuote = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof toolsControllerGetFxBuyQuote>>, TError,{data: FxBuyQuoteDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+export const useToolsControllerGetFxBuyQuote = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof toolsControllerGetFxBuyQuote>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof toolsControllerGetFxBuyQuote>>,
         TError,
-        {data: FxBuyQuoteDto},
+        void,
         TContext
       > => {
       return useMutation(getToolsControllerGetFxBuyQuoteMutationOptions(options), queryClient);
@@ -1054,34 +857,17 @@ export const useToolsControllerGetFxBuyQuote = <TError = ErrorType<BasicResponse
     /**
  * @summary Get FX Sell Quote
  */
-export type toolsControllerGetFxSellQuoteResponse200 = {
-  data: ResponseWrapperFxQuote
-  status: 200
+export type toolsControllerGetFxSellQuoteResponse201 = {
+  data: void
+  status: 201
 }
 
-export type toolsControllerGetFxSellQuoteResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type toolsControllerGetFxSellQuoteResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type toolsControllerGetFxSellQuoteResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type toolsControllerGetFxSellQuoteResponseSuccess = (toolsControllerGetFxSellQuoteResponse200) & {
+export type toolsControllerGetFxSellQuoteResponseSuccess = (toolsControllerGetFxSellQuoteResponse201) & {
   headers: Headers;
 };
-export type toolsControllerGetFxSellQuoteResponseError = (toolsControllerGetFxSellQuoteResponse400 | toolsControllerGetFxSellQuoteResponse401 | toolsControllerGetFxSellQuoteResponse403) & {
-  headers: Headers;
-};
+;
 
-export type toolsControllerGetFxSellQuoteResponse = (toolsControllerGetFxSellQuoteResponseSuccess | toolsControllerGetFxSellQuoteResponseError)
+export type toolsControllerGetFxSellQuoteResponse = (toolsControllerGetFxSellQuoteResponseSuccess)
 
 export const getToolsControllerGetFxSellQuoteUrl = () => {
 
@@ -1091,24 +877,23 @@ export const getToolsControllerGetFxSellQuoteUrl = () => {
   return `/tools/fx/quote/sell`
 }
 
-export const toolsControllerGetFxSellQuote = async (fxSellQuoteDto: FxSellQuoteDto, options?: RequestInit): Promise<toolsControllerGetFxSellQuoteResponse> => {
+export const toolsControllerGetFxSellQuote = async ( options?: RequestInit): Promise<toolsControllerGetFxSellQuoteResponse> => {
 
   return customInstance<toolsControllerGetFxSellQuoteResponse>(getToolsControllerGetFxSellQuoteUrl(),
   {
     ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      fxSellQuoteDto,)
+    method: 'POST'
+
+
   }
 );}
 
 
 
 
-export const getToolsControllerGetFxSellQuoteMutationOptions = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof toolsControllerGetFxSellQuote>>, TError,{data: FxSellQuoteDto}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof toolsControllerGetFxSellQuote>>, TError,{data: FxSellQuoteDto}, TContext> => {
+export const getToolsControllerGetFxSellQuoteMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof toolsControllerGetFxSellQuote>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof toolsControllerGetFxSellQuote>>, TError,void, TContext> => {
 
 const mutationKey = ['toolsControllerGetFxSellQuote'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -1120,10 +905,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof toolsControllerGetFxSellQuote>>, {data: FxSellQuoteDto}> = (props) => {
-          const {data} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof toolsControllerGetFxSellQuote>>, void> = () => {
 
-          return  toolsControllerGetFxSellQuote(data,requestOptions)
+
+          return  toolsControllerGetFxSellQuote(requestOptions)
         }
 
 
@@ -1134,18 +919,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type ToolsControllerGetFxSellQuoteMutationResult = NonNullable<Awaited<ReturnType<typeof toolsControllerGetFxSellQuote>>>
-    export type ToolsControllerGetFxSellQuoteMutationBody = FxSellQuoteDto
-    export type ToolsControllerGetFxSellQuoteMutationError = ErrorType<BasicResponse>
+
+    export type ToolsControllerGetFxSellQuoteMutationError = ErrorType<unknown>
 
     /**
  * @summary Get FX Sell Quote
  */
-export const useToolsControllerGetFxSellQuote = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof toolsControllerGetFxSellQuote>>, TError,{data: FxSellQuoteDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+export const useToolsControllerGetFxSellQuote = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof toolsControllerGetFxSellQuote>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof toolsControllerGetFxSellQuote>>,
         TError,
-        {data: FxSellQuoteDto},
+        void,
         TContext
       > => {
       return useMutation(getToolsControllerGetFxSellQuoteMutationOptions(options), queryClient);
@@ -1154,33 +939,16 @@ export const useToolsControllerGetFxSellQuote = <TError = ErrorType<BasicRespons
  * @summary Upload Temp File
  */
 export type toolsControllerUploadTempFileResponse200 = {
-  data: ResponseWrapperTempFileUploadResult
+  data: void
   status: 200
-}
-
-export type toolsControllerUploadTempFileResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type toolsControllerUploadTempFileResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type toolsControllerUploadTempFileResponse403 = {
-  data: BasicResponse
-  status: 403
 }
 
 export type toolsControllerUploadTempFileResponseSuccess = (toolsControllerUploadTempFileResponse200) & {
   headers: Headers;
 };
-export type toolsControllerUploadTempFileResponseError = (toolsControllerUploadTempFileResponse400 | toolsControllerUploadTempFileResponse401 | toolsControllerUploadTempFileResponse403) & {
-  headers: Headers;
-};
+;
 
-export type toolsControllerUploadTempFileResponse = (toolsControllerUploadTempFileResponseSuccess | toolsControllerUploadTempFileResponseError)
+export type toolsControllerUploadTempFileResponse = (toolsControllerUploadTempFileResponseSuccess)
 
 export const getToolsControllerUploadTempFileUrl = () => {
 
@@ -1204,7 +972,7 @@ export const toolsControllerUploadTempFile = async ( options?: RequestInit): Pro
 
 
 
-export const getToolsControllerUploadTempFileMutationOptions = <TError = ErrorType<BasicResponse>,
+export const getToolsControllerUploadTempFileMutationOptions = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof toolsControllerUploadTempFile>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof toolsControllerUploadTempFile>>, TError,void, TContext> => {
 
@@ -1233,12 +1001,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ToolsControllerUploadTempFileMutationResult = NonNullable<Awaited<ReturnType<typeof toolsControllerUploadTempFile>>>
 
-    export type ToolsControllerUploadTempFileMutationError = ErrorType<BasicResponse>
+    export type ToolsControllerUploadTempFileMutationError = ErrorType<unknown>
 
     /**
  * @summary Upload Temp File
  */
-export const useToolsControllerUploadTempFile = <TError = ErrorType<BasicResponse>,
+export const useToolsControllerUploadTempFile = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof toolsControllerUploadTempFile>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof toolsControllerUploadTempFile>>,
@@ -1252,33 +1020,16 @@ export const useToolsControllerUploadTempFile = <TError = ErrorType<BasicRespons
  * @summary Delete Temp File
  */
 export type toolsControllerDeleteUploadTempFileResponse200 = {
-  data: BasicResponse
+  data: void
   status: 200
-}
-
-export type toolsControllerDeleteUploadTempFileResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type toolsControllerDeleteUploadTempFileResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type toolsControllerDeleteUploadTempFileResponse403 = {
-  data: BasicResponse
-  status: 403
 }
 
 export type toolsControllerDeleteUploadTempFileResponseSuccess = (toolsControllerDeleteUploadTempFileResponse200) & {
   headers: Headers;
 };
-export type toolsControllerDeleteUploadTempFileResponseError = (toolsControllerDeleteUploadTempFileResponse400 | toolsControllerDeleteUploadTempFileResponse401 | toolsControllerDeleteUploadTempFileResponse403) & {
-  headers: Headers;
-};
+;
 
-export type toolsControllerDeleteUploadTempFileResponse = (toolsControllerDeleteUploadTempFileResponseSuccess | toolsControllerDeleteUploadTempFileResponseError)
+export type toolsControllerDeleteUploadTempFileResponse = (toolsControllerDeleteUploadTempFileResponseSuccess)
 
 export const getToolsControllerDeleteUploadTempFileUrl = (id: string,) => {
 
@@ -1302,7 +1053,7 @@ export const toolsControllerDeleteUploadTempFile = async (id: string, options?: 
 
 
 
-export const getToolsControllerDeleteUploadTempFileMutationOptions = <TError = ErrorType<BasicResponse>,
+export const getToolsControllerDeleteUploadTempFileMutationOptions = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof toolsControllerDeleteUploadTempFile>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof toolsControllerDeleteUploadTempFile>>, TError,{id: string}, TContext> => {
 
@@ -1331,12 +1082,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type ToolsControllerDeleteUploadTempFileMutationResult = NonNullable<Awaited<ReturnType<typeof toolsControllerDeleteUploadTempFile>>>
 
-    export type ToolsControllerDeleteUploadTempFileMutationError = ErrorType<BasicResponse>
+    export type ToolsControllerDeleteUploadTempFileMutationError = ErrorType<unknown>
 
     /**
  * @summary Delete Temp File
  */
-export const useToolsControllerDeleteUploadTempFile = <TError = ErrorType<BasicResponse>,
+export const useToolsControllerDeleteUploadTempFile = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof toolsControllerDeleteUploadTempFile>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof toolsControllerDeleteUploadTempFile>>,

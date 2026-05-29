@@ -25,17 +25,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
-  AccountControllerGetLogCSVParams,
-  AccountControllerGetLogsParams,
-  AccountControllerGetOneParams,
-  AccountControllerGetParams,
-  AccountControllerGetStatementPDFParams,
-  AddDepositChannelDto,
-  BasicResponse,
-  CreateAccountDto,
-  RequestOverdraftDto,
-  ResponseWrapperApiHydratedAccount,
-  ResponseWrapperApiHydratedAccountList
+  RequestOverdraftDto
 } from '../model';
 
 import { customInstance } from '../../lib/orvalClient';
@@ -50,52 +40,28 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Get All Accounts
  */
 export type accountControllerGetResponse200 = {
-  data: ResponseWrapperApiHydratedAccountList
+  data: void
   status: 200
-}
-
-export type accountControllerGetResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type accountControllerGetResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type accountControllerGetResponse403 = {
-  data: BasicResponse
-  status: 403
 }
 
 export type accountControllerGetResponseSuccess = (accountControllerGetResponse200) & {
   headers: Headers;
 };
-export type accountControllerGetResponseError = (accountControllerGetResponse400 | accountControllerGetResponse401 | accountControllerGetResponse403) & {
-  headers: Headers;
-};
+;
 
-export type accountControllerGetResponse = (accountControllerGetResponseSuccess | accountControllerGetResponseError)
+export type accountControllerGetResponse = (accountControllerGetResponseSuccess)
 
-export const getAccountControllerGetUrl = (params?: AccountControllerGetParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getAccountControllerGetUrl = () => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/accounts?${stringifiedParams}` : `/accounts`
+  return `/accounts`
 }
 
-export const accountControllerGet = async (params?: AccountControllerGetParams, options?: RequestInit): Promise<accountControllerGetResponse> => {
+export const accountControllerGet = async ( options?: RequestInit): Promise<accountControllerGetResponse> => {
 
-  return customInstance<accountControllerGetResponse>(getAccountControllerGetUrl(params),
+  return customInstance<accountControllerGetResponse>(getAccountControllerGetUrl(),
   {
     ...options,
     method: 'GET'
@@ -108,23 +74,23 @@ export const accountControllerGet = async (params?: AccountControllerGetParams, 
 
 
 
-export const getAccountControllerGetQueryKey = (params?: AccountControllerGetParams,) => {
+export const getAccountControllerGetQueryKey = () => {
     return [
-    `/accounts`, ...(params ? [params] : [])
+    `/accounts`
     ] as const;
     }
 
 
-export const getAccountControllerGetQueryOptions = <TData = Awaited<ReturnType<typeof accountControllerGet>>, TError = ErrorType<BasicResponse>>(params?: AccountControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getAccountControllerGetQueryOptions = <TData = Awaited<ReturnType<typeof accountControllerGet>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getAccountControllerGetQueryKey(params);
+  const queryKey =  queryOptions?.queryKey ?? getAccountControllerGetQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof accountControllerGet>>> = ({ signal }) => accountControllerGet(params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof accountControllerGet>>> = ({ signal }) => accountControllerGet({ signal, ...requestOptions });
 
 
 
@@ -134,11 +100,11 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AccountControllerGetQueryResult = NonNullable<Awaited<ReturnType<typeof accountControllerGet>>>
-export type AccountControllerGetQueryError = ErrorType<BasicResponse>
+export type AccountControllerGetQueryError = ErrorType<unknown>
 
 
-export function useAccountControllerGet<TData = Awaited<ReturnType<typeof accountControllerGet>>, TError = ErrorType<BasicResponse>>(
- params: undefined |  AccountControllerGetParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGet>>, TError, TData>> & Pick<
+export function useAccountControllerGet<TData = Awaited<ReturnType<typeof accountControllerGet>>, TError = ErrorType<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGet>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof accountControllerGet>>,
           TError,
@@ -147,8 +113,8 @@ export function useAccountControllerGet<TData = Awaited<ReturnType<typeof accoun
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useAccountControllerGet<TData = Awaited<ReturnType<typeof accountControllerGet>>, TError = ErrorType<BasicResponse>>(
- params?: AccountControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGet>>, TError, TData>> & Pick<
+export function useAccountControllerGet<TData = Awaited<ReturnType<typeof accountControllerGet>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGet>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof accountControllerGet>>,
           TError,
@@ -157,20 +123,20 @@ export function useAccountControllerGet<TData = Awaited<ReturnType<typeof accoun
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useAccountControllerGet<TData = Awaited<ReturnType<typeof accountControllerGet>>, TError = ErrorType<BasicResponse>>(
- params?: AccountControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useAccountControllerGet<TData = Awaited<ReturnType<typeof accountControllerGet>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get All Accounts
  */
 
-export function useAccountControllerGet<TData = Awaited<ReturnType<typeof accountControllerGet>>, TError = ErrorType<BasicResponse>>(
- params?: AccountControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useAccountControllerGet<TData = Awaited<ReturnType<typeof accountControllerGet>>, TError = ErrorType<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getAccountControllerGetQueryOptions(params,options)
+  const queryOptions = getAccountControllerGetQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -181,36 +147,19 @@ export function useAccountControllerGet<TData = Awaited<ReturnType<typeof accoun
 
 
 /**
- * @summary Create Account
+ * @summary Create Accounts
  */
 export type accountControllerCreateResponse201 = {
-  data: ResponseWrapperApiHydratedAccount
+  data: void
   status: 201
-}
-
-export type accountControllerCreateResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type accountControllerCreateResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type accountControllerCreateResponse403 = {
-  data: BasicResponse
-  status: 403
 }
 
 export type accountControllerCreateResponseSuccess = (accountControllerCreateResponse201) & {
   headers: Headers;
 };
-export type accountControllerCreateResponseError = (accountControllerCreateResponse400 | accountControllerCreateResponse401 | accountControllerCreateResponse403) & {
-  headers: Headers;
-};
+;
 
-export type accountControllerCreateResponse = (accountControllerCreateResponseSuccess | accountControllerCreateResponseError)
+export type accountControllerCreateResponse = (accountControllerCreateResponseSuccess)
 
 export const getAccountControllerCreateUrl = () => {
 
@@ -220,24 +169,23 @@ export const getAccountControllerCreateUrl = () => {
   return `/accounts`
 }
 
-export const accountControllerCreate = async (createAccountDto: CreateAccountDto, options?: RequestInit): Promise<accountControllerCreateResponse> => {
+export const accountControllerCreate = async ( options?: RequestInit): Promise<accountControllerCreateResponse> => {
 
   return customInstance<accountControllerCreateResponse>(getAccountControllerCreateUrl(),
   {
     ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      createAccountDto,)
+    method: 'POST'
+
+
   }
 );}
 
 
 
 
-export const getAccountControllerCreateMutationOptions = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof accountControllerCreate>>, TError,{data: CreateAccountDto}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof accountControllerCreate>>, TError,{data: CreateAccountDto}, TContext> => {
+export const getAccountControllerCreateMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof accountControllerCreate>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof accountControllerCreate>>, TError,void, TContext> => {
 
 const mutationKey = ['accountControllerCreate'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -249,10 +197,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof accountControllerCreate>>, {data: CreateAccountDto}> = (props) => {
-          const {data} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof accountControllerCreate>>, void> = () => {
 
-          return  accountControllerCreate(data,requestOptions)
+
+          return  accountControllerCreate(requestOptions)
         }
 
 
@@ -263,18 +211,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type AccountControllerCreateMutationResult = NonNullable<Awaited<ReturnType<typeof accountControllerCreate>>>
-    export type AccountControllerCreateMutationBody = CreateAccountDto
-    export type AccountControllerCreateMutationError = ErrorType<BasicResponse>
+
+    export type AccountControllerCreateMutationError = ErrorType<unknown>
 
     /**
- * @summary Create Account
+ * @summary Create Accounts
  */
-export const useAccountControllerCreate = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof accountControllerCreate>>, TError,{data: CreateAccountDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+export const useAccountControllerCreate = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof accountControllerCreate>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof accountControllerCreate>>,
         TError,
-        {data: CreateAccountDto},
+        void,
         TContext
       > => {
       return useMutation(getAccountControllerCreateMutationOptions(options), queryClient);
@@ -283,59 +231,28 @@ export const useAccountControllerCreate = <TError = ErrorType<BasicResponse>,
  * @summary Get One Account
  */
 export type accountControllerGetOneResponse200 = {
-  data: ResponseWrapperApiHydratedAccount
+  data: void
   status: 200
-}
-
-export type accountControllerGetOneResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type accountControllerGetOneResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type accountControllerGetOneResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type accountControllerGetOneResponse404 = {
-  data: BasicResponse
-  status: 404
 }
 
 export type accountControllerGetOneResponseSuccess = (accountControllerGetOneResponse200) & {
   headers: Headers;
 };
-export type accountControllerGetOneResponseError = (accountControllerGetOneResponse400 | accountControllerGetOneResponse401 | accountControllerGetOneResponse403 | accountControllerGetOneResponse404) & {
-  headers: Headers;
-};
+;
 
-export type accountControllerGetOneResponse = (accountControllerGetOneResponseSuccess | accountControllerGetOneResponseError)
+export type accountControllerGetOneResponse = (accountControllerGetOneResponseSuccess)
 
-export const getAccountControllerGetOneUrl = (id: string,
-    params?: AccountControllerGetOneParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getAccountControllerGetOneUrl = (id: string,) => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/accounts/${id}?${stringifiedParams}` : `/accounts/${id}`
+  return `/accounts/${id}`
 }
 
-export const accountControllerGetOne = async (id: string,
-    params?: AccountControllerGetOneParams, options?: RequestInit): Promise<accountControllerGetOneResponse> => {
+export const accountControllerGetOne = async (id: string, options?: RequestInit): Promise<accountControllerGetOneResponse> => {
 
-  return customInstance<accountControllerGetOneResponse>(getAccountControllerGetOneUrl(id,params),
+  return customInstance<accountControllerGetOneResponse>(getAccountControllerGetOneUrl(id),
   {
     ...options,
     method: 'GET'
@@ -348,25 +265,23 @@ export const accountControllerGetOne = async (id: string,
 
 
 
-export const getAccountControllerGetOneQueryKey = (id: string,
-    params?: AccountControllerGetOneParams,) => {
+export const getAccountControllerGetOneQueryKey = (id: string,) => {
     return [
-    `/accounts/${id}`, ...(params ? [params] : [])
+    `/accounts/${id}`
     ] as const;
     }
 
 
-export const getAccountControllerGetOneQueryOptions = <TData = Awaited<ReturnType<typeof accountControllerGetOne>>, TError = ErrorType<BasicResponse>>(id: string,
-    params?: AccountControllerGetOneParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getAccountControllerGetOneQueryOptions = <TData = Awaited<ReturnType<typeof accountControllerGetOne>>, TError = ErrorType<unknown>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getAccountControllerGetOneQueryKey(id,params);
+  const queryKey =  queryOptions?.queryKey ?? getAccountControllerGetOneQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof accountControllerGetOne>>> = ({ signal }) => accountControllerGetOne(id,params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof accountControllerGetOne>>> = ({ signal }) => accountControllerGetOne(id, { signal, ...requestOptions });
 
 
 
@@ -376,12 +291,11 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AccountControllerGetOneQueryResult = NonNullable<Awaited<ReturnType<typeof accountControllerGetOne>>>
-export type AccountControllerGetOneQueryError = ErrorType<BasicResponse>
+export type AccountControllerGetOneQueryError = ErrorType<unknown>
 
 
-export function useAccountControllerGetOne<TData = Awaited<ReturnType<typeof accountControllerGetOne>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params: undefined |  AccountControllerGetOneParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetOne>>, TError, TData>> & Pick<
+export function useAccountControllerGetOne<TData = Awaited<ReturnType<typeof accountControllerGetOne>>, TError = ErrorType<unknown>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetOne>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof accountControllerGetOne>>,
           TError,
@@ -390,9 +304,8 @@ export function useAccountControllerGetOne<TData = Awaited<ReturnType<typeof acc
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useAccountControllerGetOne<TData = Awaited<ReturnType<typeof accountControllerGetOne>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params?: AccountControllerGetOneParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetOne>>, TError, TData>> & Pick<
+export function useAccountControllerGetOne<TData = Awaited<ReturnType<typeof accountControllerGetOne>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetOne>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof accountControllerGetOne>>,
           TError,
@@ -401,22 +314,20 @@ export function useAccountControllerGetOne<TData = Awaited<ReturnType<typeof acc
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useAccountControllerGetOne<TData = Awaited<ReturnType<typeof accountControllerGetOne>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params?: AccountControllerGetOneParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useAccountControllerGetOne<TData = Awaited<ReturnType<typeof accountControllerGetOne>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get One Account
  */
 
-export function useAccountControllerGetOne<TData = Awaited<ReturnType<typeof accountControllerGetOne>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params?: AccountControllerGetOneParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useAccountControllerGetOne<TData = Awaited<ReturnType<typeof accountControllerGetOne>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getAccountControllerGetOneQueryOptions(id,params,options)
+  const queryOptions = getAccountControllerGetOneQueryOptions(id,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -430,38 +341,16 @@ export function useAccountControllerGetOne<TData = Awaited<ReturnType<typeof acc
  * @summary Get Account Balance
  */
 export type accountControllerGetBalanceResponse200 = {
-  data: BasicResponse
+  data: void
   status: 200
-}
-
-export type accountControllerGetBalanceResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type accountControllerGetBalanceResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type accountControllerGetBalanceResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type accountControllerGetBalanceResponse404 = {
-  data: BasicResponse
-  status: 404
 }
 
 export type accountControllerGetBalanceResponseSuccess = (accountControllerGetBalanceResponse200) & {
   headers: Headers;
 };
-export type accountControllerGetBalanceResponseError = (accountControllerGetBalanceResponse400 | accountControllerGetBalanceResponse401 | accountControllerGetBalanceResponse403 | accountControllerGetBalanceResponse404) & {
-  headers: Headers;
-};
+;
 
-export type accountControllerGetBalanceResponse = (accountControllerGetBalanceResponseSuccess | accountControllerGetBalanceResponseError)
+export type accountControllerGetBalanceResponse = (accountControllerGetBalanceResponseSuccess)
 
 export const getAccountControllerGetBalanceUrl = (id: string,) => {
 
@@ -493,7 +382,7 @@ export const getAccountControllerGetBalanceQueryKey = (id: string,) => {
     }
 
 
-export const getAccountControllerGetBalanceQueryOptions = <TData = Awaited<ReturnType<typeof accountControllerGetBalance>>, TError = ErrorType<BasicResponse>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetBalance>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getAccountControllerGetBalanceQueryOptions = <TData = Awaited<ReturnType<typeof accountControllerGetBalance>>, TError = ErrorType<unknown>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetBalance>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -512,10 +401,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AccountControllerGetBalanceQueryResult = NonNullable<Awaited<ReturnType<typeof accountControllerGetBalance>>>
-export type AccountControllerGetBalanceQueryError = ErrorType<BasicResponse>
+export type AccountControllerGetBalanceQueryError = ErrorType<unknown>
 
 
-export function useAccountControllerGetBalance<TData = Awaited<ReturnType<typeof accountControllerGetBalance>>, TError = ErrorType<BasicResponse>>(
+export function useAccountControllerGetBalance<TData = Awaited<ReturnType<typeof accountControllerGetBalance>>, TError = ErrorType<unknown>>(
  id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetBalance>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof accountControllerGetBalance>>,
@@ -525,7 +414,7 @@ export function useAccountControllerGetBalance<TData = Awaited<ReturnType<typeof
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useAccountControllerGetBalance<TData = Awaited<ReturnType<typeof accountControllerGetBalance>>, TError = ErrorType<BasicResponse>>(
+export function useAccountControllerGetBalance<TData = Awaited<ReturnType<typeof accountControllerGetBalance>>, TError = ErrorType<unknown>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetBalance>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof accountControllerGetBalance>>,
@@ -535,7 +424,7 @@ export function useAccountControllerGetBalance<TData = Awaited<ReturnType<typeof
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useAccountControllerGetBalance<TData = Awaited<ReturnType<typeof accountControllerGetBalance>>, TError = ErrorType<BasicResponse>>(
+export function useAccountControllerGetBalance<TData = Awaited<ReturnType<typeof accountControllerGetBalance>>, TError = ErrorType<unknown>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetBalance>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
@@ -543,7 +432,7 @@ export function useAccountControllerGetBalance<TData = Awaited<ReturnType<typeof
  * @summary Get Account Balance
  */
 
-export function useAccountControllerGetBalance<TData = Awaited<ReturnType<typeof accountControllerGetBalance>>, TError = ErrorType<BasicResponse>>(
+export function useAccountControllerGetBalance<TData = Awaited<ReturnType<typeof accountControllerGetBalance>>, TError = ErrorType<unknown>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetBalance>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -561,39 +450,17 @@ export function useAccountControllerGetBalance<TData = Awaited<ReturnType<typeof
 /**
  * @summary Request Credit Limit Approval
  */
-export type accountControllerRequestCreditLimitApprovalResponse200 = {
-  data: BasicResponse
-  status: 200
+export type accountControllerRequestCreditLimitApprovalResponse201 = {
+  data: void
+  status: 201
 }
 
-export type accountControllerRequestCreditLimitApprovalResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type accountControllerRequestCreditLimitApprovalResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type accountControllerRequestCreditLimitApprovalResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type accountControllerRequestCreditLimitApprovalResponse404 = {
-  data: BasicResponse
-  status: 404
-}
-
-export type accountControllerRequestCreditLimitApprovalResponseSuccess = (accountControllerRequestCreditLimitApprovalResponse200) & {
+export type accountControllerRequestCreditLimitApprovalResponseSuccess = (accountControllerRequestCreditLimitApprovalResponse201) & {
   headers: Headers;
 };
-export type accountControllerRequestCreditLimitApprovalResponseError = (accountControllerRequestCreditLimitApprovalResponse400 | accountControllerRequestCreditLimitApprovalResponse401 | accountControllerRequestCreditLimitApprovalResponse403 | accountControllerRequestCreditLimitApprovalResponse404) & {
-  headers: Headers;
-};
+;
 
-export type accountControllerRequestCreditLimitApprovalResponse = (accountControllerRequestCreditLimitApprovalResponseSuccess | accountControllerRequestCreditLimitApprovalResponseError)
+export type accountControllerRequestCreditLimitApprovalResponse = (accountControllerRequestCreditLimitApprovalResponseSuccess)
 
 export const getAccountControllerRequestCreditLimitApprovalUrl = (id: string,) => {
 
@@ -619,7 +486,7 @@ export const accountControllerRequestCreditLimitApproval = async (id: string,
 
 
 
-export const getAccountControllerRequestCreditLimitApprovalMutationOptions = <TError = ErrorType<BasicResponse>,
+export const getAccountControllerRequestCreditLimitApprovalMutationOptions = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof accountControllerRequestCreditLimitApproval>>, TError,{id: string;data: RequestOverdraftDto}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof accountControllerRequestCreditLimitApproval>>, TError,{id: string;data: RequestOverdraftDto}, TContext> => {
 
@@ -648,12 +515,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type AccountControllerRequestCreditLimitApprovalMutationResult = NonNullable<Awaited<ReturnType<typeof accountControllerRequestCreditLimitApproval>>>
     export type AccountControllerRequestCreditLimitApprovalMutationBody = RequestOverdraftDto
-    export type AccountControllerRequestCreditLimitApprovalMutationError = ErrorType<BasicResponse>
+    export type AccountControllerRequestCreditLimitApprovalMutationError = ErrorType<unknown>
 
     /**
  * @summary Request Credit Limit Approval
  */
-export const useAccountControllerRequestCreditLimitApproval = <TError = ErrorType<BasicResponse>,
+export const useAccountControllerRequestCreditLimitApproval = <TError = ErrorType<unknown>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof accountControllerRequestCreditLimitApproval>>, TError,{id: string;data: RequestOverdraftDto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof accountControllerRequestCreditLimitApproval>>,
@@ -664,62 +531,31 @@ export const useAccountControllerRequestCreditLimitApproval = <TError = ErrorTyp
       return useMutation(getAccountControllerRequestCreditLimitApprovalMutationOptions(options), queryClient);
     }
     /**
- * @summary Get Balance History
+ * @summary Get Balance Log
  */
 export type accountControllerGetLogsResponse200 = {
-  data: BasicResponse
+  data: void
   status: 200
-}
-
-export type accountControllerGetLogsResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type accountControllerGetLogsResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type accountControllerGetLogsResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type accountControllerGetLogsResponse404 = {
-  data: BasicResponse
-  status: 404
 }
 
 export type accountControllerGetLogsResponseSuccess = (accountControllerGetLogsResponse200) & {
   headers: Headers;
 };
-export type accountControllerGetLogsResponseError = (accountControllerGetLogsResponse400 | accountControllerGetLogsResponse401 | accountControllerGetLogsResponse403 | accountControllerGetLogsResponse404) & {
-  headers: Headers;
-};
+;
 
-export type accountControllerGetLogsResponse = (accountControllerGetLogsResponseSuccess | accountControllerGetLogsResponseError)
+export type accountControllerGetLogsResponse = (accountControllerGetLogsResponseSuccess)
 
-export const getAccountControllerGetLogsUrl = (id: string,
-    params?: AccountControllerGetLogsParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getAccountControllerGetLogsUrl = (id: string,) => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/accounts/${id}/balance/history?${stringifiedParams}` : `/accounts/${id}/balance/history`
+  return `/accounts/${id}/balance/history`
 }
 
-export const accountControllerGetLogs = async (id: string,
-    params?: AccountControllerGetLogsParams, options?: RequestInit): Promise<accountControllerGetLogsResponse> => {
+export const accountControllerGetLogs = async (id: string, options?: RequestInit): Promise<accountControllerGetLogsResponse> => {
 
-  return customInstance<accountControllerGetLogsResponse>(getAccountControllerGetLogsUrl(id,params),
+  return customInstance<accountControllerGetLogsResponse>(getAccountControllerGetLogsUrl(id),
   {
     ...options,
     method: 'GET'
@@ -732,25 +568,23 @@ export const accountControllerGetLogs = async (id: string,
 
 
 
-export const getAccountControllerGetLogsQueryKey = (id: string,
-    params?: AccountControllerGetLogsParams,) => {
+export const getAccountControllerGetLogsQueryKey = (id: string,) => {
     return [
-    `/accounts/${id}/balance/history`, ...(params ? [params] : [])
+    `/accounts/${id}/balance/history`
     ] as const;
     }
 
 
-export const getAccountControllerGetLogsQueryOptions = <TData = Awaited<ReturnType<typeof accountControllerGetLogs>>, TError = ErrorType<BasicResponse>>(id: string,
-    params?: AccountControllerGetLogsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetLogs>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getAccountControllerGetLogsQueryOptions = <TData = Awaited<ReturnType<typeof accountControllerGetLogs>>, TError = ErrorType<unknown>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetLogs>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getAccountControllerGetLogsQueryKey(id,params);
+  const queryKey =  queryOptions?.queryKey ?? getAccountControllerGetLogsQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof accountControllerGetLogs>>> = ({ signal }) => accountControllerGetLogs(id,params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof accountControllerGetLogs>>> = ({ signal }) => accountControllerGetLogs(id, { signal, ...requestOptions });
 
 
 
@@ -760,12 +594,11 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AccountControllerGetLogsQueryResult = NonNullable<Awaited<ReturnType<typeof accountControllerGetLogs>>>
-export type AccountControllerGetLogsQueryError = ErrorType<BasicResponse>
+export type AccountControllerGetLogsQueryError = ErrorType<unknown>
 
 
-export function useAccountControllerGetLogs<TData = Awaited<ReturnType<typeof accountControllerGetLogs>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params: undefined |  AccountControllerGetLogsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetLogs>>, TError, TData>> & Pick<
+export function useAccountControllerGetLogs<TData = Awaited<ReturnType<typeof accountControllerGetLogs>>, TError = ErrorType<unknown>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetLogs>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof accountControllerGetLogs>>,
           TError,
@@ -774,9 +607,8 @@ export function useAccountControllerGetLogs<TData = Awaited<ReturnType<typeof ac
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useAccountControllerGetLogs<TData = Awaited<ReturnType<typeof accountControllerGetLogs>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params?: AccountControllerGetLogsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetLogs>>, TError, TData>> & Pick<
+export function useAccountControllerGetLogs<TData = Awaited<ReturnType<typeof accountControllerGetLogs>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetLogs>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof accountControllerGetLogs>>,
           TError,
@@ -785,22 +617,20 @@ export function useAccountControllerGetLogs<TData = Awaited<ReturnType<typeof ac
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useAccountControllerGetLogs<TData = Awaited<ReturnType<typeof accountControllerGetLogs>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params?: AccountControllerGetLogsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetLogs>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useAccountControllerGetLogs<TData = Awaited<ReturnType<typeof accountControllerGetLogs>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetLogs>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Get Balance History
+ * @summary Get Balance Log
  */
 
-export function useAccountControllerGetLogs<TData = Awaited<ReturnType<typeof accountControllerGetLogs>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params?: AccountControllerGetLogsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetLogs>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useAccountControllerGetLogs<TData = Awaited<ReturnType<typeof accountControllerGetLogs>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetLogs>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getAccountControllerGetLogsQueryOptions(id,params,options)
+  const queryOptions = getAccountControllerGetLogsQueryOptions(id,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -811,62 +641,31 @@ export function useAccountControllerGetLogs<TData = Awaited<ReturnType<typeof ac
 
 
 /**
- * @summary Download Balance History CSV
+ * @summary Get Balance Log in CSV
  */
 export type accountControllerGetLogCSVResponse200 = {
-  data: BasicResponse
+  data: void
   status: 200
-}
-
-export type accountControllerGetLogCSVResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type accountControllerGetLogCSVResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type accountControllerGetLogCSVResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type accountControllerGetLogCSVResponse404 = {
-  data: BasicResponse
-  status: 404
 }
 
 export type accountControllerGetLogCSVResponseSuccess = (accountControllerGetLogCSVResponse200) & {
   headers: Headers;
 };
-export type accountControllerGetLogCSVResponseError = (accountControllerGetLogCSVResponse400 | accountControllerGetLogCSVResponse401 | accountControllerGetLogCSVResponse403 | accountControllerGetLogCSVResponse404) & {
-  headers: Headers;
-};
+;
 
-export type accountControllerGetLogCSVResponse = (accountControllerGetLogCSVResponseSuccess | accountControllerGetLogCSVResponseError)
+export type accountControllerGetLogCSVResponse = (accountControllerGetLogCSVResponseSuccess)
 
-export const getAccountControllerGetLogCSVUrl = (id: string,
-    params?: AccountControllerGetLogCSVParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getAccountControllerGetLogCSVUrl = (id: string,) => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/accounts/${id}/balance/history/csv?${stringifiedParams}` : `/accounts/${id}/balance/history/csv`
+  return `/accounts/${id}/balance/history/csv`
 }
 
-export const accountControllerGetLogCSV = async (id: string,
-    params?: AccountControllerGetLogCSVParams, options?: RequestInit): Promise<accountControllerGetLogCSVResponse> => {
+export const accountControllerGetLogCSV = async (id: string, options?: RequestInit): Promise<accountControllerGetLogCSVResponse> => {
 
-  return customInstance<accountControllerGetLogCSVResponse>(getAccountControllerGetLogCSVUrl(id,params),
+  return customInstance<accountControllerGetLogCSVResponse>(getAccountControllerGetLogCSVUrl(id),
   {
     ...options,
     method: 'GET'
@@ -879,25 +678,23 @@ export const accountControllerGetLogCSV = async (id: string,
 
 
 
-export const getAccountControllerGetLogCSVQueryKey = (id: string,
-    params?: AccountControllerGetLogCSVParams,) => {
+export const getAccountControllerGetLogCSVQueryKey = (id: string,) => {
     return [
-    `/accounts/${id}/balance/history/csv`, ...(params ? [params] : [])
+    `/accounts/${id}/balance/history/csv`
     ] as const;
     }
 
 
-export const getAccountControllerGetLogCSVQueryOptions = <TData = Awaited<ReturnType<typeof accountControllerGetLogCSV>>, TError = ErrorType<BasicResponse>>(id: string,
-    params?: AccountControllerGetLogCSVParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetLogCSV>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getAccountControllerGetLogCSVQueryOptions = <TData = Awaited<ReturnType<typeof accountControllerGetLogCSV>>, TError = ErrorType<unknown>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetLogCSV>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getAccountControllerGetLogCSVQueryKey(id,params);
+  const queryKey =  queryOptions?.queryKey ?? getAccountControllerGetLogCSVQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof accountControllerGetLogCSV>>> = ({ signal }) => accountControllerGetLogCSV(id,params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof accountControllerGetLogCSV>>> = ({ signal }) => accountControllerGetLogCSV(id, { signal, ...requestOptions });
 
 
 
@@ -907,12 +704,11 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AccountControllerGetLogCSVQueryResult = NonNullable<Awaited<ReturnType<typeof accountControllerGetLogCSV>>>
-export type AccountControllerGetLogCSVQueryError = ErrorType<BasicResponse>
+export type AccountControllerGetLogCSVQueryError = ErrorType<unknown>
 
 
-export function useAccountControllerGetLogCSV<TData = Awaited<ReturnType<typeof accountControllerGetLogCSV>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params: undefined |  AccountControllerGetLogCSVParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetLogCSV>>, TError, TData>> & Pick<
+export function useAccountControllerGetLogCSV<TData = Awaited<ReturnType<typeof accountControllerGetLogCSV>>, TError = ErrorType<unknown>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetLogCSV>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof accountControllerGetLogCSV>>,
           TError,
@@ -921,9 +717,8 @@ export function useAccountControllerGetLogCSV<TData = Awaited<ReturnType<typeof 
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useAccountControllerGetLogCSV<TData = Awaited<ReturnType<typeof accountControllerGetLogCSV>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params?: AccountControllerGetLogCSVParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetLogCSV>>, TError, TData>> & Pick<
+export function useAccountControllerGetLogCSV<TData = Awaited<ReturnType<typeof accountControllerGetLogCSV>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetLogCSV>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof accountControllerGetLogCSV>>,
           TError,
@@ -932,22 +727,20 @@ export function useAccountControllerGetLogCSV<TData = Awaited<ReturnType<typeof 
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useAccountControllerGetLogCSV<TData = Awaited<ReturnType<typeof accountControllerGetLogCSV>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params?: AccountControllerGetLogCSVParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetLogCSV>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useAccountControllerGetLogCSV<TData = Awaited<ReturnType<typeof accountControllerGetLogCSV>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetLogCSV>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Download Balance History CSV
+ * @summary Get Balance Log in CSV
  */
 
-export function useAccountControllerGetLogCSV<TData = Awaited<ReturnType<typeof accountControllerGetLogCSV>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params?: AccountControllerGetLogCSVParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetLogCSV>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useAccountControllerGetLogCSV<TData = Awaited<ReturnType<typeof accountControllerGetLogCSV>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetLogCSV>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getAccountControllerGetLogCSVQueryOptions(id,params,options)
+  const queryOptions = getAccountControllerGetLogCSVQueryOptions(id,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -958,62 +751,31 @@ export function useAccountControllerGetLogCSV<TData = Awaited<ReturnType<typeof 
 
 
 /**
- * @summary Download Statement PDF
+ * @summary Download Statement in PDF
  */
 export type accountControllerGetStatementPDFResponse200 = {
-  data: BasicResponse
+  data: void
   status: 200
-}
-
-export type accountControllerGetStatementPDFResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type accountControllerGetStatementPDFResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type accountControllerGetStatementPDFResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type accountControllerGetStatementPDFResponse404 = {
-  data: BasicResponse
-  status: 404
 }
 
 export type accountControllerGetStatementPDFResponseSuccess = (accountControllerGetStatementPDFResponse200) & {
   headers: Headers;
 };
-export type accountControllerGetStatementPDFResponseError = (accountControllerGetStatementPDFResponse400 | accountControllerGetStatementPDFResponse401 | accountControllerGetStatementPDFResponse403 | accountControllerGetStatementPDFResponse404) & {
-  headers: Headers;
-};
+;
 
-export type accountControllerGetStatementPDFResponse = (accountControllerGetStatementPDFResponseSuccess | accountControllerGetStatementPDFResponseError)
+export type accountControllerGetStatementPDFResponse = (accountControllerGetStatementPDFResponseSuccess)
 
-export const getAccountControllerGetStatementPDFUrl = (id: string,
-    params?: AccountControllerGetStatementPDFParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getAccountControllerGetStatementPDFUrl = (id: string,) => {
 
-  Object.entries(params || {}).forEach(([key, value]) => {
 
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
 
-  const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/accounts/${id}/statement/pdf?${stringifiedParams}` : `/accounts/${id}/statement/pdf`
+  return `/accounts/${id}/statement/pdf`
 }
 
-export const accountControllerGetStatementPDF = async (id: string,
-    params?: AccountControllerGetStatementPDFParams, options?: RequestInit): Promise<accountControllerGetStatementPDFResponse> => {
+export const accountControllerGetStatementPDF = async (id: string, options?: RequestInit): Promise<accountControllerGetStatementPDFResponse> => {
 
-  return customInstance<accountControllerGetStatementPDFResponse>(getAccountControllerGetStatementPDFUrl(id,params),
+  return customInstance<accountControllerGetStatementPDFResponse>(getAccountControllerGetStatementPDFUrl(id),
   {
     ...options,
     method: 'GET'
@@ -1026,25 +788,23 @@ export const accountControllerGetStatementPDF = async (id: string,
 
 
 
-export const getAccountControllerGetStatementPDFQueryKey = (id: string,
-    params?: AccountControllerGetStatementPDFParams,) => {
+export const getAccountControllerGetStatementPDFQueryKey = (id: string,) => {
     return [
-    `/accounts/${id}/statement/pdf`, ...(params ? [params] : [])
+    `/accounts/${id}/statement/pdf`
     ] as const;
     }
 
 
-export const getAccountControllerGetStatementPDFQueryOptions = <TData = Awaited<ReturnType<typeof accountControllerGetStatementPDF>>, TError = ErrorType<BasicResponse>>(id: string,
-    params?: AccountControllerGetStatementPDFParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetStatementPDF>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getAccountControllerGetStatementPDFQueryOptions = <TData = Awaited<ReturnType<typeof accountControllerGetStatementPDF>>, TError = ErrorType<unknown>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetStatementPDF>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getAccountControllerGetStatementPDFQueryKey(id,params);
+  const queryKey =  queryOptions?.queryKey ?? getAccountControllerGetStatementPDFQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof accountControllerGetStatementPDF>>> = ({ signal }) => accountControllerGetStatementPDF(id,params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof accountControllerGetStatementPDF>>> = ({ signal }) => accountControllerGetStatementPDF(id, { signal, ...requestOptions });
 
 
 
@@ -1054,12 +814,11 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type AccountControllerGetStatementPDFQueryResult = NonNullable<Awaited<ReturnType<typeof accountControllerGetStatementPDF>>>
-export type AccountControllerGetStatementPDFQueryError = ErrorType<BasicResponse>
+export type AccountControllerGetStatementPDFQueryError = ErrorType<unknown>
 
 
-export function useAccountControllerGetStatementPDF<TData = Awaited<ReturnType<typeof accountControllerGetStatementPDF>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params: undefined |  AccountControllerGetStatementPDFParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetStatementPDF>>, TError, TData>> & Pick<
+export function useAccountControllerGetStatementPDF<TData = Awaited<ReturnType<typeof accountControllerGetStatementPDF>>, TError = ErrorType<unknown>>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetStatementPDF>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof accountControllerGetStatementPDF>>,
           TError,
@@ -1068,9 +827,8 @@ export function useAccountControllerGetStatementPDF<TData = Awaited<ReturnType<t
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useAccountControllerGetStatementPDF<TData = Awaited<ReturnType<typeof accountControllerGetStatementPDF>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params?: AccountControllerGetStatementPDFParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetStatementPDF>>, TError, TData>> & Pick<
+export function useAccountControllerGetStatementPDF<TData = Awaited<ReturnType<typeof accountControllerGetStatementPDF>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetStatementPDF>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof accountControllerGetStatementPDF>>,
           TError,
@@ -1079,22 +837,20 @@ export function useAccountControllerGetStatementPDF<TData = Awaited<ReturnType<t
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useAccountControllerGetStatementPDF<TData = Awaited<ReturnType<typeof accountControllerGetStatementPDF>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params?: AccountControllerGetStatementPDFParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetStatementPDF>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useAccountControllerGetStatementPDF<TData = Awaited<ReturnType<typeof accountControllerGetStatementPDF>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetStatementPDF>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Download Statement PDF
+ * @summary Download Statement in PDF
  */
 
-export function useAccountControllerGetStatementPDF<TData = Awaited<ReturnType<typeof accountControllerGetStatementPDF>>, TError = ErrorType<BasicResponse>>(
- id: string,
-    params?: AccountControllerGetStatementPDFParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetStatementPDF>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useAccountControllerGetStatementPDF<TData = Awaited<ReturnType<typeof accountControllerGetStatementPDF>>, TError = ErrorType<unknown>>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof accountControllerGetStatementPDF>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getAccountControllerGetStatementPDFQueryOptions(id,params,options)
+  const queryOptions = getAccountControllerGetStatementPDFQueryOptions(id,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -1108,38 +864,16 @@ export function useAccountControllerGetStatementPDF<TData = Awaited<ReturnType<t
  * @summary Add Deposit Channel
  */
 export type accountControllerAddDepositChannelResponse201 = {
-  data: BasicResponse
+  data: void
   status: 201
-}
-
-export type accountControllerAddDepositChannelResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type accountControllerAddDepositChannelResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type accountControllerAddDepositChannelResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type accountControllerAddDepositChannelResponse404 = {
-  data: BasicResponse
-  status: 404
 }
 
 export type accountControllerAddDepositChannelResponseSuccess = (accountControllerAddDepositChannelResponse201) & {
   headers: Headers;
 };
-export type accountControllerAddDepositChannelResponseError = (accountControllerAddDepositChannelResponse400 | accountControllerAddDepositChannelResponse401 | accountControllerAddDepositChannelResponse403 | accountControllerAddDepositChannelResponse404) & {
-  headers: Headers;
-};
+;
 
-export type accountControllerAddDepositChannelResponse = (accountControllerAddDepositChannelResponseSuccess | accountControllerAddDepositChannelResponseError)
+export type accountControllerAddDepositChannelResponse = (accountControllerAddDepositChannelResponseSuccess)
 
 export const getAccountControllerAddDepositChannelUrl = (id: string,) => {
 
@@ -1149,25 +883,23 @@ export const getAccountControllerAddDepositChannelUrl = (id: string,) => {
   return `/accounts/${id}/deposit-channels`
 }
 
-export const accountControllerAddDepositChannel = async (id: string,
-    addDepositChannelDto: AddDepositChannelDto, options?: RequestInit): Promise<accountControllerAddDepositChannelResponse> => {
+export const accountControllerAddDepositChannel = async (id: string, options?: RequestInit): Promise<accountControllerAddDepositChannelResponse> => {
 
   return customInstance<accountControllerAddDepositChannelResponse>(getAccountControllerAddDepositChannelUrl(id),
   {
     ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      addDepositChannelDto,)
+    method: 'POST'
+
+
   }
 );}
 
 
 
 
-export const getAccountControllerAddDepositChannelMutationOptions = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof accountControllerAddDepositChannel>>, TError,{id: string;data: AddDepositChannelDto}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof accountControllerAddDepositChannel>>, TError,{id: string;data: AddDepositChannelDto}, TContext> => {
+export const getAccountControllerAddDepositChannelMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof accountControllerAddDepositChannel>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof accountControllerAddDepositChannel>>, TError,{id: string}, TContext> => {
 
 const mutationKey = ['accountControllerAddDepositChannel'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -1179,10 +911,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof accountControllerAddDepositChannel>>, {id: string;data: AddDepositChannelDto}> = (props) => {
-          const {id,data} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof accountControllerAddDepositChannel>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
 
-          return  accountControllerAddDepositChannel(id,data,requestOptions)
+          return  accountControllerAddDepositChannel(id,requestOptions)
         }
 
 
@@ -1193,18 +925,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type AccountControllerAddDepositChannelMutationResult = NonNullable<Awaited<ReturnType<typeof accountControllerAddDepositChannel>>>
-    export type AccountControllerAddDepositChannelMutationBody = AddDepositChannelDto
-    export type AccountControllerAddDepositChannelMutationError = ErrorType<BasicResponse>
+
+    export type AccountControllerAddDepositChannelMutationError = ErrorType<unknown>
 
     /**
  * @summary Add Deposit Channel
  */
-export const useAccountControllerAddDepositChannel = <TError = ErrorType<BasicResponse>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof accountControllerAddDepositChannel>>, TError,{id: string;data: AddDepositChannelDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+export const useAccountControllerAddDepositChannel = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof accountControllerAddDepositChannel>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof accountControllerAddDepositChannel>>,
         TError,
-        {id: string;data: AddDepositChannelDto},
+        {id: string},
         TContext
       > => {
       return useMutation(getAccountControllerAddDepositChannelMutationOptions(options), queryClient);

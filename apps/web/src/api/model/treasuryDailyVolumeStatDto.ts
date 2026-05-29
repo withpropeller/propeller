@@ -6,9 +6,9 @@
  * OpenAPI spec version: 0.0.1
  */
 
-export interface ActivateAccountDto {
-  firstName: string;
-  lastName: string;
-  password: string;
-  businessId: string;
+export interface TreasuryDailyVolumeStatDto {
+  /** Date (ISO date) */
+  date: string;
+  /** Total collected on this day (kobo) */
+  total: number;
 }

@@ -15,10 +15,11 @@ start:
 lint:
 	bun run lint
 
-# Download the OpenAPI spec locally (so codegen works offline / in CI)
+# Download the OpenAPI spec from a running services/gateway (ENABLE_SWAGGER=true, default :4000).
+# Start with: cd services/gateway && bun run start:dev
 fetch-spec:
 	mkdir -p docs
-	curl -sSfL https://localhost:8000/openapi.json -o docs/openapi.json
+	curl -sSfL http://localhost:4000/openapi.json -o docs/openapi.json
 	@echo "spec saved to docs/openapi.json"
 
 generate:

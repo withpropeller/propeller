@@ -22,10 +22,7 @@ import type {
 
 import type {
   ApiLogsControllerGetOneParams,
-  ApiLogsControllerGetParams,
-  BasicResponse,
-  ResponseWrapperApiHydratedApiRequest,
-  ResponseWrapperApiHydratedApiRequestList
+  ApiLogsControllerGetParams
 } from '../model';
 
 import { customInstance } from '../../lib/orvalClient';
@@ -37,36 +34,19 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 /**
- * @summary Get API Calls
+ * @summary Get Api Calls
  */
 export type apiLogsControllerGetResponse200 = {
-  data: ResponseWrapperApiHydratedApiRequestList
+  data: void
   status: 200
-}
-
-export type apiLogsControllerGetResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type apiLogsControllerGetResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type apiLogsControllerGetResponse403 = {
-  data: BasicResponse
-  status: 403
 }
 
 export type apiLogsControllerGetResponseSuccess = (apiLogsControllerGetResponse200) & {
   headers: Headers;
 };
-export type apiLogsControllerGetResponseError = (apiLogsControllerGetResponse400 | apiLogsControllerGetResponse401 | apiLogsControllerGetResponse403) & {
-  headers: Headers;
-};
+;
 
-export type apiLogsControllerGetResponse = (apiLogsControllerGetResponseSuccess | apiLogsControllerGetResponseError)
+export type apiLogsControllerGetResponse = (apiLogsControllerGetResponseSuccess)
 
 export const getApiLogsControllerGetUrl = (params?: ApiLogsControllerGetParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -105,7 +85,7 @@ export const getApiLogsControllerGetQueryKey = (params?: ApiLogsControllerGetPar
     }
 
 
-export const getApiLogsControllerGetQueryOptions = <TData = Awaited<ReturnType<typeof apiLogsControllerGet>>, TError = ErrorType<BasicResponse>>(params?: ApiLogsControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof apiLogsControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getApiLogsControllerGetQueryOptions = <TData = Awaited<ReturnType<typeof apiLogsControllerGet>>, TError = ErrorType<unknown>>(params?: ApiLogsControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof apiLogsControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -124,10 +104,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ApiLogsControllerGetQueryResult = NonNullable<Awaited<ReturnType<typeof apiLogsControllerGet>>>
-export type ApiLogsControllerGetQueryError = ErrorType<BasicResponse>
+export type ApiLogsControllerGetQueryError = ErrorType<unknown>
 
 
-export function useApiLogsControllerGet<TData = Awaited<ReturnType<typeof apiLogsControllerGet>>, TError = ErrorType<BasicResponse>>(
+export function useApiLogsControllerGet<TData = Awaited<ReturnType<typeof apiLogsControllerGet>>, TError = ErrorType<unknown>>(
  params: undefined |  ApiLogsControllerGetParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof apiLogsControllerGet>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof apiLogsControllerGet>>,
@@ -137,7 +117,7 @@ export function useApiLogsControllerGet<TData = Awaited<ReturnType<typeof apiLog
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useApiLogsControllerGet<TData = Awaited<ReturnType<typeof apiLogsControllerGet>>, TError = ErrorType<BasicResponse>>(
+export function useApiLogsControllerGet<TData = Awaited<ReturnType<typeof apiLogsControllerGet>>, TError = ErrorType<unknown>>(
  params?: ApiLogsControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof apiLogsControllerGet>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof apiLogsControllerGet>>,
@@ -147,15 +127,15 @@ export function useApiLogsControllerGet<TData = Awaited<ReturnType<typeof apiLog
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useApiLogsControllerGet<TData = Awaited<ReturnType<typeof apiLogsControllerGet>>, TError = ErrorType<BasicResponse>>(
+export function useApiLogsControllerGet<TData = Awaited<ReturnType<typeof apiLogsControllerGet>>, TError = ErrorType<unknown>>(
  params?: ApiLogsControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof apiLogsControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Get API Calls
+ * @summary Get Api Calls
  */
 
-export function useApiLogsControllerGet<TData = Awaited<ReturnType<typeof apiLogsControllerGet>>, TError = ErrorType<BasicResponse>>(
+export function useApiLogsControllerGet<TData = Awaited<ReturnType<typeof apiLogsControllerGet>>, TError = ErrorType<unknown>>(
  params?: ApiLogsControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof apiLogsControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -171,41 +151,19 @@ export function useApiLogsControllerGet<TData = Awaited<ReturnType<typeof apiLog
 
 
 /**
- * @summary Get One API Call
+ * @summary Get One Api Call
  */
 export type apiLogsControllerGetOneResponse200 = {
-  data: ResponseWrapperApiHydratedApiRequest
+  data: void
   status: 200
-}
-
-export type apiLogsControllerGetOneResponse400 = {
-  data: BasicResponse
-  status: 400
-}
-
-export type apiLogsControllerGetOneResponse401 = {
-  data: BasicResponse
-  status: 401
-}
-
-export type apiLogsControllerGetOneResponse403 = {
-  data: BasicResponse
-  status: 403
-}
-
-export type apiLogsControllerGetOneResponse404 = {
-  data: BasicResponse
-  status: 404
 }
 
 export type apiLogsControllerGetOneResponseSuccess = (apiLogsControllerGetOneResponse200) & {
   headers: Headers;
 };
-export type apiLogsControllerGetOneResponseError = (apiLogsControllerGetOneResponse400 | apiLogsControllerGetOneResponse401 | apiLogsControllerGetOneResponse403 | apiLogsControllerGetOneResponse404) & {
-  headers: Headers;
-};
+;
 
-export type apiLogsControllerGetOneResponse = (apiLogsControllerGetOneResponseSuccess | apiLogsControllerGetOneResponseError)
+export type apiLogsControllerGetOneResponse = (apiLogsControllerGetOneResponseSuccess)
 
 export const getApiLogsControllerGetOneUrl = (id: string,
     params?: ApiLogsControllerGetOneParams,) => {
@@ -247,7 +205,7 @@ export const getApiLogsControllerGetOneQueryKey = (id: string,
     }
 
 
-export const getApiLogsControllerGetOneQueryOptions = <TData = Awaited<ReturnType<typeof apiLogsControllerGetOne>>, TError = ErrorType<BasicResponse>>(id: string,
+export const getApiLogsControllerGetOneQueryOptions = <TData = Awaited<ReturnType<typeof apiLogsControllerGetOne>>, TError = ErrorType<unknown>>(id: string,
     params?: ApiLogsControllerGetOneParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof apiLogsControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
@@ -267,10 +225,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type ApiLogsControllerGetOneQueryResult = NonNullable<Awaited<ReturnType<typeof apiLogsControllerGetOne>>>
-export type ApiLogsControllerGetOneQueryError = ErrorType<BasicResponse>
+export type ApiLogsControllerGetOneQueryError = ErrorType<unknown>
 
 
-export function useApiLogsControllerGetOne<TData = Awaited<ReturnType<typeof apiLogsControllerGetOne>>, TError = ErrorType<BasicResponse>>(
+export function useApiLogsControllerGetOne<TData = Awaited<ReturnType<typeof apiLogsControllerGetOne>>, TError = ErrorType<unknown>>(
  id: string,
     params: undefined |  ApiLogsControllerGetOneParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof apiLogsControllerGetOne>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
@@ -281,7 +239,7 @@ export function useApiLogsControllerGetOne<TData = Awaited<ReturnType<typeof api
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useApiLogsControllerGetOne<TData = Awaited<ReturnType<typeof apiLogsControllerGetOne>>, TError = ErrorType<BasicResponse>>(
+export function useApiLogsControllerGetOne<TData = Awaited<ReturnType<typeof apiLogsControllerGetOne>>, TError = ErrorType<unknown>>(
  id: string,
     params?: ApiLogsControllerGetOneParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof apiLogsControllerGetOne>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
@@ -292,16 +250,16 @@ export function useApiLogsControllerGetOne<TData = Awaited<ReturnType<typeof api
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useApiLogsControllerGetOne<TData = Awaited<ReturnType<typeof apiLogsControllerGetOne>>, TError = ErrorType<BasicResponse>>(
+export function useApiLogsControllerGetOne<TData = Awaited<ReturnType<typeof apiLogsControllerGetOne>>, TError = ErrorType<unknown>>(
  id: string,
     params?: ApiLogsControllerGetOneParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof apiLogsControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Get One API Call
+ * @summary Get One Api Call
  */
 
-export function useApiLogsControllerGetOne<TData = Awaited<ReturnType<typeof apiLogsControllerGetOne>>, TError = ErrorType<BasicResponse>>(
+export function useApiLogsControllerGetOne<TData = Awaited<ReturnType<typeof apiLogsControllerGetOne>>, TError = ErrorType<unknown>>(
  id: string,
     params?: ApiLogsControllerGetOneParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof apiLogsControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient

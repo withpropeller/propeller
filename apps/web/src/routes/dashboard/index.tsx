@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useCardAuthorizationControllerGetMetrics } from '@/api/card-authorizations/card-authorizations'
+import { useDashboardControllerGetMetrics } from '@/api/dashboard/dashboard'
 import { useBusinessControllerFind } from '@/api/business/business'
 import { useAuth } from '@/context/AuthContext'
 import { Sparkline } from '@/components/ui/Sparkline'
@@ -9,14 +9,11 @@ import { Delta } from '@/components/ui/Delta'
 import { ChartEmpty } from '@/components/ui/ChartEmpty'
 import { StatValue } from '@/components/ui/StatValue'
 import { PeriodSelect, PERIODS, type Period } from '@/components/ui/PeriodSelect'
+import { formatAmount } from '@/lib/format'
 import {
-  BarChart,
-  Bar,
-  LabelList,
   PieChart,
   Pie,
   Cell,
-  XAxis,
   Tooltip,
   ResponsiveContainer,
   Legend,
@@ -31,40 +28,34 @@ function getGreeting() {
   return 'Good evening'
 }
 
-
-
-
-function formatVolume(v: number) {
-  if (v >= 1_000_000) return `₦${(v / 1_000_000).toFixed(1)}M`
-  if (v >= 1_000) return `₦${(v / 1_000).toFixed(0)}K`
-  return `₦${v}`
+function formatSparklineDate(iso: string) {
+  const d = new Date(`${iso}T00:00:00`)
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
 
-function normalizeReason(reason: string) {
-  return reason
+function formatStatusLabel(status: string) {
+  return status
     .split(/[-_]+/)
     .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
     .join(' ')
 }
 
-function formatSparklineDate(iso: string) {
-  // Append time to prevent UTC-to-local timezone shift on date-only strings
-  const d = new Date(`${iso}T00:00:00`)
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+function compactAmount(kobo: number, currency = 'NGN') {
+  const naira = kobo / 100
+  if (naira >= 1_000_000) return `₦${(naira / 1_000_000).toFixed(1)}M`
+  if (naira >= 1_000) return `₦${(naira / 1_000).toFixed(0)}K`
+  return formatAmount(kobo, currency)
 }
 
-// ─── Chart palette — data viz exception (no semantic tokens for chart series) ─
+// ─── Chart palette — data viz exception ─────────────────────────────────────
 
-const CHANNEL_COLORS = ['#3EB4FF', '#EC85C7', '#43C66A'] // deep-sky-500, fuschia-500, forest-green-500
+const FLOW_COLORS = ['#3EB4FF', '#43C66A'] // pay-in, pay-out
 
-const DECLINE_COLORS = [
-  'var(--fire-red-500)',
+const STATUS_COLORS = [
+  'var(--forest-green-500)',
   'var(--golden-yellow-500)',
-  'var(--fuschia-500)',
-  'var(--burnt-orange-500)',
+  'var(--fire-red-500)',
 ]
-
-const TICK_STYLE = { fontSize: 12, fontWeight: 500, fill: 'var(--color-content-tertiary)' }
 
 // ─── Sub-components ─────────────────────────────────────────────────────────
 
@@ -104,72 +95,6 @@ function ChartTooltip({
     </div>
   )
 }
-
-// ─── Spend by category — Option A: vertical bar chart ───────────────────────
-
-function TwoLineTick({ x, y, payload }: any) {
-  const words = (payload.value as string).split(' ')
-  const mid = Math.ceil(words.length / 2)
-  const line1 = words.slice(0, mid).join(' ')
-  const line2 = words.slice(mid).join(' ')
-  return (
-    <text x={x} y={y} textAnchor="middle" fill="var(--color-content-tertiary)" fontSize={12} fontWeight={500}>
-      <tspan x={x} dy="0.8em">{line1}</tspan>
-      {line2 && <tspan x={x} dy="1.2em">{line2}</tspan>}
-    </text>
-  )
-}
-
-function SpendBarsChart({ data }: { data: { category: string; amount: number }[] }) {
-  // Deep-sky-500 (#3EB4FF) — Recharts SVG fill doesn't support CSS vars
-  const BAR_COLOR = '#3EB4FF'
-  if (data.length === 0) {
-    return (
-      <div className="-mb-4 flex-1 min-h-0 flex items-end">
-        <div className="w-full">
-          <ChartEmpty
-            variant="bars"
-            accent={BAR_COLOR}
-            height={180}
-          />
-        </div>
-      </div>
-    )
-  }
-  return (
-    <div className="-mx-4 -mb-4 flex-1 min-h-0">
-      <div style={{ width: data.length > 0 && data.length <= 3 ? `${data.length * 150}px` : '100%', height: '100%' }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={data}
-            margin={{ top: 24, right: 32, left: 32, bottom: 8 }}
-            barCategoryGap="20%"
-          >
-            <XAxis
-              dataKey="category"
-              tick={<TwoLineTick />}
-              axisLine={false}
-              tickLine={false}
-              interval={0}
-              height={48}
-            />
-            <Tooltip content={<ChartTooltip valueFormatter={formatVolume} />} cursor={false} />
-            <Bar dataKey="amount" name="Spend" fill={BAR_COLOR} radius={[8, 8, 0, 0]} maxBarSize={64}>
-              <LabelList
-                dataKey="amount"
-                position="top"
-                formatter={formatVolume}
-                style={{ fontSize: 10, fill: 'var(--color-content-tertiary)' }}
-              />
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
-  )
-}
-
-// ─── Chart card ──────────────────────────────────────────────────────────────
 
 function ChartCard({
   label,
@@ -221,46 +146,36 @@ export default function Home() {
   const businessName = (bizData as any)?.data?.name || (user as any)?.business?.name || ''
   const [period, setPeriod] = useState<Period>('7d')
 
-  const { data: metricsRaw } = useCardAuthorizationControllerGetMetrics({ period })
+  const { data: metricsRaw } = useDashboardControllerGetMetrics({ period })
   const metrics = (metricsRaw as any)?.data
+  const currency = metrics?.currency ?? 'NGN'
 
-  // ── Volume ────────────────────────────────────────────────────────────────
-  const volumeTotal     = metrics?.volume?.total ?? 0
-  const volumeTrend: number | null = metrics?.volume?.change ?? null
-  const volumeSparkline = ((metrics?.dailyVolume ?? []) as { date: string; total: number }[]).map(d => ({
+  const collectionsTotal = metrics?.collections?.total ?? 0
+  const collectionsTrend: number | null = metrics?.collections?.change ?? null
+  const volumeSparkline = (metrics?.dailyCollections ?? []).map(d => ({
     day: formatSparklineDate(d.date),
     value: d.total,
   }))
 
-  // ── Auth stats ────────────────────────────────────────────────────────────
-  const authApproved      = metrics?.approved?.count ?? 0
-  const authDeclined      = metrics?.declined?.count ?? 0
-  const authSuccessPct    = metrics?.successRate?.rate ?? 0
-  const authApprovedDelta: number | null = metrics?.approved?.change ?? null
-  const authDeclinedDelta: number | null = metrics?.declined?.change ?? null
-  const authSuccessDelta: number | null  = metrics?.successRate?.change ?? null
+  const payInCount = metrics?.payIns?.count ?? 0
+  const payInFailures = metrics?.payInFailures?.count ?? 0
+  const successPct = metrics?.successRate?.rate ?? 0
+  const payInDelta: number | null = metrics?.payIns?.change ?? null
+  const failureDelta: number | null = metrics?.payInFailures?.change ?? null
+  const successDelta: number | null = metrics?.successRate?.change ?? null
 
-  // ── Channel split ──────────────────────────────────────────────────────────
-  const channelEntries = Object.entries(
-    (metrics?.channels ?? {}) as Record<string, { count: number; total: number }>,
-  )
-  const channelCountTotal = channelEntries.reduce((s, [, v]) => s + v.count, 0)
-  const channelData = channelEntries.map(([name, v]) => ({
-    name: normalizeReason(name),
-    value: channelCountTotal > 0 ? Math.round((v.count / channelCountTotal) * 100) : 0,
+  const flowData = (metrics?.flowSplit ?? []).map((f, i) => ({
+    name: f.name,
+    value: f.percent,
+    color: FLOW_COLORS[i % FLOW_COLORS.length],
   }))
+  const flowHasData = flowData.some(f => f.value > 0)
 
-  // ── Spend by category ─────────────────────────────────────────────────────
-  const categoryData = ((metrics?.spendByCategory ?? []) as { category: string; total: number }[]).map(d => ({
-    category: normalizeReason(d.category),
-    amount: d.total,
-  }))
-  const categoryTotal = categoryData.reduce((s, d) => s + d.amount, 0)
+  const statusStats = metrics?.byStatus ?? []
+  const statusTotal = statusStats.reduce((s, d) => s + d.count, 0)
 
-  // ── Decline reasons ────────────────────────────────────────────────────────
-  const declineReasons = ((metrics?.declineReasons ?? []) as { reason: string; percent: number }[]).map(
-    (d, i) => ({ reason: normalizeReason(d.reason), pct: d.percent, color: DECLINE_COLORS[i % DECLINE_COLORS.length] }),
-  )
+  const availableBalance = metrics?.availableBalance ?? 0
+  const pendingPayout = metrics?.pendingPayout ?? 0
 
   return (
     <div className="space-y-6">
@@ -272,44 +187,40 @@ export default function Home() {
             {getGreeting()}, {businessName}
           </h1>
           <p className="text-sm text-content-tertiary mt-1">
-            Here's what's happening across your treasury today.
+            Here&apos;s what&apos;s happening across your treasury today.
           </p>
         </div>
         <PeriodSelect value={period} onChange={setPeriod} />
       </div>
 
-      {/* ── Row 1 — Transaction volume card (full width, sparkline left + stats right) */}
+      {/* ── Row 1 — Collections volume + pay-in stats ───────────────────────── */}
       <div className="bg-surface-primary border border-border-primary-light rounded-xl overflow-hidden flex flex-col md:flex-row">
-        {/* Left column — label, value, trend, sparkline */}
         <div className="flex-2 pt-5 pl-5 pr-0 pb-0 flex flex-col min-h-0">
           <StatValue
-            label={`Transaction volume · ${PERIODS.find(p => p.value === period)?.label.toLowerCase()}`}
-            value={formatVolume(volumeTotal)}
+            label={`Collections · ${PERIODS.find(p => p.value === period)?.label.toLowerCase()}`}
+            value={compactAmount(collectionsTotal, currency)}
             size="lg"
-            delta={volumeTrend !== null ? <Delta value={volumeTrend} /> : undefined}
+            delta={collectionsTrend !== null ? <Delta value={collectionsTrend} /> : undefined}
           />
-          {/* Sparkline fills remaining height, bleeds to left edge (-ml-5 cancels pl-5) */}
           <div className="mt-3 -ml-5 flex-1 min-h-0">
             <Sparkline
               data={volumeSparkline}
               dataKey="value"
               height="100%"
-              seriesLabel="Volume"
-              valueFormatter={formatVolume}
+              seriesLabel="Collections"
+              valueFormatter={(v) => compactAmount(Number(v), currency)}
               emptyFallbackHeight={140}
             />
           </div>
         </div>
 
-        {/* Vertical divider */}
         <div className="h-px md:h-auto md:w-px bg-border-primary-light shrink-0" />
 
-        {/* Right column — Approved / Declined / Success rate, no color coding */}
         <div className="flex-1 flex flex-col justify-center divide-y divide-border-primary-light">
           {[
-            { label: 'Approved',     value: authApproved.toLocaleString(), delta: authApprovedDelta, positiveIsGood: true  },
-            { label: 'Declined',     value: authDeclined.toLocaleString(), delta: authDeclinedDelta, positiveIsGood: false },
-            { label: 'Success rate', value: `${authSuccessPct}%`,          delta: authSuccessDelta,  positiveIsGood: true  },
+            { label: 'Successful pay-ins', value: payInCount.toLocaleString(), delta: payInDelta, positiveIsGood: true },
+            { label: 'Failed pay-ins', value: payInFailures.toLocaleString(), delta: failureDelta, positiveIsGood: false },
+            { label: 'Success rate', value: `${successPct}%`, delta: successDelta, positiveIsGood: true },
           ].map(({ label, value, delta, positiveIsGood }) => (
             <div key={label} className="px-6 py-4">
               <div className="text-xs font-medium text-content-tertiary mb-2">{label}</div>
@@ -322,34 +233,20 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ── Row 2 — Spend by category + Channel split + Top decline reasons ───── */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-stretch">
-        <div className="lg:col-span-2 h-full">
-          <ChartCard
-            label="Spend by category"
-            hero={formatVolume(categoryTotal)}
-            subvalue={categoryData[0] ? `${categoryData[0].category} leads at ${formatVolume(categoryData[0].amount)}` : undefined}
-          >
-            <SpendBarsChart data={categoryData} />
-          </ChartCard>
-        </div>
-
-        {/* Channel split donut */}
+      {/* ── Row 2 — Flow split, status breakdown, balances ──────────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-stretch">
         <ChartCard
-          label="Channel split"
-          hero={channelData[0] ? `${channelData[0].name} · ${channelData[0].value}%` : '0 channels'}
-          subvalue={channelData.slice(1).map(c => `${c.name} ${c.value}%`).join(' · ') || undefined}
+          label="Pay-in vs pay-out"
+          hero={flowData[0] && flowHasData ? `${flowData[0].name} · ${flowData[0].value}%` : 'No activity'}
+          subvalue={flowData.slice(1).map(c => `${c.name} ${c.value}%`).join(' · ') || undefined}
         >
-          {channelData.length === 0 ? (
-            <ChartEmpty
-              variant="donut"
-              height={216}
-            />
+          {!flowHasData ? (
+            <ChartEmpty variant="donut" height={216} />
           ) : (
             <ResponsiveContainer width="100%" height={216}>
               <PieChart>
                 <Pie
-                  data={channelData}
+                  data={flowData}
                   cx="50%"
                   cy="42%"
                   innerRadius={52}
@@ -357,8 +254,8 @@ export default function Home() {
                   dataKey="value"
                   paddingAngle={3}
                 >
-                  {channelData.map((_, i) => (
-                    <Cell key={i} fill={CHANNEL_COLORS[i % CHANNEL_COLORS.length]} />
+                  {flowData.map((entry, i) => (
+                    <Cell key={entry.name} fill={entry.color ?? FLOW_COLORS[i % FLOW_COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip content={<ChartTooltip valueFormatter={(v) => `${v}%`} />} />
@@ -382,43 +279,56 @@ export default function Home() {
         <div className="bg-surface-primary border border-border-primary-light rounded-xl overflow-hidden h-full flex flex-col">
           <div className="px-5 pt-5 pb-3">
             <StatValue
-              label="Top decline reasons"
-              value={authDeclined.toLocaleString()}
+              label="Payments by status"
+              value={statusTotal.toLocaleString()}
               size="lg"
-              caption={declineReasons[0] ? `${declineReasons[0].reason} ${declineReasons[0].pct}%` : undefined}
+              caption={statusStats[0] ? `${formatStatusLabel(statusStats[0].status)} ${statusStats[0].percent}%` : undefined}
             />
           </div>
-          {declineReasons.length === 0 ? (
+          {statusStats.length === 0 || statusTotal === 0 ? (
             <div className="px-4 pb-4 flex-1 flex items-center">
-              <ChartEmpty
-                variant="bars"
-                orientation="horizontal"
-                accent="#EC85C7"
-                height={120}
-              />
+              <ChartEmpty variant="bars" orientation="horizontal" accent="#3EB4FF" height={120} />
             </div>
           ) : (
             <>
-              {/* Segmented stacked bar */}
               <div className="flex h-5 mx-4 mt-4 rounded overflow-hidden gap-px bg-surface-primary">
-                {declineReasons.map(({ reason, pct, color }) => (
-                  <div key={reason} style={{ width: `${pct}%`, backgroundColor: color }} />
+                {statusStats.map(({ status, percent }, i) => (
+                  <div
+                    key={status}
+                    style={{ width: `${percent}%`, backgroundColor: STATUS_COLORS[i % STATUS_COLORS.length] }}
+                  />
                 ))}
               </div>
-              {/* List */}
               <div className="px-4 pt-3 pb-4">
-                {declineReasons.map(({ reason, pct, color }) => (
-                  <div key={reason} className="flex items-center justify-between py-2">
+                {statusStats.map(({ status, percent, count }, i) => (
+                  <div key={status} className="flex items-center justify-between py-2">
                     <div className="flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded shrink-0" style={{ backgroundColor: color }} />
-                      <span className="text-sm text-content-secondary">{reason}</span>
+                      <span
+                        className="w-2.5 h-2.5 rounded shrink-0"
+                        style={{ backgroundColor: STATUS_COLORS[i % STATUS_COLORS.length] }}
+                      />
+                      <span className="text-sm text-content-secondary">{formatStatusLabel(status)}</span>
                     </div>
-                    <span className="text-sm font-medium tabular-nums text-content-primary">{pct}%</span>
+                    <span className="text-sm font-medium tabular-nums text-content-primary">
+                      {count.toLocaleString()} · {percent}%
+                    </span>
                   </div>
                 ))}
               </div>
             </>
           )}
+        </div>
+
+        <div className="bg-surface-primary border border-border-primary-light rounded-xl overflow-hidden h-full flex flex-col justify-center divide-y divide-border-primary-light">
+          {[
+            { label: 'Available balance', value: formatAmount(availableBalance, currency) },
+            { label: 'Pending payout', value: formatAmount(pendingPayout, currency) },
+          ].map(({ label, value }) => (
+            <div key={label} className="px-6 py-6">
+              <div className="text-xs font-medium text-content-tertiary mb-2">{label}</div>
+              <div className="text-2xl font-semibold text-content-primary tabular-nums leading-none">{value}</div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
