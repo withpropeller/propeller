@@ -168,10 +168,12 @@ function VerificationStatusCard({ state }: { state: VerificationState }) {
 // Covers every KYC information field in one place so the PUT /business/kyc/information
 // write has the full DTO, regardless of which section the user clicked Edit on.
 function EditInformationModal({
+  kycId,
   current,
   onClose,
   onSaved,
 }: {
+  kycId: string
   current: ApiHydratedBusinessKYC['information']
   onClose: () => void
   onSaved: () => void
@@ -204,7 +206,7 @@ function EditInformationModal({
       return
     }
     try {
-      await mutateAsync({ data: form } as any)
+      await mutateAsync({ id: kycId, data: form })
       toast({ title: 'Business information updated', severity: 'success' } as any)
       onSaved()
       onClose()
@@ -322,10 +324,12 @@ function EditInformationModal({
 
 // ── Edit: Registered address ────────────────────────────────────────────────
 function EditAddressModal({
+  kycId,
   current,
   onClose,
   onSaved,
 }: {
+  kycId: string
   current: ApiHydratedBusinessKYC['address']
   onClose: () => void
   onSaved: () => void
@@ -364,7 +368,7 @@ function EditAddressModal({
       return
     }
     try {
-      await mutateAsync({ data: form } as any)
+      await mutateAsync({ id: kycId, data: form })
       toast({ title: 'Address updated', severity: 'success' } as any)
       onSaved()
       onClose()
@@ -492,19 +496,28 @@ function EditAddressModal({
 // ── Page ────────────────────────────────────────────────────────────────────
 export default function BusinessPage() {
   const { can } = usePermissions()
-  const { data: bizData, isLoading: bizLoading } = useBusinessControllerFind()
+  const { data: bizData, isLoading: bizLoading } = useBusinessControllerFind(undefined)
+  const business = (bizData as any)?.data?.data as ApiHydratedBusiness | undefined
+  const kycId = business?.kyc ?? ''
   const {
     data: kycData,
     isLoading: kycLoading,
     refetch: refetchKyc,
-  } = useBusinessKYCControllerGetKyc()
+  } = useBusinessKYCControllerGetKyc(kycId, { query: { enabled: !!kycId } })
 
-  const business = (bizData as any)?.data?.data as ApiHydratedBusiness | undefined
-  const kyc = (kycData as any)?.data?.data as ApiHydratedBusinessKYC | undefined
+  const kycRaw = (kycData as any)?.data?.data ?? (kycData as any)?.data
+  const kyc = kycRaw
+    ? ({
+        ...kycRaw,
+        information: kycRaw.information ?? kycRaw.businessInformation,
+        address: kycRaw.address ?? kycRaw.businessAddress,
+        directors: kycRaw.directors?.length ? kycRaw.directors : kycRaw.leadership,
+      } as ApiHydratedBusinessKYC)
+    : undefined
 
   const [editOpen, setEditOpen] = useState<'information' | 'address' | null>(null)
 
-  if (bizLoading || kycLoading) return <BusinessSkeleton />
+  if (bizLoading || (!!kycId && kycLoading)) return <BusinessSkeleton />
 
   const state = resolveVerificationState(business, kyc)
 
@@ -595,15 +608,17 @@ export default function BusinessPage() {
         </DetailCell>
       </SectionBlock>
 
-      {editOpen === 'information' && (
+      {editOpen === 'information' && kycId && (
         <EditInformationModal
+          kycId={kycId}
           current={kyc?.information}
           onClose={() => setEditOpen(null)}
           onSaved={() => refetchKyc()}
         />
       )}
-      {editOpen === 'address' && (
+      {editOpen === 'address' && kycId && (
         <EditAddressModal
+          kycId={kycId}
           current={kyc?.address}
           onClose={() => setEditOpen(null)}
           onSaved={() => refetchKyc()}

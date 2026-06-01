@@ -22,13 +22,16 @@ import {
   useBusinessKYCControllerCreateKYC,
   useBusinessKYCControllerUpdateBusinessInfo,
   useBusinessKYCControllerUpdateBusinessAddress,
-  useBusinessKYCControllerAddDirectors,
-  useBusinessKYCControllerDeleteDirectors,
-  useBusinessKYCControllerUpdateDocumentationsUrls,
-  useBusinessKYCControllerCompleteKYC,
+  useBusinessKYCControllerAddLeadership,
+  useBusinessKYCControllerDeleteLeadership,
+  useBusinessKYCControllerSubmitKyc,
   getBusinessKYCControllerGetKycQueryKey,
 } from '@/api/business-kyc/business-kyc'
-import type { ApiHydratedBusinessKYC, BusinessLeadership } from '@/api/model'
+import {
+  getBusinessControllerFindQueryKey,
+  useBusinessControllerFind,
+} from '@/api/business/business'
+import type { ApiHydratedBusinessKYC, BusinessLeadership, KYCLeadershipDto } from '@/api/model'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -67,6 +70,38 @@ type UploadCallback = (state: {
   path?: string
   status: 'upload_idle' | 'upload_ongoing' | 'upload_success' | 'upload_failed' | 'file_invalid' | 'file_valid'
 }) => void
+
+async function submitKycDocumentation(
+  kycId: string,
+  cacCertificate: File,
+  applicationDoc: File,
+): Promise<void> {
+  const formData = new FormData()
+  formData.append('cacCertificate', cacCertificate)
+  formData.append('applicationDoc', applicationDoc)
+  const token = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN) : null
+  const mode =
+    typeof window !== 'undefined'
+      ? (localStorage.getItem(STORAGE_KEYS.DASHBOARD_MODE) ?? 'sandbox')
+      : 'sandbox'
+  const res = await fetch(`${API_BASE_URL}/business/kyc/${kycId}/documentation`, {
+    method: 'POST',
+    body: formData,
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      'x-dashboard-mode': mode,
+    },
+  })
+  const json = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    throw {
+      status: res.status,
+      message: json.message ?? 'Failed to save documents',
+      code: json.code ?? 'error',
+      errors: json.error,
+    }
+  }
+}
 
 async function uploadFile(file: File, onProgress: UploadCallback, onSuccess: (url: string) => void) {
   onProgress({ progress: 0, status: 'upload_ongoing' })
@@ -173,11 +208,13 @@ function SectionCard({
 
 function BusinessInfoSection({
   kyc,
+  kycId,
   isExpanded,
   onToggle,
   onSaved,
 }: {
   kyc: ApiHydratedBusinessKYC | undefined
+  kycId: string
   isExpanded: boolean
   onToggle: () => void
   onSaved: () => void
@@ -248,10 +285,10 @@ function BusinessInfoSection({
         }
       },
     }
-    if (kyc?.id) {
-      updateInfo.mutate({ data } as any, mutateOptions)
+    if (kycId) {
+      updateInfo.mutate({ id: kycId, data }, mutateOptions)
     } else {
-      createKYC.mutate({ data } as any, mutateOptions)
+      createKYC.mutate({ data }, mutateOptions)
     }
   }
 
@@ -336,11 +373,13 @@ function BusinessInfoSection({
 
 function AddressSection({
   kyc,
+  kycId,
   isExpanded,
   onToggle,
   onSaved,
 }: {
   kyc: ApiHydratedBusinessKYC | undefined
+  kycId: string
   isExpanded: boolean
   onToggle: () => void
   onSaved: () => void
@@ -394,8 +433,9 @@ function AddressSection({
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!validate()) return
+    if (!kycId) return
     updateAddress.mutate(
-      { data: form } as any,
+      { id: kycId, data: form },
       {
         onSuccess: () => {
           toast({ title: 'Address saved', severity: 'success' } as any)
@@ -505,22 +545,33 @@ function AddressSection({
 
 function DirectorsSection({
   kyc,
+  kycId,
   isExpanded,
   onToggle,
   onSaved,
 }: {
   kyc: ApiHydratedBusinessKYC | undefined
+  kycId: string
   isExpanded: boolean
   onToggle: () => void
   onSaved: () => void
 }) {
   const directors = kyc?.directors ?? []
-  const [form, setForm] = useState({ role: '', nationalityCode: '', email: '', bvn: '' })
+  const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
+    role: '',
+    nationalityCode: '',
+    phone: '',
+    email: '',
+    dateOfBirth: '',
+    bvn: '',
+  })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [apiErrors, setApiErrors] = useState<Record<string, string>>({})
 
-  const addDirector = useBusinessKYCControllerAddDirectors()
-  const deleteDirector = useBusinessKYCControllerDeleteDirectors()
+  const addDirector = useBusinessKYCControllerAddLeadership()
+  const deleteDirector = useBusinessKYCControllerDeleteLeadership()
 
   function set<K extends keyof typeof form>(key: K, value: string) {
     setForm((f) => ({ ...f, [key]: value }))
@@ -529,24 +580,48 @@ function DirectorsSection({
 
   function validate() {
     const e: Record<string, string> = {}
+    if (!form.firstName.trim()) e.firstName = 'Required'
+    if (!form.lastName.trim()) e.lastName = 'Required'
     if (!form.role) e.role = 'Required'
     if (!form.nationalityCode) e.nationalityCode = 'Required'
+    if (!form.phone.trim()) e.phone = 'Required'
     if (!form.email.trim()) e.email = 'Required'
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Must be a valid email'
+    if (!form.dateOfBirth) e.dateOfBirth = 'Required'
     if (!form.bvn.trim()) e.bvn = 'Required'
+    else if (!/^\d{11}$/.test(form.bvn.trim())) e.bvn = 'BVN must be 11 digits'
     setErrors(e)
     return Object.keys(e).length === 0
   }
 
   function handleAdd(e: React.FormEvent) {
     e.preventDefault()
-    if (!validate()) return
+    if (!validate() || !kycId) return
+    const data: KYCLeadershipDto = {
+      firstName: form.firstName.trim(),
+      lastName: form.lastName.trim(),
+      role: form.role,
+      nationalityCode: form.nationalityCode,
+      phone: form.phone,
+      email: form.email.trim(),
+      dateOfBirth: form.dateOfBirth,
+      bvn: form.bvn.trim(),
+    }
     addDirector.mutate(
-      { data: form } as any,
+      { id: kycId, data },
       {
         onSuccess: () => {
           toast({ title: 'Director added', severity: 'success' } as any)
-          setForm({ role: '', nationalityCode: '', email: '', bvn: '' })
+          setForm({
+            firstName: '',
+            lastName: '',
+            role: '',
+            nationalityCode: '',
+            phone: '',
+            email: '',
+            dateOfBirth: '',
+            bvn: '',
+          })
           setApiErrors({})
           onSaved()
         },
@@ -562,9 +637,10 @@ function DirectorsSection({
     )
   }
 
-  function handleDelete(id: string) {
+  function handleDelete(leadershipId: string) {
+    if (!kycId) return
     deleteDirector.mutate(
-      { id } as any,
+      { kycId, leadershipId },
       {
         onSuccess: () => {
           toast({ title: 'Director removed', severity: 'success' } as any)
@@ -618,6 +694,34 @@ function DirectorsSection({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Field>
+              <FieldLabel>First name <span className="text-feedback-error-main">*</span></FieldLabel>
+              <TextInput
+                value={form.firstName}
+                onChange={(e) => set('firstName', (e.target as HTMLInputElement).value)}
+                placeholder="First name"
+                aria-invalid={!!(errors.firstName || apiErrors.firstName)}
+              />
+              {(errors.firstName || apiErrors.firstName) && (
+                <FieldError errors={[{ message: errors.firstName || apiErrors.firstName }]} />
+              )}
+            </Field>
+
+            <Field>
+              <FieldLabel>Last name <span className="text-feedback-error-main">*</span></FieldLabel>
+              <TextInput
+                value={form.lastName}
+                onChange={(e) => set('lastName', (e.target as HTMLInputElement).value)}
+                placeholder="Last name"
+                aria-invalid={!!(errors.lastName || apiErrors.lastName)}
+              />
+              {(errors.lastName || apiErrors.lastName) && (
+                <FieldError errors={[{ message: errors.lastName || apiErrors.lastName }]} />
+              )}
+            </Field>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Field>
               <FieldLabel>Role <span className="text-feedback-error-main">*</span></FieldLabel>
               <SelectInput
                 options={DIRECTOR_ROLES}
@@ -638,6 +742,31 @@ function DirectorsSection({
                 searchable
               />
               {(errors.nationalityCode || apiErrors.nationalityCode) && <FieldError errors={[{ message: errors.nationalityCode || apiErrors.nationalityCode }]} />}
+            </Field>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Field>
+              <FieldLabel>Phone <span className="text-feedback-error-main">*</span></FieldLabel>
+              <PhoneInput
+                value={form.phone}
+                onChange={(v) => set('phone', v)}
+                aria-invalid={!!(errors.phone || apiErrors.phone)}
+              />
+              {(errors.phone || apiErrors.phone) && <FieldError errors={[{ message: errors.phone || apiErrors.phone }]} />}
+            </Field>
+
+            <Field>
+              <FieldLabel>Date of birth <span className="text-feedback-error-main">*</span></FieldLabel>
+              <TextInput
+                type="date"
+                value={form.dateOfBirth}
+                onChange={(e) => set('dateOfBirth', (e.target as HTMLInputElement).value)}
+                aria-invalid={!!(errors.dateOfBirth || apiErrors.dateOfBirth)}
+              />
+              {(errors.dateOfBirth || apiErrors.dateOfBirth) && (
+                <FieldError errors={[{ message: errors.dateOfBirth || apiErrors.dateOfBirth }]} />
+              )}
             </Field>
           </div>
 
@@ -689,37 +818,42 @@ function DirectorsSection({
 
 function DocumentationSection({
   kyc,
+  kycId,
   isExpanded,
   onToggle,
   onSaved,
 }: {
   kyc: ApiHydratedBusinessKYC | undefined
+  kycId: string
   isExpanded: boolean
   onToggle: () => void
   onSaved: () => void
 }) {
   const existing = kyc?.documentation
-  const [cacCert, setCacCert] = useState<{ url: string; name: string } | null>(null)
-  const [applicationDoc, setApplicationDoc] = useState<{ url: string; name: string } | null>(null)
+  const [cacCert, setCacCert] = useState<{ file: File; name: string } | null>(null)
+  const [applicationDoc, setApplicationDoc] = useState<{ file: File; name: string } | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const updateDocs = useBusinessKYCControllerUpdateDocumentationsUrls()
-
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!cacCert?.url || !applicationDoc?.url) return
-    updateDocs.mutate(
-      { data: { cacCertificate: cacCert.url, applicationDoc: applicationDoc.url } } as any,
-      {
-        onSuccess: () => {
-          toast({ title: 'Documents saved', severity: 'success' } as any)
-          onSaved()
-        },
-        onError: () => toast({ title: 'Failed to save documents. Please try again.', severity: 'error' } as any),
-      },
-    )
+    if (!kycId || !cacCert?.file || !applicationDoc?.file) return
+    setIsSubmitting(true)
+    try {
+      await submitKycDocumentation(kycId, cacCert.file, applicationDoc.file)
+      toast({ title: 'Documents saved', severity: 'success' } as any)
+      onSaved()
+    } catch (err: any) {
+      const { generalError } = parseApiError(err)
+      toast({
+        title: generalError ?? 'Failed to save documents. Please try again.',
+        severity: 'error',
+      } as any)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
-  const canSubmit = cacCert?.url && applicationDoc?.url
+  const canSubmit = cacCert?.file && applicationDoc?.file
 
   return (
     <SectionCard
@@ -758,7 +892,10 @@ function DocumentationSection({
               </div>
             ) : (
               <FileUpload
-                onFileUpload={({ file }, cb) => uploadFile(file, cb, (url) => setCacCert({ url, name: file.name }))}
+                onFileUpload={({ file }, cb) => {
+                  setCacCert({ file, name: file.name })
+                  cb({ progress: 100, status: 'upload_success' })
+                }}
                 onFileRemove={() => setCacCert(null)}
                 maxFiles={1}
                 maxFileSize={5 * 1024 * 1024}
@@ -786,7 +923,10 @@ function DocumentationSection({
               </div>
             ) : (
               <FileUpload
-                onFileUpload={({ file }, cb) => uploadFile(file, cb, (url) => setApplicationDoc({ url, name: file.name }))}
+                onFileUpload={({ file }, cb) => {
+                  setApplicationDoc({ file, name: file.name })
+                  cb({ progress: 100, status: 'upload_success' })
+                }}
                 onFileRemove={() => setApplicationDoc(null)}
                 maxFiles={1}
                 maxFileSize={5 * 1024 * 1024}
@@ -799,7 +939,7 @@ function DocumentationSection({
           </Field>
 
           <div className="flex justify-end pt-2">
-            <Button type="submit" color="primary" size="sm" disabled={!canSubmit || updateDocs.isPending} loading={updateDocs.isPending}>
+            <Button type="submit" color="primary" size="sm" disabled={!canSubmit || isSubmitting} loading={isSubmitting}>
               Save & continue
             </Button>
           </div>
@@ -813,14 +953,16 @@ function DocumentationSection({
 
 function SubmitSection({
   kyc,
+  kycId,
   allDone,
   onSubmitted,
 }: {
   kyc: ApiHydratedBusinessKYC | undefined
+  kycId: string
   allDone: boolean
   onSubmitted: () => void
 }) {
-  const completeKYC = useBusinessKYCControllerCompleteKYC()
+  const submitKyc = useBusinessKYCControllerSubmitKyc()
 
   if (kyc?.approvalRequestedAt) {
     return (
@@ -854,11 +996,11 @@ function SubmitSection({
       <Button
         color="primary"
         size="sm"
-        disabled={!allDone || completeKYC.isPending}
-        loading={completeKYC.isPending}
+        disabled={!allDone || !kycId || submitKyc.isPending}
+        loading={submitKyc.isPending}
         onClick={() =>
-          completeKYC.mutate(
-            {} as any,
+          submitKyc.mutate(
+            { id: kycId },
             {
               onSuccess: () => {
                 toast({ title: 'Approval request submitted', severity: 'success' } as any)
@@ -877,18 +1019,34 @@ function SubmitSection({
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
+function normalizeKyc(raw: Record<string, unknown> | undefined): ApiHydratedBusinessKYC | undefined {
+  if (!raw) return undefined
+  return {
+    ...(raw as ApiHydratedBusinessKYC),
+    information: (raw.information ?? raw.businessInformation) as ApiHydratedBusinessKYC['information'],
+    address: (raw.address ?? raw.businessAddress) as ApiHydratedBusinessKYC['address'],
+    directors: ((raw.directors as BusinessLeadership[] | undefined)?.length
+      ? raw.directors
+      : raw.leadership) as BusinessLeadership[] | undefined,
+  }
+}
+
 export default function CompliancePage() {
   const queryClient = useQueryClient()
-  const { data: kycData, isLoading } = useBusinessKYCControllerGetKyc()
-  const raw = (kycData as any)?.data
-  const kyc: ApiHydratedBusinessKYC | undefined = raw
-    ? {
-        ...raw,
-        information: raw.information ?? raw.businessInformation,
-        address: raw.address ?? raw.businessAddress,
-        directors: raw.directors?.length ? raw.directors : raw.leadership,
-      }
-    : undefined
+  const { data: bizData, isLoading: bizLoading } = useBusinessControllerFind(undefined)
+  const business = ((bizData as { data?: { data?: { kyc?: string } } })?.data?.data ??
+    (bizData as { data?: { kyc?: string } })?.data) as { kyc?: string } | undefined
+  const kycId = business?.kyc ?? ''
+
+  const { data: kycData, isLoading: kycLoading } = useBusinessKYCControllerGetKyc(kycId, {
+    query: { enabled: !!kycId },
+  })
+  const raw = ((kycData as { data?: Record<string, unknown> })?.data ??
+    (kycData as { data?: { data?: Record<string, unknown> } })?.data?.data) as
+    | Record<string, unknown>
+    | undefined
+  const kyc = normalizeKyc(raw)
+  const isLoading = bizLoading || (!!kycId && kycLoading)
 
   const infoDone = !!kyc?.information
   const addressDone = !!kyc?.address
@@ -914,7 +1072,10 @@ export default function CompliancePage() {
   }
 
   function handleSaved(nextSection?: string) {
-    queryClient.invalidateQueries({ queryKey: getBusinessKYCControllerGetKycQueryKey() })
+    queryClient.invalidateQueries({ queryKey: getBusinessControllerFindQueryKey(undefined) })
+    if (kycId) {
+      queryClient.invalidateQueries({ queryKey: getBusinessKYCControllerGetKycQueryKey(kycId) })
+    }
     if (nextSection) setActiveSection(nextSection)
   }
 
@@ -941,6 +1102,7 @@ export default function CompliancePage() {
 
       <BusinessInfoSection
         kyc={kyc}
+        kycId={kycId || kyc?.id || ''}
         isExpanded={activeSection === 'information'}
         onToggle={() => toggle('information')}
         onSaved={() => handleSaved('address')}
@@ -948,6 +1110,7 @@ export default function CompliancePage() {
 
       <AddressSection
         kyc={kyc}
+        kycId={kycId || kyc?.id || ''}
         isExpanded={activeSection === 'address'}
         onToggle={() => toggle('address')}
         onSaved={() => handleSaved('directors')}
@@ -955,6 +1118,7 @@ export default function CompliancePage() {
 
       <DirectorsSection
         kyc={kyc}
+        kycId={kycId || kyc?.id || ''}
         isExpanded={activeSection === 'directors'}
         onToggle={() => toggle('directors')}
         onSaved={() => handleSaved(directorsDone ? undefined : 'documentation')}
@@ -962,6 +1126,7 @@ export default function CompliancePage() {
 
       <DocumentationSection
         kyc={kyc}
+        kycId={kycId || kyc?.id || ''}
         isExpanded={activeSection === 'documentation'}
         onToggle={() => toggle('documentation')}
         onSaved={() => handleSaved()}
@@ -970,8 +1135,14 @@ export default function CompliancePage() {
       {!kyc?.completed && (
         <SubmitSection
           kyc={kyc}
+          kycId={kycId || kyc?.id || ''}
           allDone={allDone}
-          onSubmitted={() => queryClient.invalidateQueries({ queryKey: getBusinessKYCControllerGetKycQueryKey() })}
+          onSubmitted={() => {
+            queryClient.invalidateQueries({ queryKey: getBusinessControllerFindQueryKey(undefined) })
+            if (kycId) {
+              queryClient.invalidateQueries({ queryKey: getBusinessKYCControllerGetKycQueryKey(kycId) })
+            }
+          }}
         />
       )}
     </div>
