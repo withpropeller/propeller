@@ -4,12 +4,13 @@
 # Reads from raw-webhooks stream, classifies by provider source,
 # routes to dedicated event streams for downstream consumption.
 #
-# Deploy: flo processing submit infra/flo-pipelines/webhook-router.yaml -n propeller
+# Namespace is intentionally omitted — it is inherited from the
+# submit command, so the same file deploys to every environment:
+#   flo processing submit infra/flo-pipelines/webhook-router.yaml -n <env>
 # ──────────────────────────────────────────────────────────────
 
 kind: Processing
 name: webhook-router
-namespace: propeller
 parallelism: 4
 batch_size: 200
 
@@ -17,7 +18,6 @@ sources:
   - name: raw-webhooks
     stream:
       name: raw-webhooks
-      namespace: propeller
 
 operators:
   - type: classify
@@ -36,23 +36,19 @@ sinks:
   - name: payment-sink
     stream:
       name: payment-events
-      namespace: propeller
     match: [paystack]
 
   - name: kyb-sink
     stream:
       name: kyb-events
-      namespace: propeller
     match: [paykka]
 
   - name: kyc-sink
     stream:
       name: kyc-events
-      namespace: propeller
     match: [dojah]
 
   - name: payout-sink
     stream:
       name: payout-events
-      namespace: propeller
     match: [globalstack]

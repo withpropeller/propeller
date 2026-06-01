@@ -12,7 +12,9 @@
 import { createPrivateKey, createPublicKey, type KeyObject } from 'node:crypto';
 import type {
     PayKKaOnboardRequest,
-    PayKKaOnboardResponse,
+    PayKKaAssessmentResponse,
+    PayKKaAssessmentResult,
+    PayKKaCallbackVerifyInput,
     MerchantKybProvider,
     ProviderInitOptions,
 } from '../../contracts/providers.js';
@@ -94,13 +96,13 @@ export class PayKKaProvider extends BaseProviderClient implements MerchantKybPro
         return data.data.file_id;
     }
 
-    async applyOnboarding(req: PayKKaOnboardRequest): Promise<PayKKaOnboardResponse> {
+    async submitAssessment(req: PayKKaOnboardRequest): Promise<PayKKaAssessmentResponse> {
         // PayKKa explicitly says: do NOT pass X-Merch-Id for this endpoint
-        const authHeader = await this.signRequest('/api/v2/merch/onboard/apply', req, '');
+        const authHeader = await this.signRequest('/api/v2/merch/assessment/apply', req, '');
 
-        const data = await this.request<PayKKaOnboardResponse>({
+        const data = await this.request<PayKKaAssessmentResponse>({
             method: 'POST',
-            path: '/api/v2/merch/onboard/apply',
+            path: '/api/v2/merch/assessment/apply',
             headers: {
                 Authorization: authHeader,
                 // deliberately NO X-Merch-Id
@@ -111,14 +113,15 @@ export class PayKKaProvider extends BaseProviderClient implements MerchantKybPro
         return data;
     }
 
-    async queryStatus(merchId: string): Promise<{ status: string; merch_id: string }> {
-        const authHeader = await this.signRequest('/api/v2/merch/onboard/status', { merch_id: merchId }, '');
+    async getAssessmentResult(merchId: string): Promise<PayKKaAssessmentResult> {
+        const authHeader = await this.signRequest('/api/v2/merch/assessment/result', { merch_id: merchId }, merchId);
 
-        const data = await this.request<{ status: string; merch_id: string }>({
+        const data = await this.request<PayKKaAssessmentResult>({
             method: 'POST',
-            path: '/api/v2/merch/onboard/status',
+            path: '/api/v2/merch/assessment/result',
             headers: {
                 Authorization: authHeader,
+                'X-Merch-Id': merchId,
             },
             body: { merch_id: merchId },
         });
@@ -126,26 +129,27 @@ export class PayKKaProvider extends BaseProviderClient implements MerchantKybPro
         return data;
     }
 
-    async updateOnboarding(merchId: string, req: Partial<PayKKaOnboardRequest>): Promise<void> {
-        const authHeader = await this.signRequest('/api/v2/merch/onboard/update', req, '');
+    async updateAssessment(merchId: string, req: Partial<PayKKaOnboardRequest>): Promise<void> {
+        const body = { merch_id: merchId, ...req };
+        const authHeader = await this.signRequest('/api/v2/merch/assessment/update', body, merchId);
 
         await this.request({
             method: 'POST',
-            path: '/api/v2/merch/onboard/update',
+            path: '/api/v2/merch/assessment/update',
             headers: {
                 Authorization: authHeader,
+                'X-Merch-Id': merchId,
             },
-            body: { merch_id: merchId, ...req },
+            body,
         });
     }
 
-    verifyCallbackSignature(signature: string, rawBody: string): boolean {
-        // PayKKa signs their callback with their private key.
-        // We verify with their public key.
-        // The signature is in the Authorization header (same format as our outbound).
+    verifyCallbackSignature(input: PayKKaCallbackVerifyInput): boolean {
+        // PayKKa signs their callback with their private key; we verify with their
+        // public key. The signature metadata is the same URL-encoded JSON object we
+        // send outbound, carried in the Authorization header.
         try {
-            // Parse the URL-encoded JSON from Authorization
-            const decoded = decodeURIComponent(signature);
+            const decoded = decodeURIComponent(input.signature);
             const auth = JSON.parse(decoded) as {
                 sign_type: string;
                 timestamp: string;
@@ -154,14 +158,16 @@ export class PayKKaProvider extends BaseProviderClient implements MerchantKybPro
                 signature: string;
             };
 
-            // Reconstruct canonical string from callback:
-            // The callback path is our webhook URL path, but we don't have it here.
-            // PayKKa signs: path + timestamp + nonce + merch_id + body
-            // For callback verification, we need the raw body + metadata from the header.
-            // Simplified: verify just the body signature with the pub key.
-            // Full implementation requires nonce/timestamp dedup in flo (Wave 2).
-
-            const canonical = `${auth.timestamp}\n${auth.nonce}\n${rawBody}`;
+            // Canonical string is the same 5-line structure PayKKa uses everywhere:
+            //   path \n timestamp \n nonce \n merch_id \n body
+            // (the merch_id line is kept even when empty).
+            const canonical = buildCanonicalString(
+                input.path,
+                auth.timestamp,
+                auth.nonce,
+                input.merchId,
+                input.rawBody,
+            );
             return verifyRsaSha256(this.publicKey, canonical, auth.signature);
         } catch {
             return false;

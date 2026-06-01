@@ -56,7 +56,13 @@ export type PaystackWebhookEvent =
   | { type: 'charge.success'; reference: string; amount: number; currency: string; senderName: string; senderBankAccount: string; senderCountry: string; paidAt: string }
   | { type: 'bank.transfer.rejected'; reference: string; amount: string; message: string; messageType: string };
 
-// ── PayKKa: Merchant KYB Provider ──
+// ── PayKKa: Merchant KYB Provider (Risk Assessment) ──
+//
+// We integrate PayKKa's *Risk Assessment* product, not the Onboarding product.
+// Both share the same MerchOnboardCreateReq request body, but assessment/apply
+// returns only a merch_id (no authorize_link) and the notify callback carries a
+// status + risk_level — the right fit for our Merchant-of-Record model where we
+// screen sub-merchants rather than have them authorize a PayKKa account.
 
 export interface PayKKaOnboardRequest {
   request_id: string;
@@ -114,28 +120,64 @@ export interface PayKKaAddress {
   address2?: string;
 }
 
-export interface PayKKaOnboardResponse {
-  authorize_link: string;
+/** assessment/apply returns only a merch_id — no authorize_link. */
+export interface PayKKaAssessmentResponse {
   merch_id: string;
 }
 
-export interface PayKKaCallbackPayload {
+/** Identity authentication status from the assessment notify/result. */
+export type PayKKaAssessmentStatus =
+  | 'INIT'      // initial
+  | 'WAIT'      // pending review
+  | 'PASS'      // review passed
+  | 'REFUSED'   // review failed
+  | 'AUTH_FAIL' // authorization canceled
+  | 'REJECTED';
+
+export type PayKKaRiskLevel = 'LOW' | 'MIDDLE' | 'HIGH';
+
+/** Inner result payload shared by assessment/notify and assessment/result. */
+export interface PayKKaAssessmentResult {
+  request_id: string;
   merch_id: string;
-  status: string; // 'APPROVED' | 'REJECTED' | 'SUPPLEMENT'
-  message?: string;
+  status: PayKKaAssessmentStatus;
+  msg?: string;
+  risk_level?: PayKKaRiskLevel;
+}
+
+/**
+ * Body of the /api/v2/merch/assessment/notify webhook.
+ * PayKKa wraps every callback in { type, version, data }.
+ */
+export interface PayKKaAssessmentNotification {
+  type: 'ASSESSMENT' | 'MERCH' | string;
+  version: string; // 'V1' | 'V2' | ...
+  data: PayKKaAssessmentResult;
+}
+
+/** Inputs needed to verify an inbound PayKKa callback signature. */
+export interface PayKKaCallbackVerifyInput {
+  /** The request path PayKKa POSTed to (part of the canonical string). */
+  path: string;
+  /** merch_id from the X-Merch-Id header (empty string if absent). */
+  merchId: string;
+  /** The URL-encoded JSON Authorization header value. */
+  signature: string;
+  /** Raw request body, exactly as received. */
+  rawBody: string;
 }
 
 export interface MerchantKybProvider extends ProviderAdapter {
-  /** Upload a document file. Returns file_id for use in onboarding. */
+  /** Upload a document file. Returns file_id for use in the assessment request. */
   uploadFile(fileName: string, fileData: Buffer): Promise<number>;
-  /** Submit a merchant onboarding application. */
-  applyOnboarding(req: PayKKaOnboardRequest): Promise<PayKKaOnboardResponse>;
-  /** Query the status of an onboarding application. */
-  queryStatus(merchId: string): Promise<{ status: string; merch_id: string }>;
-  /** Verify an inbound callback signature. */
-  verifyCallbackSignature(signature: string, rawBody: string): boolean;
-  /** Update an existing onboarding application. */
-  updateOnboarding(merchId: string, req: Partial<PayKKaOnboardRequest>): Promise<void>;
+  /** Submit a merchant risk-assessment application. Returns the assigned merch_id. */
+  submitAssessment(req: PayKKaOnboardRequest): Promise<PayKKaAssessmentResponse>;
+  /** Query the current assessment result/status for a merch_id. */
+  getAssessmentResult(merchId: string): Promise<PayKKaAssessmentResult>;
+  /** Verify an inbound callback signature (RSA SHA256 against PayKKa's public key). */
+  verifyCallbackSignature(input: PayKKaCallbackVerifyInput): boolean;
+  /** Update an existing assessment application. */
+  updateAssessment(merchId: string, req: Partial<PayKKaOnboardRequest>): Promise<void>;
 }
 
 // ── Dojah: Customer KYC Provider ──

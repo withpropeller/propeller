@@ -10,12 +10,13 @@
 #   4. settle-payout     — on webhook settlement, close legs
 #   5. fail-payout       — on failure, reverse reserve
 #
-# Deploy: flo workflow sync infra/flo-workflows/ -n propeller
+# Namespace is inherited from the submit command, so the same file
+# deploys to every environment:
+#   flo workflow sync infra/flo-workflows/ -n <env>
 # ──────────────────────────────────────────────────────────────
 
 kind: Workflow
 name: offramp-usdc
-namespace: propeller
 trigger:
   stream: payout-events
   condition: "json:type=payout.requested"

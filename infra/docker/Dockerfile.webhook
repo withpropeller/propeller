@@ -1,0 +1,39 @@
+# Multi-stage Dockerfile for the Propeller webhook receiver (services/webhook).
+#
+# A public Go HTTP service (not a worker): it receives provider callbacks,
+# verifies signatures, and publishes to Flo. Built with GOWORK=off and the
+# local replace deps copied in. The binary lives at ./cmd/webhook.
+#
+# Usage:
+#   docker build -f infra/docker/Dockerfile.webhook -t propeller-webhook .
+
+FROM golang:1.25-alpine AS builder
+RUN apk add --no-cache git
+ENV GOWORK=off
+WORKDIR /repo
+
+# Local modules referenced via replace in services/webhook/go.mod
+COPY libs/common ./libs/common
+COPY libs/go-events ./libs/go-events
+COPY services/webhook/go.mod services/webhook/go.sum ./services/webhook/
+
+WORKDIR /repo/services/webhook
+RUN go mod download
+
+WORKDIR /repo
+COPY services/webhook ./services/webhook
+
+WORKDIR /repo/services/webhook
+RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /out/webhook ./cmd/webhook
+
+# ------------------------------------------------------------------------------
+
+FROM alpine:3.21
+RUN apk add --no-cache ca-certificates
+WORKDIR /app
+
+COPY --from=builder /out/webhook ./webhook
+
+USER nobody
+EXPOSE 4000
+CMD ["./webhook"]

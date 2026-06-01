@@ -11,7 +11,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log/slog"
 	"net/http"
@@ -24,10 +23,10 @@ import (
 	"github.com/go-chi/chi/v5"
 	chimw "github.com/go-chi/chi/v5/middleware"
 
+	"github.com/propeller/propeller/libs/common"
+	evts "github.com/propeller/propeller/libs/go-events"
 	"github.com/propeller/propeller/services/webhook/internal/config"
 	"github.com/propeller/propeller/services/webhook/internal/verify"
-	evts "github.com/propeller/propeller/libs/go-events"
-	"github.com/propeller/propeller/libs/common"
 )
 
 func main() {
@@ -58,7 +57,7 @@ func main() {
 		verifiers["paystack"] = verify.NewPaystackVerifier(cfg.PaystackSecret, cfg.PaystackWebhookSecret)
 	}
 	if cfg.PayKKaEnabled {
-		verifiers["paykka"] = verify.NewPayKKaVerifier(cfg.PayKKaPublicKey)
+		verifiers["paykka"] = verify.NewPayKKaVerifier(cfg.PayKKaPublicKey, cfg.PayKKaCallbackPath)
 	}
 	if cfg.DojahEnabled {
 		verifiers["dojah"] = verify.NewDojahVerifier(cfg.DojahWebhookSecret)
@@ -88,7 +87,7 @@ func main() {
 	})
 
 	// ── Webhook endpoints ──
-	r.Post("/webhooks/{provider}", func(w http.ResponseWriter, r *http.Request) {
+	r.Post("/{provider}", func(w http.ResponseWriter, r *http.Request) {
 		provider := chi.URLParam(r, "provider")
 
 		v, ok := verifiers[provider]
@@ -118,15 +117,15 @@ func main() {
 
 		// Dedup via flo KV
 		dedupKV := "webhook:" + provider + ":" + idemKey
-		exists, err := floClient.KV.Get(context.Background(), dedupKV)
-		if err == nil && exists != "" {
+		if existing, err := floClient.KV.Get(dedupKV, nil); err == nil && existing != nil && len(existing.Value) > 0 {
 			// Already processed
 			writeJSON(w, http.StatusOK, map[string]string{"status": "duplicate"})
 			return
 		}
 
 		// Mark as processed (24h TTL)
-		if err := floClient.KV.Set(context.Background(), dedupKV, "1", 24*time.Hour); err != nil {
+		dedupTTL := uint64(24 * 60 * 60)
+		if _, err := floClient.KV.Put(dedupKV, []byte("1"), &flo.PutOptions{TTLSeconds: &dedupTTL}); err != nil {
 			slog.Error("failed to set dedup key", "error", err)
 		}
 
@@ -142,7 +141,7 @@ func main() {
 
 		// Publish to raw-webhooks stream
 		recordBytes, _ := json.Marshal(record)
-		if err := floClient.Streams.Publish(context.Background(), evts.StreamRawWebhooks, recordBytes); err != nil {
+		if _, err := floClient.Stream.Append(evts.StreamRawWebhooks, recordBytes, nil); err != nil {
 			slog.Error("failed to publish webhook", "provider", provider, "error", err)
 			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "failed to publish"})
 			return

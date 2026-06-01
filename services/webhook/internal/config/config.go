@@ -16,6 +16,7 @@ type Config struct {
 	PaystackSecret           string
 	PaystackWebhookSecret    string
 	PayKKaPublicKey          string
+	PayKKaCallbackPath       string
 	DojahWebhookSecret       string
 	GlobalstackWebhookSecret string
 }
@@ -33,6 +34,7 @@ func Load() (*Config, error) {
 		PaystackSecret:           os.Getenv("PAYSTACK_SECRET_KEY"),
 		PaystackWebhookSecret:    os.Getenv("PAYSTACK_WEBHOOK_SECRET"),
 		PayKKaPublicKey:          os.Getenv("PAYKKA_PUBLIC_KEY_PEM"),
+		PayKKaCallbackPath:       getEnv("PAYKKA_CALLBACK_PATH", "/paykka"),
 		DojahWebhookSecret:       os.Getenv("DOJAH_WEBHOOK_SECRET"),
 		GlobalstackWebhookSecret: os.Getenv("GLOBALSTACK_WEBHOOK_SECRET"),
 	}, nil

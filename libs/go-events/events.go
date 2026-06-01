@@ -15,7 +15,7 @@ const (
 	EventPaymentRejected  = "payment.rejected"
 	EventPaymentCollected = "payment.collected"
 
-	// KYB (PayKKa onboarding)
+	// KYB (PayKKa risk assessment)
 	EventKybSubmitted    = "kyb.submitted"
 	EventKybCompleted    = "kyb.completed"
 	EventKybApproved     = "kyb.approved"
@@ -32,10 +32,10 @@ const (
 	EventPayoutFailed    = "payout.failed"
 
 	// Business lifecycle
-	EventBusinessActivated         = "business.activated"
-	EventBusinessSuspended         = "business.suspended"
-	EventBusinessClosed            = "business.closed"
-	EventBusinessKycSubmitted      = "business.kyc-submitted"
+	EventBusinessActivated    = "business.activated"
+	EventBusinessSuspended    = "business.suspended"
+	EventBusinessClosed       = "business.closed"
+	EventBusinessKycSubmitted = "business.kyc-submitted"
 
 	// Ledger
 	EventLedgerCredited = "ledger.credited"
@@ -62,14 +62,14 @@ const (
 // ── Stream names ──
 
 const (
-	StreamRawWebhooks    = "raw-webhooks"
-	StreamPaymentEvents  = "payment-events"
-	StreamKybEvents      = "kyb-events"
-	StreamKycEvents      = "kyc-events"
-	StreamPayoutEvents   = "payout-events"
-	StreamBusinessEvents = "business-events"
+	StreamRawWebhooks        = "raw-webhooks"
+	StreamPaymentEvents      = "payment-events"
+	StreamKybEvents          = "kyb-events"
+	StreamKycEvents          = "kyc-events"
+	StreamPayoutEvents       = "payout-events"
+	StreamBusinessEvents     = "business-events"
 	StreamNotificationEvents = "notification-events"
-	StreamLedgerEvents   = "ledger-events"
+	StreamLedgerEvents       = "ledger-events"
 )
 
 // ── Payload types ──
@@ -104,10 +104,9 @@ type PaymentRejectedEvent struct {
 }
 
 type KybSubmittedEvent struct {
-	BusinessID    string `json:"businessId"`
-	RequestID     string `json:"requestId"`
-	MerchID       string `json:"merchId"`
-	AuthorizeLink string `json:"authorizeLink"`
+	BusinessID string `json:"businessId"`
+	RequestID  string `json:"requestId"`
+	MerchID    string `json:"merchId"`
 }
 
 type BusinessSubmissionReadyEvent struct {
@@ -116,10 +115,12 @@ type BusinessSubmissionReadyEvent struct {
 }
 
 type KybCompletedEvent struct {
-	Provider string `json:"provider"`
-	MerchID  string `json:"merchId"`
-	Status   string `json:"status"` // APPROVED | REJECTED | SUPPLEMENT
-	Message  string `json:"message,omitempty"`
+	Provider  string `json:"provider"`
+	MerchID   string `json:"merchId"`
+	RequestID string `json:"requestId,omitempty"`
+	Status    string `json:"status"`              // INIT | WAIT | PASS | REFUSED | AUTH_FAIL | REJECTED
+	RiskLevel string `json:"riskLevel,omitempty"` // LOW | MIDDLE | HIGH
+	Message   string `json:"message,omitempty"`
 }
 
 type BusinessActivatedEvent struct {

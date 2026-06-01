@@ -1,14 +1,18 @@
 package verify
 
 import (
+	"crypto"
 	"crypto/hmac"
 	"crypto/rsa"
 	"crypto/sha256"
 	"crypto/x509"
+	"encoding/base64"
 	"encoding/hex"
+	"encoding/json"
 	"encoding/pem"
 	"errors"
 	"net/http"
+	"net/url"
 )
 
 // Verifier validates an inbound webhook's authenticity.
@@ -19,7 +23,7 @@ type Verifier interface {
 // ── Paystack (HMAC SHA512, x-paystack-signature header) ──
 
 type PaystackVerifier struct {
-	secret       string
+	secret        string
 	webhookSecret string
 }
 
@@ -42,12 +46,22 @@ func (v *PaystackVerifier) Verify(body []byte, headers http.Header) error {
 }
 
 // ── PayKKa (RSA SHA256, callback notification) ──
+//
+// PayKKa signs callbacks with their private key; we verify with their public key.
+// The canonical string is PayKKa's standard 5-line structure:
+//
+//	path \n timestamp \n nonce \n merch_id \n body
+//
+// path is the callback path we registered with PayKKa (the path component of the
+// HTTPS endpoint we gave them). It is part of the signed payload but is not
+// recoverable from the body/headers, so it is configured on the verifier.
 
 type PayKKaVerifier struct {
-	publicKey *rsa.PublicKey
+	publicKey    *rsa.PublicKey
+	callbackPath string
 }
 
-func NewPayKKaVerifier(pubKeyPEM string) *PayKKaVerifier {
+func NewPayKKaVerifier(pubKeyPEM, callbackPath string) *PayKKaVerifier {
 	block, _ := pem.Decode([]byte(pubKeyPEM))
 	if block == nil {
 		panic("invalid PayKKa public key PEM")
@@ -56,7 +70,14 @@ func NewPayKKaVerifier(pubKeyPEM string) *PayKKaVerifier {
 	if err != nil {
 		panic("failed to parse PayKKa public key: " + err.Error())
 	}
-	return &PayKKaVerifier{publicKey: pub.(*rsa.PublicKey)}
+	rsaPub, ok := pub.(*rsa.PublicKey)
+	if !ok {
+		panic("PayKKa public key is not RSA")
+	}
+	if callbackPath == "" {
+		callbackPath = "/paykka"
+	}
+	return &PayKKaVerifier{publicKey: rsaPub, callbackPath: callbackPath}
 }
 
 func (v *PayKKaVerifier) Verify(body []byte, headers http.Header) error {
@@ -64,9 +85,40 @@ func (v *PayKKaVerifier) Verify(body []byte, headers http.Header) error {
 	if authHeader == "" {
 		return errors.New("missing Authorization header")
 	}
-	// Full RSA verification handled by the provider adapter;
-	// this is a lightweight check that the header is present
-	// and contains a valid-looking signature.
+
+	decoded, err := url.QueryUnescape(authHeader)
+	if err != nil {
+		return errors.New("malformed Authorization header")
+	}
+
+	var auth struct {
+		SignType  string `json:"sign_type"`
+		Timestamp string `json:"timestamp"`
+		Nonce     string `json:"nonce"`
+		KeyID     string `json:"key_id"`
+		Signature string `json:"signature"`
+	}
+	if err := json.Unmarshal([]byte(decoded), &auth); err != nil {
+		return errors.New("invalid Authorization JSON")
+	}
+	if auth.Signature == "" {
+		return errors.New("missing signature")
+	}
+
+	// merch_id line comes from the X-Merch-Id header (kept even if empty).
+	merchID := headers.Get("X-Merch-Id")
+
+	canonical := v.callbackPath + "\n" + auth.Timestamp + "\n" + auth.Nonce + "\n" + merchID + "\n" + string(body)
+	hash := sha256.Sum256([]byte(canonical))
+
+	sigBytes, err := base64.StdEncoding.DecodeString(auth.Signature)
+	if err != nil {
+		return errors.New("signature is not valid base64")
+	}
+
+	if err := rsa.VerifyPKCS1v15(v.publicKey, crypto.SHA256, hash[:], sigBytes); err != nil {
+		return errors.New("paykka signature mismatch")
+	}
 	return nil
 }
 

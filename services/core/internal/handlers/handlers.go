@@ -129,23 +129,25 @@ func SubmitKyb(deps *Deps) flo.ActionHandler {
 
 		onboardReq, err := buildOnboardRequest(ctx.Ctx(), deps.Mongo, objID, input.RequestID)
 		if err != nil {
-			return nil, fmt.Errorf("build onboard request: %w", err)
+			return nil, fmt.Errorf("build assessment request: %w", err)
 		}
 
-		// 2. Call PayKKa apply onboarding
-		resp, err := deps.PayKKa.ApplyOnboarding(*onboardReq)
+		// 2. Submit the risk assessment to PayKKa
+		resp, err := deps.PayKKa.SubmitAssessment(*onboardReq)
 		if err != nil {
-			return nil, fmt.Errorf("paykka apply onboarding failed: %w", err)
+			return nil, fmt.Errorf("paykka submit assessment failed: %w", err)
 		}
 
-		// 3. Persist merch_id + authorize_link in Mongo
+		// 3. Persist merch_id + request_id + interim status in Mongo.
+		//    The final verdict (PASS/REFUSED + risk_level) arrives via assessment/notify.
 		_, err = deps.Mongo.Collection("businesses").UpdateOne(
 			ctx.Ctx(),
 			bson.M{"_id": objID},
 			bson.M{"$set": bson.M{
-				"paykka_merch_id": resp.MerchID,
-				"paykka_status":   "submitted",
-				"updatedAt":       time.Now().UTC(),
+				"paykka_merch_id":   resp.MerchID,
+				"paykka_request_id": input.RequestID,
+				"paykka_status":     "WAIT",
+				"updatedAt":         time.Now().UTC(),
 			}},
 		)
 		if err != nil {
@@ -154,10 +156,9 @@ func SubmitKyb(deps *Deps) flo.ActionHandler {
 
 		// 4. Emit kyb.submitted event
 		event := evts.KybSubmittedEvent{
-			BusinessID:    input.BusinessID,
-			RequestID:     input.RequestID,
-			MerchID:       resp.MerchID,
-			AuthorizeLink: resp.AuthorizeLink,
+			BusinessID: input.BusinessID,
+			RequestID:  input.RequestID,
+			MerchID:    resp.MerchID,
 		}
 		if err := publishEvent(ctx.Ctx(), deps.Flo, evts.StreamKybEvents, evts.EventKybSubmitted, event); err != nil {
 			// Log but don't fail — event can be replayed
@@ -165,10 +166,9 @@ func SubmitKyb(deps *Deps) flo.ActionHandler {
 		}
 
 		return map[string]interface{}{
-			"status":        "submitted",
-			"businessId":    input.BusinessID,
-			"merchId":       resp.MerchID,
-			"authorizeLink": resp.AuthorizeLink,
+			"status":     "submitted",
+			"businessId": input.BusinessID,
+			"merchId":    resp.MerchID,
 		}, nil
 	}
 }
@@ -184,39 +184,39 @@ type kycBusinessInfo struct {
 }
 
 type kycBusinessAddress struct {
-	City          string `bson:"city"`
-	State         string `bson:"state"`
-	CountryCode   string `bson:"countryCode"`
-	Phone         string `bson:"phone"`
-	AddressLine1  string `bson:"addressLineOne"`
-	AddressLine2  string `bson:"addressLineTwo"`
-	Email         string `bson:"email"`
+	City         string `bson:"city"`
+	State        string `bson:"state"`
+	CountryCode  string `bson:"countryCode"`
+	Phone        string `bson:"phone"`
+	AddressLine1 string `bson:"addressLineOne"`
+	AddressLine2 string `bson:"addressLineTwo"`
+	Email        string `bson:"email"`
 }
 
 type kycDocFile struct {
-	KeyName         string `bson:"keyName"`
-	URL             string `bson:"url"`
-	PaykkaFileID    int    `bson:"paykkaFileId"`
+	KeyName      string `bson:"keyName"`
+	URL          string `bson:"url"`
+	PaykkaFileID int    `bson:"paykkaFileId"`
 }
 
 type kycDocumentation struct {
-	CACCertificate              kycDocFile `bson:"cacCertificate"`
-	CACCertificatePaykkaFileID  int        `bson:"cacCertificatePaykkaFileId"`
-	ApplicationDoc              kycDocFile `bson:"applicationDoc"`
-	ApplicationDocPaykkaFileID  int        `bson:"applicationDocPaykkaFileId"`
+	CACCertificate             kycDocFile `bson:"cacCertificate"`
+	CACCertificatePaykkaFileID int        `bson:"cacCertificatePaykkaFileId"`
+	ApplicationDoc             kycDocFile `bson:"applicationDoc"`
+	ApplicationDocPaykkaFileID int        `bson:"applicationDocPaykkaFileId"`
 }
 
 type kycLeadership struct {
-	FirstName     string `bson:"firstName"`
-	MiddleName    string `bson:"middleName"`
-	LastName      string `bson:"lastName"`
-	Role          string `bson:"role"`
-	Nationality   string `bson:"nationalityCode"`
-	Phone         string `bson:"phone"`
-	Email         string `bson:"email"`
-	DateOfBirth   string `bson:"dateOfBirth"`
-	BVN           string `bson:"bvn"`
-	PaykkaDocFileID int  `bson:"paykkaDocFileId"`
+	FirstName       string `bson:"firstName"`
+	MiddleName      string `bson:"middleName"`
+	LastName        string `bson:"lastName"`
+	Role            string `bson:"role"`
+	Nationality     string `bson:"nationalityCode"`
+	Phone           string `bson:"phone"`
+	Email           string `bson:"email"`
+	DateOfBirth     string `bson:"dateOfBirth"`
+	BVN             string `bson:"bvn"`
+	PaykkaDocFileID int    `bson:"paykkaDocFileId"`
 }
 
 type businessKYCDoc struct {
@@ -263,14 +263,14 @@ func buildOnboardRequest(ctx context.Context, mdb *mongo.Database, businessID pr
 		fullName += " " + l.LastName
 
 		stakeholders = append(stakeholders, paykka.Stakeholder{
-			IdentityType:         "INDIVIDUAL",
-			Name:                 fullName,
-			Nationality:          l.Nationality,
-			BirthDate:            l.DateOfBirth,
-			DocType:              "BVN",
-			IDNumber:             l.BVN,
+			IdentityType:          "INDIVIDUAL",
+			Name:                  fullName,
+			Nationality:           l.Nationality,
+			BirthDate:             l.DateOfBirth,
+			DocType:               "BVN",
+			IDNumber:              l.BVN,
 			DocPortraitSideFileID: l.PaykkaDocFileID,
-			ResidentAddress:      addr,
+			ResidentAddress:       addr,
 			// EffDateStart/End and Share are set per business requirements;
 			// left as zero value until additional KYC fields are captured.
 		})
@@ -302,29 +302,51 @@ func buildOnboardRequest(ctx context.Context, mdb *mongo.Database, businessID pr
 func CompleteKyb(deps *Deps) flo.ActionHandler {
 	return func(ctx *flo.ActionContext) (interface{}, error) {
 		var input struct {
-			BusinessID string `json:"businessId"`
-			MerchID    string `json:"merchId"`
-			Status     string `json:"status"`
-			Message    string `json:"message,omitempty"`
+			BusinessID   string `json:"businessId,omitempty"`
+			MerchID      string `json:"merchId"`
+			RequestID    string `json:"requestId,omitempty"`
+			Status       string `json:"status"`                 // decision: APPROVED | REJECTED | MANUAL_REVIEW
+			PaykkaStatus string `json:"paykkaStatus,omitempty"` // raw: PASS | REFUSED | AUTH_FAIL | ...
+			RiskLevel    string `json:"riskLevel,omitempty"`    // LOW | MIDDLE | HIGH
+			Message      string `json:"message,omitempty"`
 		}
 		if err := ctx.Into(&input); err != nil {
 			return nil, err
 		}
 
-		objID, err := primitive.ObjectIDFromHex(input.BusinessID)
+		// Resolve the business. The compliance worker dispatches with merch_id
+		// (the assessment notify has no businessId), so look it up when absent.
+		objID, err := resolveBusinessID(ctx.Ctx(), deps.Mongo, input.BusinessID, input.MerchID)
 		if err != nil {
-			return nil, fmt.Errorf("invalid business id: %w", err)
+			return nil, err
 		}
 
-		// 1. Persist PayKKa status in Mongo
+		// 1. Persist the raw PayKKa verdict on the business for audit.
+		_, err = deps.Mongo.Collection("businesses").UpdateOne(
+			ctx.Ctx(),
+			bson.M{"_id": objID},
+			bson.M{"$set": bson.M{
+				"paykka_merch_id":   input.MerchID,
+				"paykka_status":     input.PaykkaStatus,
+				"paykka_risk_level": input.RiskLevel,
+				"updatedAt":         time.Now().UTC(),
+			}},
+		)
+		if err != nil {
+			return nil, fmt.Errorf("failed to update business: %w", err)
+		}
+
+		// 2. Map the decision to the business entity status.
 		status := models.BusinessEntityStatusUnderReview
 		switch input.Status {
 		case "APPROVED":
 			status = models.BusinessEntityStatusApproved
 		case "REJECTED":
 			status = models.BusinessEntityStatusRejected
-		case "SUPPLEMENT":
-			status = models.BusinessEntityStatusPending
+		case "MANUAL_REVIEW":
+			status = models.BusinessEntityStatusUnderReview
+		default:
+			return nil, fmt.Errorf("unknown kyb decision: %s", input.Status)
 		}
 
 		_, err = deps.Mongo.Collection("business_entities").UpdateOne(
@@ -340,41 +362,42 @@ func CompleteKyb(deps *Deps) flo.ActionHandler {
 			return nil, fmt.Errorf("failed to update business entity: %w", err)
 		}
 
-		// 2. Emit appropriate flo event
+		businessID := objID.Hex()
+
+		// 3. Emit the appropriate flo event.
 		var eventType string
 		var event interface{}
+		stream := evts.StreamKybEvents
 
 		switch input.Status {
 		case "APPROVED":
 			eventType = evts.EventBusinessActivated
 			event = evts.BusinessActivatedEvent{
-				BusinessID: input.BusinessID,
+				BusinessID: businessID,
 				MerchID:    input.MerchID,
 				Provider:   "paykka",
 			}
+			stream = evts.StreamBusinessEvents
 		case "REJECTED":
 			eventType = evts.EventKybRejected
 			event = evts.KybCompletedEvent{
-				Provider: "paykka",
-				MerchID:  input.MerchID,
-				Status:   "REJECTED",
-				Message:  input.Message,
+				Provider:  "paykka",
+				MerchID:   input.MerchID,
+				RequestID: input.RequestID,
+				Status:    input.PaykkaStatus,
+				RiskLevel: input.RiskLevel,
+				Message:   input.Message,
 			}
-		case "SUPPLEMENT":
+		case "MANUAL_REVIEW":
 			eventType = evts.EventKybManualReview
 			event = evts.KybCompletedEvent{
-				Provider: "paykka",
-				MerchID:  input.MerchID,
-				Status:   "SUPPLEMENT",
-				Message:  input.Message,
+				Provider:  "paykka",
+				MerchID:   input.MerchID,
+				RequestID: input.RequestID,
+				Status:    input.PaykkaStatus,
+				RiskLevel: input.RiskLevel,
+				Message:   input.Message,
 			}
-		default:
-			return nil, fmt.Errorf("unknown kyb status: %s", input.Status)
-		}
-
-		stream := evts.StreamBusinessEvents
-		if input.Status != "APPROVED" {
-			stream = evts.StreamKybEvents
 		}
 
 		if err := publishEvent(ctx.Ctx(), deps.Flo, stream, eventType, event); err != nil {
@@ -383,10 +406,33 @@ func CompleteKyb(deps *Deps) flo.ActionHandler {
 
 		return map[string]interface{}{
 			"status":     input.Status,
-			"businessId": input.BusinessID,
+			"businessId": businessID,
 			"merchId":    input.MerchID,
 		}, nil
 	}
+}
+
+// resolveBusinessID returns the business ObjectID, preferring an explicit
+// businessID and otherwise looking the business up by its paykka_merch_id.
+func resolveBusinessID(ctx context.Context, mdb *mongo.Database, businessID, merchID string) (primitive.ObjectID, error) {
+	if businessID != "" {
+		objID, err := primitive.ObjectIDFromHex(businessID)
+		if err != nil {
+			return primitive.NilObjectID, fmt.Errorf("invalid business id: %w", err)
+		}
+		return objID, nil
+	}
+	if merchID == "" {
+		return primitive.NilObjectID, errors.New("complete-kyb: neither businessId nor merchId provided")
+	}
+	var doc struct {
+		ID primitive.ObjectID `bson:"_id"`
+	}
+	err := mdb.Collection("businesses").FindOne(ctx, bson.M{"paykka_merch_id": merchID}).Decode(&doc)
+	if err != nil {
+		return primitive.NilObjectID, fmt.Errorf("no business for merch_id %s: %w", merchID, err)
+	}
+	return doc.ID, nil
 }
 
 func CompleteKyc(deps *Deps) flo.ActionHandler {

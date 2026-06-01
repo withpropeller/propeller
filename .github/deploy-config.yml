@@ -86,6 +86,17 @@ components:
       - services/api/**
       - infra/docker/Dockerfile.nestjs
 
+  # Public webhook receiver — verifies provider callbacks, publishes to Flo.
+  webhook:
+    dockerfile: infra/docker/Dockerfile.webhook
+    context: .
+    cast: infra/runeset/casts/external-service.yaml
+    paths:
+      - services/webhook/**
+      - libs/common/**
+      - libs/go-events/**
+      - infra/docker/Dockerfile.webhook
+
   # ── Background workers (worker cast) ───────────────────────────────
 
   notifications:

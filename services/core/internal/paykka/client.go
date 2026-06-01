@@ -1,4 +1,9 @@
-// Package paykka provides a Go client for PayKKa's merchant onboarding API.
+// Package paykka provides a Go client for PayKKa's merchant Risk Assessment API.
+//
+// We integrate PayKKa's Risk Assessment product (assessment/apply + notify),
+// not the Onboarding product: assessment/apply returns only a merch_id (no
+// authorize_link) and the notify callback carries a status + risk_level — the
+// right fit for our Merchant-of-Record model.
 package paykka
 
 import (
@@ -72,14 +77,15 @@ func NewClient(baseURL, privateKeyPEM, publicKeyPEM, keyID, merchID string) (*Cl
 	}, nil
 }
 
-// OnboardRequest is the payload for PayKKa onboarding.
+// OnboardRequest is the shared MerchOnboardCreateReq body used by both the
+// onboarding and assessment products. We submit it to assessment/apply.
 type OnboardRequest struct {
-	RequestID       string            `json:"request_id"`
-	ContactPerson   ContactPerson     `json:"contact_person"`
-	License         License           `json:"license"`
-	Business        Business          `json:"business"`
-	StakeholderList []Stakeholder     `json:"stakeholder_list"`
-	ResidentAddress Address           `json:"resident_address"`
+	RequestID       string        `json:"request_id"`
+	ContactPerson   ContactPerson `json:"contact_person"`
+	License         License       `json:"license"`
+	Business        Business      `json:"business"`
+	StakeholderList []Stakeholder `json:"stakeholder_list"`
+	ResidentAddress Address       `json:"resident_address"`
 }
 
 // ContactPerson represents the contact for onboarding.
@@ -102,33 +108,33 @@ type License struct {
 
 // Business represents business details.
 type Business struct {
-	MainIndustry  string   `json:"main_industry"`
-	SubIndustry   []string `json:"sub_industry"`
-	Industry      int      `json:"industry"`
-	EmployeeNumber string  `json:"employee_number"`
-	Address       Address  `json:"address"`
-	ExportCountry []string `json:"export_country"`
-	ExportType    []string `json:"export_type"`
-	TradeVolume   string   `json:"trade_volume"`
-	Website       string   `json:"website,omitempty"`
+	MainIndustry   string   `json:"main_industry"`
+	SubIndustry    []string `json:"sub_industry"`
+	Industry       int      `json:"industry"`
+	EmployeeNumber string   `json:"employee_number"`
+	Address        Address  `json:"address"`
+	ExportCountry  []string `json:"export_country"`
+	ExportType     []string `json:"export_type"`
+	TradeVolume    string   `json:"trade_volume"`
+	Website        string   `json:"website,omitempty"`
 	BusinessModels []string `json:"business_models,omitempty"`
 }
 
 // Stakeholder represents a business stakeholder.
 type Stakeholder struct {
-	IdentityType         string  `json:"identity_type"`
-	Name                 string  `json:"name"`
-	Nationality          string  `json:"nationality"`
-	BirthDate            string  `json:"birth_date"`
-	DocType              string  `json:"doc_type"`
-	IDNumber             string  `json:"id_number"`
-	DocPortraitSideFileID int    `json:"doc_portrait_side_file_id"`
-	DocAddress           string  `json:"doc_address,omitempty"`
-	EffDateStart         string  `json:"eff_date_start"`
-	EffDateEnd           string  `json:"eff_date_end,omitempty"`
-	LongTerm             bool    `json:"long_term,omitempty"`
-	Share                float64 `json:"share,omitempty"`
-	ResidentAddress      Address `json:"resident_address"`
+	IdentityType          string  `json:"identity_type"`
+	Name                  string  `json:"name"`
+	Nationality           string  `json:"nationality"`
+	BirthDate             string  `json:"birth_date"`
+	DocType               string  `json:"doc_type"`
+	IDNumber              string  `json:"id_number"`
+	DocPortraitSideFileID int     `json:"doc_portrait_side_file_id"`
+	DocAddress            string  `json:"doc_address,omitempty"`
+	EffDateStart          string  `json:"eff_date_start"`
+	EffDateEnd            string  `json:"eff_date_end,omitempty"`
+	LongTerm              bool    `json:"long_term,omitempty"`
+	Share                 float64 `json:"share,omitempty"`
+	ResidentAddress       Address `json:"resident_address"`
 }
 
 // Address represents a physical address.
@@ -140,28 +146,36 @@ type Address struct {
 	Address2 string `json:"address2,omitempty"`
 }
 
-// OnboardResponse is returned by PayKKa after onboarding submission.
-type OnboardResponse struct {
-	AuthorizeLink string `json:"authorize_link"`
-	MerchID       string `json:"merch_id"`
-}
-
-// StatusResponse is returned by PayKKa status query.
-type StatusResponse struct {
-	Status  string `json:"status"`
+// AssessmentResponse is returned by assessment/apply — just the assigned merch_id.
+type AssessmentResponse struct {
 	MerchID string `json:"merch_id"`
 }
 
-// CallbackPayload is sent by PayKKa to our webhook.
-type CallbackPayload struct {
-	MerchID string `json:"merch_id"`
-	Status  string `json:"status"`
-	Message string `json:"message,omitempty"`
+// AssessmentResult is the inner result shared by assessment/result and the
+// assessment/notify webhook (under the "data" field).
+//
+// Status is one of: INIT | WAIT | PASS | REFUSED | AUTH_FAIL | REJECTED.
+// RiskLevel is one of: LOW | MIDDLE | HIGH.
+type AssessmentResult struct {
+	RequestID string `json:"request_id"`
+	MerchID   string `json:"merch_id"`
+	Status    string `json:"status"`
+	Msg       string `json:"msg,omitempty"`
+	RiskLevel string `json:"risk_level,omitempty"`
 }
 
-// ApplyOnboarding submits a merchant onboarding application.
-func (c *Client) ApplyOnboarding(req OnboardRequest) (*OnboardResponse, error) {
-	authHeader, err := c.signRequest("/api/v2/merch/onboard/apply", req, "")
+// AssessmentNotification is the body PayKKa POSTs to our callback endpoint.
+// Every PayKKa callback is wrapped in { type, version, data }.
+type AssessmentNotification struct {
+	Type    string           `json:"type"`    // ASSESSMENT | MERCH | ...
+	Version string           `json:"version"` // V1 | V2 | ...
+	Data    AssessmentResult `json:"data"`
+}
+
+// SubmitAssessment submits a merchant risk-assessment application.
+// Per PayKKa, X-Merch-Id must NOT be sent for this endpoint.
+func (c *Client) SubmitAssessment(req OnboardRequest) (*AssessmentResponse, error) {
+	authHeader, err := c.signRequest("/api/v2/merch/assessment/apply", req, "")
 	if err != nil {
 		return nil, err
 	}
@@ -171,7 +185,7 @@ func (c *Client) ApplyOnboarding(req OnboardRequest) (*OnboardResponse, error) {
 		return nil, err
 	}
 
-	httpReq, err := http.NewRequest("POST", c.baseURL+"/api/v2/merch/onboard/apply", bytes.NewReader(body))
+	httpReq, err := http.NewRequest("POST", c.baseURL+"/api/v2/merch/assessment/apply", bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
@@ -190,30 +204,31 @@ func (c *Client) ApplyOnboarding(req OnboardRequest) (*OnboardResponse, error) {
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("paykka onboarding failed: %d %s", resp.StatusCode, string(respBody))
+		return nil, fmt.Errorf("paykka assessment apply failed: %d %s", resp.StatusCode, string(respBody))
 	}
 
-	var result OnboardResponse
+	var result AssessmentResponse
 	if err := json.Unmarshal(respBody, &result); err != nil {
 		return nil, err
 	}
 	return &result, nil
 }
 
-// QueryStatus queries the onboarding status for a merch_id.
-func (c *Client) QueryStatus(merchID string) (*StatusResponse, error) {
+// GetAssessmentResult queries the current assessment result for a merch_id.
+func (c *Client) GetAssessmentResult(merchID string) (*AssessmentResult, error) {
 	payload := map[string]string{"merch_id": merchID}
-	authHeader, err := c.signRequest("/api/v2/merch/onboard/status", payload, "")
+	authHeader, err := c.signRequest("/api/v2/merch/assessment/result", payload, merchID)
 	if err != nil {
 		return nil, err
 	}
 
 	body, _ := json.Marshal(payload)
-	httpReq, err := http.NewRequest("POST", c.baseURL+"/api/v2/merch/onboard/status", bytes.NewReader(body))
+	httpReq, err := http.NewRequest("POST", c.baseURL+"/api/v2/merch/assessment/result", bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
 	httpReq.Header.Set("Authorization", authHeader)
+	httpReq.Header.Set("X-Merch-Id", merchID)
 	httpReq.Header.Set("Content-Type", "application/json")
 
 	resp, err := c.httpClient.Do(httpReq)
@@ -228,18 +243,25 @@ func (c *Client) QueryStatus(merchID string) (*StatusResponse, error) {
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("paykka status query failed: %d %s", resp.StatusCode, string(respBody))
+		return nil, fmt.Errorf("paykka assessment result query failed: %d %s", resp.StatusCode, string(respBody))
 	}
 
-	var result StatusResponse
+	var result AssessmentResult
 	if err := json.Unmarshal(respBody, &result); err != nil {
 		return nil, err
 	}
 	return &result, nil
 }
 
-// VerifyCallbackSignature verifies a PayKKa callback signature.
-func (c *Client) VerifyCallbackSignature(signature string, rawBody string) bool {
+// VerifyCallbackSignature verifies a PayKKa callback signature against PayKKa's
+// public key. The canonical string is PayKKa's standard 5-line structure:
+//
+//	path \n timestamp \n nonce \n merch_id \n body
+//
+// path is the request path PayKKa POSTed to, merchID comes from the X-Merch-Id
+// header (empty string if absent — the line is still kept), and rawBody is the
+// exact bytes received.
+func (c *Client) VerifyCallbackSignature(path, merchID, signature, rawBody string) bool {
 	decoded, err := url.QueryUnescape(signature)
 	if err != nil {
 		return false
@@ -256,8 +278,7 @@ func (c *Client) VerifyCallbackSignature(signature string, rawBody string) bool 
 		return false
 	}
 
-	// Simplified verification: timestamp + nonce + body
-	canonical := auth.Timestamp + "\n" + auth.Nonce + "\n" + rawBody
+	canonical := path + "\n" + auth.Timestamp + "\n" + auth.Nonce + "\n" + merchID + "\n" + rawBody
 	hash := sha256.Sum256([]byte(canonical))
 	sigBytes, err := base64.StdEncoding.DecodeString(auth.Signature)
 	if err != nil {

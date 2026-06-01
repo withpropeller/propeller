@@ -35,14 +35,22 @@ merchant or super-merchant. Propeller handles:
 
 ## KYB — business verification
 
-When a business is registered, Propeller runs KYB through **PayKKa**:
+When a business is registered, Propeller submits a **risk assessment** to
+**PayKKa** (their Risk Assessment product):
 
 - Business registration number (China: USCC).
 - Legal name and registered address.
 - Director/UBO identity verification.
 
-Businesses are created in `pending` status and transition to `active` once
-KYB clears. You can check status via `GET /v1/businesses/{id}`.
+PayKKa returns a verdict asynchronously via a signed callback, carrying both a
+**status** (`PASS` / `REFUSED`) and a **risk level** (`LOW` / `MIDDLE` / `HIGH`):
+
+- `PASS` + `LOW`/`MIDDLE` → the business is auto-approved and activated.
+- `PASS` + `HIGH` → routed to manual compliance review before activation.
+- `REFUSED` → rejected.
+
+Businesses are created in `pending` status and transition to `active` once the
+assessment clears. You can check status via `GET /v1/businesses/{id}`.
 
 ## KYC — payer verification
 

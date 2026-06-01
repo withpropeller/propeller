@@ -130,6 +130,25 @@ gateway:
     memRequest: "128Mi"
     memLimit: "512Mi"
 
+webhook:
+  component:
+    name: webhook
+    host: webhooks.dev.hyphenmoney.com
+    scale: 1
+    port: 4000
+    healthPath: /health
+    tls: { mode: auto }
+    env: {}
+    envFrom:
+      - secretRef: webhook-secrets
+      - configRef: webhook-config
+    dependencies:
+      - { service: flo, namespace: shared, readyWhen: healthy }
+    cpuRequest: "50m"
+    cpuLimit: "500m"
+    memRequest: "64Mi"
+    memLimit: "256Mi"
+
 notifications:
   component:
     name: notifications

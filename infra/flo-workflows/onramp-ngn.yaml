@@ -9,12 +9,13 @@
 #   3. collect-business — debit suspense → business_collected
 #   4. payment-collected — emit event for UI
 #
-# Deploy: flo workflow sync infra/flo-workflows/ -n propeller
+# Namespace is inherited from the submit command, so the same file
+# deploys to every environment:
+#   flo workflow sync infra/flo-workflows/ -n <env>
 # ──────────────────────────────────────────────────────────────
 
 kind: Workflow
 name: onramp-ngn
-namespace: propeller
 trigger:
   stream: payment-events
   condition: "json:type=payment.received"

@@ -143,6 +143,24 @@ gateway:
     memRequest: "256Mi"
     memLimit: "1Gi"
 
+webhook:
+  component:
+    name: webhook
+    host: webhooks.hyphenmoney.com
+    scale: 1
+    port: 4000
+    healthPath: /health
+    env: {}
+    envFrom:
+      - secret: webhook-secrets
+      - configmap: webhook-config
+    dependencies:
+      - flo.shared.rune
+    cpuRequest: "50m"
+    cpuLimit: "500m"
+    memRequest: "64Mi"
+    memLimit: "256Mi"
+
 notifications:
   component:
     name: notifications

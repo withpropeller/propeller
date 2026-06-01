@@ -48,8 +48,17 @@ export class Business {
     @Prop({ required: false })
     paykka_merch_id?: string;
 
+    /** The request_id we sent to PayKKa's assessment/apply, echoed back in notify. */
+    @Prop({ required: false })
+    paykka_request_id?: string;
+
+    /** Raw PayKKa assessment status: INIT | WAIT | PASS | REFUSED | AUTH_FAIL | REJECTED. */
     @Prop({ required: false })
     paykka_status?: string;
+
+    /** PayKKa-assigned risk level on a PASS: LOW | MIDDLE | HIGH. */
+    @Prop({ required: false })
+    paykka_risk_level?: string;
 }
 
 export const BusinessSchema = SchemaFactory.createForClass(Business);

@@ -43,9 +43,9 @@ describe('PayKKaProvider', () => {
 
             // Access private method via prototype for testing
             const authHeader = await (provider as any).signRequest(
-                '/api/v2/merch/onboard/apply',
+                '/api/v2/merch/assessment/apply',
                 { request_id: 'test-123' },
-                '', // no merch ID for onboarding apply
+                '', // no merch ID for assessment apply
             );
 
             expect(authHeader).toBeTruthy();
@@ -64,11 +64,18 @@ describe('PayKKaProvider', () => {
         it('verifyCallbackSignature validates a real signature', () => {
             const provider = new PayKKaProvider({ config });
 
-            const rawBody = JSON.stringify({ merch_id: 'M123', status: 'APPROVED' });
+            const path = '/paykka';
+            const merchId = 'M24061911365700670';
+            const rawBody = JSON.stringify({
+                type: 'ASSESSMENT',
+                version: 'V2',
+                data: { request_id: 'req-1', merch_id: merchId, status: 'PASS', risk_level: 'LOW' },
+            });
             const timestamp = Date.now().toString();
             const nonce = 'abcdef123456';
 
-            const canonical = `${timestamp}\n${nonce}\n${rawBody}`;
+            // PayKKa's 5-line canonical string: path \n timestamp \n nonce \n merch_id \n body
+            const canonical = `${path}\n${timestamp}\n${nonce}\n${merchId}\n${rawBody}`;
             const sign = createSign('SHA256');
             sign.update(canonical);
             sign.end();
@@ -84,19 +91,27 @@ describe('PayKKaProvider', () => {
                 }),
             );
 
-            // Should verify with the correct body
-            expect(provider.verifyCallbackSignature(authHeader, rawBody)).toBe(true);
+            // Should verify with the correct path + merch_id + body
+            expect(provider.verifyCallbackSignature({ path, merchId, signature: authHeader, rawBody })).toBe(true);
 
             // Should reject tampered body
-            expect(provider.verifyCallbackSignature(authHeader, '{"tampered":true}')).toBe(false);
+            expect(
+                provider.verifyCallbackSignature({ path, merchId, signature: authHeader, rawBody: '{"tampered":true}' }),
+            ).toBe(false);
+
+            // Should reject a mismatched path
+            expect(
+                provider.verifyCallbackSignature({ path: '/webhooks/other', merchId, signature: authHeader, rawBody }),
+            ).toBe(false);
         });
     });
 
     describe('callback rejection', () => {
         it('rejects unsigned or malformed callbacks', () => {
             const provider = new PayKKaProvider({ config });
-            expect(provider.verifyCallbackSignature('not-valid-json', '{}')).toBe(false);
-            expect(provider.verifyCallbackSignature('', '{}')).toBe(false);
+            const base = { path: '/paykka', merchId: 'M123', rawBody: '{}' };
+            expect(provider.verifyCallbackSignature({ ...base, signature: 'not-valid-json' })).toBe(false);
+            expect(provider.verifyCallbackSignature({ ...base, signature: '' })).toBe(false);
         });
     });
 });
