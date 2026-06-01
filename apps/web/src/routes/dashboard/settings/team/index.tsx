@@ -23,8 +23,8 @@ import {
   useTeamControllerInvite,
   useTeamControllerRevokeInvite,
   useTeamControllerDeactivate,
-} from '@/api/team/team'
-import type { ApiHydratedUser } from '@/api/model'
+} from '@/apiu/team/team'
+import type { ApiHydratedUser } from '@/apiu/model'
 import { DataTable } from '@/components/ui/DataTable'
 import { Badge } from '@/components/ui/Badge'
 import { InviteTeamMemberModal } from '@/components/ui/InviteTeamMemberModal'

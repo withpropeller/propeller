@@ -25,8 +25,8 @@ import {
   TooltipProvider,
   toast,
 } from '@/lib/pax'
-import { useConfigurationControllerGet, useConfigurationControllerUpdatePayment } from '@/api/tools-configuration/tools-configuration'
-import { useAccountControllerGet } from '@/api/accounts/accounts'
+import { useConfigurationControllerGet, useConfigurationControllerUpdatePayment } from '@/apiu/tools-configuration/tools-configuration'
+import { useAccountControllerGet } from '@/apiu/accounts/accounts'
 import { useQueryClient } from '@tanstack/react-query'
 
 interface Props {

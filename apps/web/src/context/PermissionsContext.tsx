@@ -2,7 +2,7 @@
 
 import { createContext, useContext, type ReactNode } from 'react'
 import { useAuth } from '@/context/AuthContext'
-import { useProfileControllerGet } from '@/api/me/me'
+import { useProfileControllerGet } from '@/apiu/me/me'
 import { hasPermission, type ExpandedRole } from '@/lib/permissions'
 
 interface PermissionsContextType {

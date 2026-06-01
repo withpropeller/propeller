@@ -17,7 +17,7 @@ import {
   DropdownMenuRadioItem,
 } from '@/lib/pax'
 import { Search, Landmark, User, Plus as PlusIcon, X } from 'lucide-react'
-import { useAccountControllerGet } from '@/api/accounts/accounts'
+import { useAccountControllerGet } from '@/apiu/accounts/accounts'
 import { usePanelContext } from '@/context/PanelContext'
 import { useSearch } from '@/context/SearchContext'
 import { Badge } from '@/components/ui/Badge'

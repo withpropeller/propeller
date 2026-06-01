@@ -30,18 +30,18 @@ import {
   toast,
 } from '@/lib/pax'
 import { DetailCell, SectionHeader } from '@/components/ui/DetailPage'
-import { useBusinessControllerFind } from '@/api/business/business'
+import { useBusinessControllerFind } from '@/apiu/business/business'
 import {
   useBusinessKYCControllerGetKyc,
   useBusinessKYCControllerUpdateBusinessInfo,
   useBusinessKYCControllerUpdateBusinessAddress,
-} from '@/api/business-kyc/business-kyc'
+} from '@/apiu/business-kyc/business-kyc'
 import type {
   ApiHydratedBusiness,
   ApiHydratedBusinessKYC,
   KYCBusinessInformationDto,
   KYCBusinessAddressDto,
-} from '@/api/model'
+} from '@/apiu/model'
 import { formatDate } from '@/lib/format'
 
 // ── Empty value ─────────────────────────────────────────────────────────────

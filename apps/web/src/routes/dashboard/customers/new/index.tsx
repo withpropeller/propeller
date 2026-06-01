@@ -26,7 +26,7 @@ import {
   StepMetadata,
   StepReview,
 } from '../_components/steps'
-import { useCustomerControllerCreate } from '@/api/customers/customers'
+import { useCustomerControllerCreate } from '@/apiu/customers/customers'
 import { useQueryClient } from '@tanstack/react-query'
 
 // ─── Types ───────────────────────────────────────────────────────────────────────

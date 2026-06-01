@@ -12,7 +12,7 @@ import {
   ChevronUp,
 } from 'lucide-react'
 import { Button, Skeleton, toast } from '@/lib/pax'
-import { useEventsControllerGetOne, useEventsControllerRetryEvent } from '@/api/events/events'
+import { useEventsControllerGetOne, useEventsControllerRetryEvent } from '@/apiu/events/events'
 import { formatAmount, formatDatetime, formatRelativeTime } from '@/lib/format'
 import { Badge } from '@/components/ui/Badge'
 import { CopyButton } from '@/components/ui/CopyButton'

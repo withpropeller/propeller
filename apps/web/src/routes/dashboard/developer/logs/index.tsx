@@ -14,8 +14,8 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from '@/lib/pax'
-import { useApiRequestsControllerGet } from '@/api/requests/requests'
-import { type ApiHydratedApiRequest } from '@/api/model'
+import { useApiRequestsControllerGet } from '@/apiu/requests/requests'
+import { type ApiHydratedApiRequest } from '@/apiu/model'
 import { usePanelContext } from '@/context/PanelContext'
 import { DataTable } from '@/components/ui/DataTable'
 import { PageHeader } from '@/components/ui/PageHeader'

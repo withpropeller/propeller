@@ -21,7 +21,7 @@ import {
   ModalDialogClose,
   toast,
 } from '@/lib/pax'
-import { useAuthControllerChangePassword } from '@/api/auth/auth'
+import { useAuthControllerChangePassword } from '@/apiu/auth/auth'
 import {
   useProfileControllerGetMFA,
   useProfileControllerSetup2FA,
@@ -29,7 +29,7 @@ import {
   useProfileControllerUpdate2FA,
   useProfileControllerActivate2FA,
   useProfileControllerSend2FA,
-} from '@/api/me/me'
+} from '@/apiu/me/me'
 
 // ── Password input (eye toggle) ─────────────────────────────────────────────
 function PasswordInput({

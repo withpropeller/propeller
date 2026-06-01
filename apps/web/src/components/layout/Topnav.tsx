@@ -14,8 +14,8 @@ import {
 } from '@/lib/pax'
 import { useIssuingNav } from '@/context/IssuingNavContext'
 import { useMode } from '@/context/ModeContext'
-import { useProfileControllerUpdateProfile } from '@/api/me/me'
-import { useBusinessControllerFind } from '@/api/business/business'
+import { useProfileControllerUpdateProfile } from '@/apiu/me/me'
+import { useBusinessControllerFind } from '@/apiu/business/business'
 
 // Single-level breadcrumb pages — just show the label, no back button
 const LIST_LABELS: Record<string, string> = {

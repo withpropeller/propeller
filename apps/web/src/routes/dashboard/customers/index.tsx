@@ -10,7 +10,7 @@ import {
   DropdownMenuRadioGroup, DropdownMenuRadioItem,
 } from '@/lib/pax'
 import { Search, Users, Plus as PlusIcon, X } from 'lucide-react'
-import { useCustomerControllerGetAll } from '@/api/customers/customers'
+import { useCustomerControllerGetAll } from '@/apiu/customers/customers'
 import { usePanelContext } from '@/context/PanelContext'
 import { useSearch } from '@/context/SearchContext'
 import { PermissionGate } from '@/components/PermissionGate'

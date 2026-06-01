@@ -26,7 +26,7 @@ import { Badge } from '@/components/ui/Badge'
 import { AddEndpointModal } from '@/components/ui/AddEndpointModal'
 import { ErrorState } from '@/components/ui/ErrorState'
 import { usePanelContext } from '@/context/PanelContext'
-import { useWebhookControllerGet, useWebhookControllerDelete } from '@/api/webhooks/webhooks'
+import { useWebhookControllerGet, useWebhookControllerDelete } from '@/apiu/webhooks/webhooks'
 import { useQueryClient } from '@tanstack/react-query'
 
 export default function WebhooksPage() {

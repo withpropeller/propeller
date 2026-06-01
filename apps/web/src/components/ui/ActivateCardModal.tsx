@@ -19,7 +19,7 @@ import {
   ModalDialogClose,
   toast,
 } from '@/lib/pax'
-import { useCardControllerActivateCard } from '@/api/cards/cards'
+import { useCardControllerActivateCard } from '@/apiu/cards/cards'
 import { useQueryClient } from '@tanstack/react-query'
 
 interface ActivateCardModalProps {

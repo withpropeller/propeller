@@ -25,7 +25,7 @@ import {
 import {
   useWebhookControllerCreate,
   useWebhookControllerUpdate,
-} from '@/api/webhooks/webhooks'
+} from '@/apiu/webhooks/webhooks'
 import { useQueryClient } from '@tanstack/react-query'
 
 const EVENT_GROUPS = [

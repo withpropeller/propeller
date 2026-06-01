@@ -22,7 +22,7 @@ import {
   ModalDialogClose,
   toast,
 } from '@/lib/pax'
-import { useTeamControllerInvite } from '@/api/team/team'
+import { useTeamControllerInvite } from '@/apiu/team/team'
 
 const ROLE_OPTIONS = [
   { value: 'admin',     label: 'Admin',     description: 'Full access' },

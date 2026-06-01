@@ -14,8 +14,8 @@ import {
   ModalDialogFooter,
   ModalDialogClose,
 } from '@/lib/pax'
-import { useCustomerControllerGetAll } from '@/api/customers/customers'
-import { useAccountControllerGet } from '@/api/accounts/accounts'
+import { useCustomerControllerGetAll } from '@/apiu/customers/customers'
+import { useAccountControllerGet } from '@/apiu/accounts/accounts'
 import { SelectInput } from '@/components/ui/SelectInput'
 
 interface AssignCardModalProps {

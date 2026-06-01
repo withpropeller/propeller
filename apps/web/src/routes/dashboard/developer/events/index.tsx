@@ -12,7 +12,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from '@/lib/pax'
-import { useEventsControllerGetAll } from '@/api/events/events'
+import { useEventsControllerGetAll } from '@/apiu/events/events'
 import { DataTable } from '@/components/ui/DataTable'
 import { formatDatetime } from '@/lib/format'
 

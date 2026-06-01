@@ -1,8 +1,8 @@
 import {
   useAuthControllerCreate,
   useAuthControllerSendConfirmation
-} from '@/api/auth/auth'
-import type { ActivateAccountDto } from '@/api/model'
+} from '@/apiu/auth/auth'
+import type { ActivateAccountDto } from '@/apiu/model'
 import { useMutation } from '@tanstack/react-query'
 import { customInstance } from '@/lib/orvalClient'
 

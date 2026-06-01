@@ -26,12 +26,12 @@ import {
   useBusinessKYCControllerDeleteLeadership,
   useBusinessKYCControllerSubmitKyc,
   getBusinessKYCControllerGetKycQueryKey,
-} from '@/api/business-kyc/business-kyc'
+} from '@/apiu/business-kyc/business-kyc'
 import {
   getBusinessControllerFindQueryKey,
   useBusinessControllerFind,
-} from '@/api/business/business'
-import type { ApiHydratedBusinessKYC, BusinessLeadership, KYCLeadershipDto } from '@/api/model'
+} from '@/apiu/business/business'
+import type { ApiHydratedBusinessKYC, BusinessLeadership, KYCLeadershipDto } from '@/apiu/model'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 

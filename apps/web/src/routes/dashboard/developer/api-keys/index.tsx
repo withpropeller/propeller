@@ -31,12 +31,12 @@ import {
   ModalDialogClose,
   toast,
 } from '@/lib/pax'
-import { useSecretKeyControllerCreate, useSecretKeyControllerGetAll, getSecretKeyControllerGetAllQueryKey } from '@/api/secret-keys/secret-keys'
+import { useSecretKeyControllerCreate, useSecretKeyControllerGetAll, getSecretKeyControllerGetAllQueryKey } from '@/apiu/secret-keys/secret-keys'
 import { DataTable } from '@/components/ui/DataTable'
 import { Badge } from '@/components/ui/Badge'
 import { CopyButton } from '@/components/ui/CopyButton'
 import { formatDatetime } from '@/lib/format'
-import type { ApiHydratedSecretKeyScopesItem } from '@/api/model'
+import type { ApiHydratedSecretKeyScopesItem } from '@/apiu/model'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface SecretKey {

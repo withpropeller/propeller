@@ -24,9 +24,9 @@ import {
   ModalDialogClose,
   toast,
 } from '@/lib/pax'
-import { useAccountControllerGet, useAccountControllerGetBalance } from '@/api/accounts/accounts'
-import { useToolsControllerGetBanks, useToolsControllerResolveBankAccount } from '@/api/tools/tools'
-import { usePaymentControllerPayout } from '@/api/payments/payments'
+import { useAccountControllerGet, useAccountControllerGetBalance } from '@/apiu/accounts/accounts'
+import { useToolsControllerGetBanks, useToolsControllerResolveBankAccount } from '@/apiu/tools/tools'
+import { usePaymentControllerPayout } from '@/apiu/payments/payments'
 import { useQueryClient } from '@tanstack/react-query'
 import { formatAmount } from '@/lib/format'
 

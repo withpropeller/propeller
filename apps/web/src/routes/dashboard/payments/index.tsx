@@ -14,8 +14,8 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from '@/lib/pax'
-import { Search, ArrowUpRight, ArrowDownLeft, CreditCard, Landmark, Banknote, Settings2, X } from 'lucide-react'
-import { usePaymentControllerGetAll } from '@/api/payments/payments'
+import { Search, ArrowUpRight, ArrowDownLeft, CreditCard, Landmark, Banknote, X } from 'lucide-react'
+import { usePaymentControllerGetAll } from '@/apiu/payments/payments'
 import { usePanelContext } from '@/context/PanelContext'
 import { Badge } from '@/components/ui/Badge'
 import { DataTable } from '@/components/ui/DataTable'

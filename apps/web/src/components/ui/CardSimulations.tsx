@@ -28,7 +28,7 @@ import {
   useCardsControllerSimulateCheck,
   useCardsControllerSendCaptureEvents,
   useCardsControllerSendReverseCapture,
-} from '@/api/simulation-cards/simulation-cards'
+} from '@/apiu/simulation-cards/simulation-cards'
 import { SectionHeader } from '@/components/ui/DetailPage'
 
 /* ── Channel selector shared by all sims ─────────────────── */

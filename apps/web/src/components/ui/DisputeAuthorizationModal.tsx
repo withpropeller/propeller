@@ -24,9 +24,9 @@ import {
   ModalDialogClose,
   toast,
 } from '@/lib/pax'
-import { useDisputeControllerCreate } from '@/api/disputes/disputes'
+import { useDisputeControllerCreate } from '@/apiu/disputes/disputes'
 import { useQueryClient } from '@tanstack/react-query'
-import type { CreateDisputeDtoReason } from '@/api/model'
+import type { CreateDisputeDtoReason } from '@/apiu/model'
 
 const DISPUTE_REASONS: { label: string; value: CreateDisputeDtoReason }[] = [
   { label: 'Fraudulent transaction', value: 'fraudulent' },

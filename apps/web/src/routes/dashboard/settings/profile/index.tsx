@@ -21,8 +21,8 @@ import {
   toast,
 } from '@/lib/pax'
 import { DetailCell, SectionHeader } from '@/components/ui/DetailPage'
-import { useProfileControllerGet, useProfileControllerUpdateProfile } from '@/api/me/me'
-import type { ApiHydratedUser } from '@/api/model'
+import { useProfileControllerGet, useProfileControllerUpdateProfile } from '@/apiu/me/me'
+import type { ApiHydratedUser } from '@/apiu/model'
 import { formatDate } from '@/lib/format'
 
 // ── Empty value ─────────────────────────────────────────────────────────────
