@@ -25,9 +25,8 @@ export function AuthShell({ children, onBack, altAction, hideBrandPanel }: AuthS
       {/* Form side */}
       <div className="flex flex-col min-h-screen px-6 sm:px-10 md:px-12 pt-8 pb-12">
         <div className="flex items-center justify-between mb-12 md:mb-20">
-          <Link href="/" className="flex items-center gap-2 text-propeller-navy no-underline">
-            <img src="/propeller-icon.svg" alt="" aria-hidden className="size-[22px]" />
-            <span className="font-semibold text-[18px] tracking-[-0.02em]">Propeller</span>
+          <Link href="/" className="flex items-center text-propeller-navy no-underline">
+            <img src="/hyphen-logo-dark.svg" alt="Hyphen" className="h-[22px] w-auto" />
           </Link>
 
           {onBack ? (

@@ -262,16 +262,15 @@ export function Sidebar() {
       {/* Logo */}
       <div className="px-5 pt-6 pb-8 flex items-center justify-between gap-2 shrink-0">
         <img
-          src="/propeller-logo-dark.svg"
-          alt="Propeller"
+          src="/hyphen-logo-dark.svg"
+          alt="Hyphen"
           className={`h-6 w-auto shrink-0 ${showOnMobileAndDesktop()}`}
         />
-        <div
-          className={`w-7 h-7 rounded-lg bg-action-primary-main items-center justify-center text-content-inverse text-xs font-bold shrink-0 ${showOnTabletOnly()}`}
-          aria-hidden="true"
-        >
-          {business?.name?.substring(0, 1) || 'G'}
-        </div>
+        <img
+          src="/hyphen-icon.svg"
+          alt="Hyphen"
+          className={`size-7 shrink-0 ${showOnTabletOnly()}`}
+        />
       </div>
 
       {/* Nav */}

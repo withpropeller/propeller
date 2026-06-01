@@ -1,17 +1,17 @@
 'use client'
 
-const propellerPattern = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='210' viewBox='0 0 175 204' opacity='0.06'><path d='M99.2457 120.49L52.4157 202.17C52.0757 202.76 51.4457 203.13 50.7557 203.13H1.91572C0.445717 203.13 -0.474318 201.54 0.255682 200.27L59.1557 97.5199C59.6757 96.5999 60.8457 96.2899 61.7657 96.8099L98.5357 117.89C99.4557 118.41 99.7657 119.58 99.2457 120.5V120.49Z' fill='%23ffffff'/><path d='M173.866 82.52L141.346 139.94C140.826 140.86 139.656 141.18 138.746 140.66L101.866 119.77C100.946 119.25 100.626 118.08 101.146 117.17L139.456 49.54C139.796 48.94 139.786 48.21 139.436 47.62L139.096 47.05C138.746 46.47 138.126 46.12 137.456 46.12L31.0258 46.16C29.9658 46.16 29.1157 45.3 29.1157 44.25V1.91C29.1157 0.85 29.9758 0 31.0258 0H124.646C125.316 0 125.946 0.35 126.286 0.93L153.296 46.16L173.856 80.6C174.206 81.19 174.216 81.92 173.876 82.52H173.866Z' fill='%23ffffff'/></svg>")`
+const hyphenPattern = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120' opacity='0.06'><rect x='20' y='56' width='80' height='8' fill='%23ffffff'/></svg>")`
 
 export function BrandPanel() {
   return (
     <div className="hidden lg:flex relative overflow-hidden flex-col h-full bg-propeller-navy text-white px-[56px] pt-[56px] pb-12">
-      {/* Diagonal propeller pattern */}
+      {/* Diagonal hyphen pattern */}
       <div
         aria-hidden
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: propellerPattern,
-          backgroundSize: '240px auto',
+          backgroundImage: hyphenPattern,
+          backgroundSize: '180px 180px',
           transform: 'rotate(-12deg) scale(1.4)',
           transformOrigin: 'center',
         }}
@@ -27,9 +27,8 @@ export function BrandPanel() {
       />
 
       {/* Wordmark */}
-      <a href="/" className="relative flex items-center gap-3 text-white no-underline">
-        <img src="/propeller-icon.svg" alt="" aria-hidden className="size-[26px]" />
-        <span className="font-semibold text-[22px] tracking-[-0.02em]">Propeller</span>
+      <a href="/" className="relative flex items-center text-white no-underline">
+        <img src="/hyphen-logo-white.svg" alt="Hyphen" className="h-[26px] w-auto" />
       </a>
 
       {/* Body — anchored to bottom */}
