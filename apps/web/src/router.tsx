@@ -59,11 +59,6 @@ export const router = createBrowserRouter([
       { path: 'disputes', lazy: lazyDefault(() => import('@/routes/dashboard/disputes')) },
       { path: 'payments', lazy: lazyDefault(() => import('@/routes/dashboard/payments')) },
       { path: 'settings', lazy: lazyDefault(() => import('@/routes/dashboard/settings')) },
-      { path: 'settings/billing', lazy: lazyDefault(() => import('@/routes/dashboard/settings/billing')) },
-      {
-        path: 'settings/billing/:id',
-        lazy: lazyDefault(() => import('@/routes/dashboard/settings/billing/[id]')),
-      },
       { path: 'settings/business', lazy: lazyDefault(() => import('@/routes/dashboard/settings/business')) },
       { path: 'settings/compliance', lazy: lazyDefault(() => import('@/routes/dashboard/settings/compliance')) },
       { path: 'settings/profile', lazy: lazyDefault(() => import('@/routes/dashboard/settings/profile')) },

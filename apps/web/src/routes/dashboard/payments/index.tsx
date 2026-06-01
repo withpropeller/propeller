@@ -14,9 +14,8 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from '@/lib/pax'
-import { Search, ArrowUpRight, ArrowDownLeft, CreditCard, Landmark, Banknote, Settings2, Download, X } from 'lucide-react'
-import { usePaymentControllerGetAll, getPaymentControllerGetCSVUrl } from '@/api/payments/payments'
-import { API_BASE_URL, STORAGE_KEYS } from '@/lib/constants'
+import { Search, ArrowUpRight, ArrowDownLeft, CreditCard, Landmark, Banknote, Settings2, X } from 'lucide-react'
+import { usePaymentControllerGetAll } from '@/api/payments/payments'
 import { usePanelContext } from '@/context/PanelContext'
 import { Badge } from '@/components/ui/Badge'
 import { DataTable } from '@/components/ui/DataTable'
@@ -39,39 +38,6 @@ export default function PaymentsPage() {
   const searchParams = useSearchParams()
   const [selectedIds, setSelectedIds] = useState(new Set<string>())
   const [showConfigModal, setShowConfigModal] = useState(false)
-  const [exportingCsv, setExportingCsv] = useState(false)
-
-  const handleExport = async () => {
-    setExportingCsv(true)
-    try {
-      const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN)
-      const mode = localStorage.getItem(STORAGE_KEYS.DASHBOARD_MODE) ?? 'live'
-      const exportFilter = selectedIds.size > 0
-        ? `id|in|${Array.from(selectedIds).join(',')}`
-        : filter
-      const url = getPaymentControllerGetCSVUrl(
-        exportFilter ? { filter: exportFilter } as any : undefined
-      )
-      const response = await fetch(`${API_BASE_URL}${url}`, {
-        headers: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          'x-dashboard-mode': mode,
-        },
-      })
-      if (!response.ok) throw new Error('Export failed')
-      const blob = await response.blob()
-      const csvUrl = window.URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = csvUrl
-      link.download = `payments-${new Date().toISOString().slice(0, 10)}.csv`
-      setTimeout(() => {
-        link.click()
-        window.URL.revokeObjectURL(csvUrl)
-      }, 100)
-    } finally {
-      setExportingCsv(false)
-    }
-  }
   const { openPanel, panelState } = usePanelContext()
   const panelOpen = panelState.type !== null
 
@@ -271,10 +237,6 @@ export default function PaymentsPage() {
               onChange={(e) => updateParam('search', e.target.value)}
             />
           </InputGroup>
-          <Button variant="outline" color="secondary" size="sm" className="h-8 px-3 gap-1.5 cursor-pointer" onClick={handleExport} disabled={exportingCsv}>
-            <Download width={14} height={14} /> {exportingCsv ? 'Exporting…' : 'Export'}
-          </Button>
-          
         </div>
       </div>
 

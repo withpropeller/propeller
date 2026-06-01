@@ -10,7 +10,6 @@ import {
 } from 'lucide-react'
 import { Button } from '@/lib/pax'
 import { avatarColor } from '@/lib/avatar'
-import { useMode } from '@/context/ModeContext'
 import { useSidebar } from '@/context/SidebarContext'
 import { useAuth } from '@/context/AuthContext'
 
@@ -81,7 +80,6 @@ const NAV_SECTIONS: { section: string; items: SectionItem[] }[] = [
         children: [
           { href: '/dashboard/settings/profile', label: 'Profile' },
           { href: '/dashboard/settings/compliance', label: 'Compliance' },
-          { href: '/dashboard/settings/billing', label: 'Billing' },
           { href: '/dashboard/settings/team', label: 'Team' },
           { href: '/dashboard/settings/security', label: 'Security' },
         ],
@@ -201,26 +199,13 @@ function ParentItem({
 export function Sidebar() {
   const { isMobileOpen, isTabletExpanded, closeMobileSidebar, toggleTabletExpanded } = useSidebar()
   const { user, business, logout } = useAuth()
-  const { isSandboxMode } = useMode()
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [openParent, setOpenParent] = useState<string | null>(null)
 
   const navSections = NAV_SECTIONS.map(section => {
     if (section.section !== 'ADMIN') return section
 
-    return {
-      ...section,
-      items: section.items.map(item => {
-        if (item.kind !== 'parent' || item.id !== 'settings') return item
-
-        return {
-          ...item,
-          children: item.children.filter(child =>
-            child.href === '/dashboard/settings/billing' ? !isSandboxMode : true
-          ),
-        }
-      }),
-    }
+    return section
   })
 
   function showOnMobileAndDesktop(displayVal = 'block') {

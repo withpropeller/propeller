@@ -1022,7 +1022,7 @@ function SubmitSection({
 function normalizeKyc(raw: Record<string, unknown> | undefined): ApiHydratedBusinessKYC | undefined {
   if (!raw) return undefined
   return {
-    ...(raw as ApiHydratedBusinessKYC),
+    ...(raw as unknown as ApiHydratedBusinessKYC),
     information: (raw.information ?? raw.businessInformation) as ApiHydratedBusinessKYC['information'],
     address: (raw.address ?? raw.businessAddress) as ApiHydratedBusinessKYC['address'],
     directors: ((raw.directors as BusinessLeadership[] | undefined)?.length

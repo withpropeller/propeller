@@ -10,6 +10,7 @@ import { ChartEmpty } from '@/components/ui/ChartEmpty'
 import { StatValue } from '@/components/ui/StatValue'
 import { PeriodSelect, PERIODS, type Period } from '@/components/ui/PeriodSelect'
 import { formatAmount } from '@/lib/format'
+import type { TreasuryDailyVolumeStatDto, TreasuryFlowSplitStatDto, TreasuryStatusStatDto } from '@/api/model'
 import {
   PieChart,
   Pie,
@@ -142,7 +143,7 @@ function ChartCard({
 
 export default function Home() {
   const { user } = useAuth()
-  const { data: bizData } = useBusinessControllerFind()
+  const { data: bizData } = useBusinessControllerFind(undefined)
   const businessName = (bizData as any)?.data?.name || (user as any)?.business?.name || ''
   const [period, setPeriod] = useState<Period>('7d')
 
@@ -152,7 +153,7 @@ export default function Home() {
 
   const collectionsTotal = metrics?.collections?.total ?? 0
   const collectionsTrend: number | null = metrics?.collections?.change ?? null
-  const volumeSparkline = (metrics?.dailyCollections ?? []).map(d => ({
+  const volumeSparkline = (metrics?.dailyCollections ?? []).map((d: TreasuryDailyVolumeStatDto) => ({
     day: formatSparklineDate(d.date),
     value: d.total,
   }))
@@ -164,14 +165,17 @@ export default function Home() {
   const failureDelta: number | null = metrics?.payInFailures?.change ?? null
   const successDelta: number | null = metrics?.successRate?.change ?? null
 
-  const flowData = (metrics?.flowSplit ?? []).map((f, i) => ({
-    name: f.name,
-    value: f.percent,
-    color: FLOW_COLORS[i % FLOW_COLORS.length],
-  }))
-  const flowHasData = flowData.some(f => f.value > 0)
+  type FlowDatum = { name: string; value: number; color: string }
+  const flowData: FlowDatum[] = (metrics?.flowSplit ?? []).map(
+    (f: TreasuryFlowSplitStatDto, i: number) => ({
+      name: f.name,
+      value: f.percent,
+      color: FLOW_COLORS[i % FLOW_COLORS.length],
+    }),
+  )
+  const flowHasData = flowData.some((f: FlowDatum) => f.value > 0)
 
-  const statusStats = metrics?.byStatus ?? []
+  const statusStats: TreasuryStatusStatDto[] = metrics?.byStatus ?? []
   const statusTotal = statusStats.reduce((s, d) => s + d.count, 0)
 
   const availableBalance = metrics?.availableBalance ?? 0
@@ -238,7 +242,7 @@ export default function Home() {
         <ChartCard
           label="Pay-in vs pay-out"
           hero={flowData[0] && flowHasData ? `${flowData[0].name} · ${flowData[0].value}%` : 'No activity'}
-          subvalue={flowData.slice(1).map(c => `${c.name} ${c.value}%`).join(' · ') || undefined}
+          subvalue={flowData.slice(1).map((c: FlowDatum) => `${c.name} ${c.value}%`).join(' · ') || undefined}
         >
           {!flowHasData ? (
             <ChartEmpty variant="donut" height={216} />
@@ -254,7 +258,7 @@ export default function Home() {
                   dataKey="value"
                   paddingAngle={3}
                 >
-                  {flowData.map((entry, i) => (
+                  {flowData.map((entry: FlowDatum, i: number) => (
                     <Cell key={entry.name} fill={entry.color ?? FLOW_COLORS[i % FLOW_COLORS.length]} />
                   ))}
                 </Pie>

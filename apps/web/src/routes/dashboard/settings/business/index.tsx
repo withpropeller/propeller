@@ -36,11 +36,11 @@ import {
   useBusinessKYCControllerUpdateBusinessInfo,
   useBusinessKYCControllerUpdateBusinessAddress,
 } from '@/api/business-kyc/business-kyc'
-import {
-  type ApiHydratedBusiness,
-  type ApiHydratedBusinessKYC,
-  type KYCBusinessInformationDto,
-  type KYCBusinessAddressDto,
+import type {
+  ApiHydratedBusiness,
+  ApiHydratedBusinessKYC,
+  KYCBusinessInformationDto,
+  KYCBusinessAddressDto,
 } from '@/api/model'
 import { formatDate } from '@/lib/format'
 

@@ -22,7 +22,7 @@ import {
 } from '@/lib/pax'
 import { DetailCell, SectionHeader } from '@/components/ui/DetailPage'
 import { useProfileControllerGet, useProfileControllerUpdateProfile } from '@/api/me/me'
-import { type ApiHydratedUser } from '@/api/model'
+import type { ApiHydratedUser } from '@/api/model'
 import { formatDate } from '@/lib/format'
 
 // ── Empty value ─────────────────────────────────────────────────────────────

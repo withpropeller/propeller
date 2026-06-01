@@ -43,7 +43,6 @@ const SECTION_LABELS: Record<string, SectionInfo> = {
   '/dashboard/settings/compliance':     { section: 'Settings',   sectionPath: '/dashboard/settings',   subsection: 'Compliance' },
   '/dashboard/settings/team':           { section: 'Settings',   sectionPath: '/dashboard/settings',   subsection: 'Team' },
   '/dashboard/settings/security':       { section: 'Settings',   sectionPath: '/dashboard/settings',   subsection: 'Security' },
-  '/dashboard/settings/billing':        { section: 'Settings',   sectionPath: '/dashboard/settings',   subsection: 'Billing' },
 }
 
 // Ancestor info for detail pages — keyed by path segments before the dynamic ID
@@ -63,7 +62,6 @@ const DETAIL_PARENTS: Record<string, ParentInfo> = {
   'developer/events':       { section: 'Developer', sectionPath: '/dashboard/developer', subsection: 'Events',          subsectionPath: '/dashboard/developer/events' },
   'developer/webhooks':     { section: 'Developer', sectionPath: '/dashboard/developer', subsection: 'Webhooks',        subsectionPath: '/dashboard/developer/webhooks' },
   'developer/api-keys':     { section: 'Developer', sectionPath: '/dashboard/developer', subsection: 'API keys',        subsectionPath: '/dashboard/developer/api-keys' },
-  'settings/billing':       { section: 'Settings',  sectionPath: '/dashboard/settings',  subsection: 'Billing',         subsectionPath: '/dashboard/settings/billing' },
 }
 
 function getDetailParent(segments: string[]): ParentInfo | null {
