@@ -23,7 +23,10 @@ fetch-spec:
 	@echo "spec saved to docs/openapi.json"
 
 generate:
+	rm -rf src/api
 	bun run generate
+
+api: fetch-spec generate
 
 setup: install fetch-spec generate
 	@echo "setup complete"

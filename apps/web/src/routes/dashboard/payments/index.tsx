@@ -15,14 +15,12 @@ import {
   DropdownMenuRadioItem,
 } from '@/lib/pax'
 import { Search, ArrowUpRight, ArrowDownLeft, CreditCard, Landmark, Banknote, X } from 'lucide-react'
-import { usePaymentControllerGetAll } from '@/apiu/payments/payments'
+import { usePaymentControllerGetAll } from '@/api/payments/payments'
 import { usePanelContext } from '@/context/PanelContext'
 import { Badge } from '@/components/ui/Badge'
 import { DataTable } from '@/components/ui/DataTable'
 import { formatAmount, formatDatetime, getApiErrorMessage } from '@/lib/format'
 import { PageHeader } from '@/components/ui/PageHeader'
-import { ConfigurePaymentsModal } from '@/components/ui/ConfigurePaymentsModal'
-
 const STATUS_OPTIONS = [
   { label: 'All', value: '' },
   { label: 'Successful', value: 'status|eq|successful' },
@@ -37,7 +35,6 @@ export default function PaymentsPage() {
   const searchInputRef = useRef<HTMLInputElement>(null)
   const searchParams = useSearchParams()
   const [selectedIds, setSelectedIds] = useState(new Set<string>())
-  const [showConfigModal, setShowConfigModal] = useState(false)
   const { openPanel, panelState } = usePanelContext()
   const panelOpen = panelState.type !== null
 
@@ -84,7 +81,7 @@ export default function PaymentsPage() {
 
   const { data, isLoading, error, refetch } = usePaymentControllerGetAll({
     limit: 20,
-    expand: 'account dispute' as any,
+    expand: 'account' as any,
     sort: 'createdAt_desc' as any,
     ...(before ? { before } : {}),
     ...(after ? { after } : {}),
@@ -261,7 +258,6 @@ export default function PaymentsPage() {
       />
       </div>
 
-      {showConfigModal && <ConfigurePaymentsModal onClose={() => setShowConfigModal(false)} />}
     </div>
   )
 }

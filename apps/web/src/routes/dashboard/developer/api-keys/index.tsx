@@ -31,12 +31,12 @@ import {
   ModalDialogClose,
   toast,
 } from '@/lib/pax'
-import { useSecretKeyControllerCreate, useSecretKeyControllerGetAll, getSecretKeyControllerGetAllQueryKey } from '@/apiu/secret-keys/secret-keys'
+import { useSecretKeyControllerCreate, useSecretKeyControllerGetAll, getSecretKeyControllerGetAllQueryKey } from '@/api/secret-keys/secret-keys'
 import { DataTable } from '@/components/ui/DataTable'
 import { Badge } from '@/components/ui/Badge'
 import { CopyButton } from '@/components/ui/CopyButton'
 import { formatDatetime } from '@/lib/format'
-import type { ApiHydratedSecretKeyScopesItem } from '@/apiu/model'
+import type { ApiHydratedSecretKeyScopesItem } from '@/api/model'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface SecretKey {
@@ -60,18 +60,11 @@ const API_VERSIONS = [
 
 const SCOPE_GROUPS: { label: string; scopes: { value: ApiHydratedSecretKeyScopesItem; label: string }[] }[] = [
   {
-    label: 'Issuing',
-    scopes: [
-      { value: 'cards.*', label: 'Cards' },
-      { value: 'card-programs.*', label: 'Card programs' },
-      { value: 'customers.*', label: 'Customers' },
-    ],
-  },
-  {
     label: 'Payments & Accounts',
     scopes: [
       { value: 'payments.*', label: 'Payments' },
       { value: 'accounts.*', label: 'Accounts' },
+      { value: 'customers.*', label: 'Customers' },
     ],
   },
   {
@@ -79,7 +72,6 @@ const SCOPE_GROUPS: { label: string; scopes: { value: ApiHydratedSecretKeyScopes
     scopes: [
       { value: 'webhooks.*', label: 'Webhooks' },
       { value: 'events.read', label: 'Events' },
-      { value: 'disputes.*', label: 'Disputes' },
       { value: 'requests.*', label: 'Requests' },
       { value: 'tools.*', label: 'Tools' },
     ],

@@ -22,8 +22,8 @@ import { Badge } from '@/components/ui/Badge'
 import { CopyButton } from '@/components/ui/CopyButton'
 import { formatDatetime } from '@/lib/format'
 import { useIssuingNav } from '@/context/IssuingNavContext'
-import { useSecretKeyControllerGetOne, useSecretKeyControllerGetMetrics } from '@/apiu/secret-keys/secret-keys'
-import type { ApiHydratedSecretKey, SecretKeyMetricsResponseDto } from '@/apiu/model'
+import { useSecretKeyControllerGetOne, useSecretKeyControllerGetMetrics } from '@/api/secret-keys/secret-keys'
+import type { ApiHydratedSecretKey, SecretKeyMetricsResponseDto } from '@/api/model'
 
 function getKeyPrefix(keyData?: ApiHydratedSecretKey): string | null {
   if (!keyData) return null
@@ -240,10 +240,9 @@ function UsageCard({ metrics, isLoading }: { metrics: SecretKeyMetricsResponseDt
 function ScopesCard({ scopes }: { scopes: string[] }) {
   // Demo fallback so the design is visible when backend returns empty scopes.
   const displayScopes = scopes.length > 0 ? scopes : [
-    'cards.read.info',
-    'cards.create',
     'customers.read',
     'payments.read',
+    'accounts.read',
     'webhooks.*',
   ]
 

@@ -4,7 +4,7 @@ import { useMemo, useRef, useState, useEffect } from 'react'
 import { Permission } from '@/lib/permissions'
 import { PermissionGate } from '@/components/PermissionGate'
 import {
-  Users, UserPlus, UserMinus, Shield, Search, RotateCcw, X,
+  Users, UserPlus, Shield, Search, RotateCcw, X,
 } from 'lucide-react'
 import {
   Button,
@@ -19,12 +19,11 @@ import {
   toast,
 } from '@/lib/pax'
 import {
-  useTeamControllerGetMembers,
-  useTeamControllerInvite,
-  useTeamControllerRevokeInvite,
-  useTeamControllerDeactivate,
-} from '@/apiu/team/team'
-import type { ApiHydratedUser } from '@/apiu/model'
+  useBusinessControllerGetBusiness,
+  useBusinessControllerCreate,
+  useBusinessControllerRevokeInvite,
+} from '@/api/business/business'
+import type { ApiHydratedUser } from '@/api/model'
 import { DataTable } from '@/components/ui/DataTable'
 import { Badge } from '@/components/ui/Badge'
 import { InviteTeamMemberModal } from '@/components/ui/InviteTeamMemberModal'
@@ -107,15 +106,15 @@ function ActionIconButton({
 export default function TeamPage() {
   const { user: currentUser } = useAuth()
 
-  const { data, isLoading, error, refetch } = useTeamControllerGetMembers({
+  const { data, isLoading, error, refetch } = useBusinessControllerGetBusiness({
     expand: ['roles'],
     countTotal: true,
   })
-  const members: ApiHydratedUser[] = (data as any)?.data ?? []
+  const members: ApiHydratedUser[] =
+    (data as { data?: { data?: ApiHydratedUser[] } })?.data?.data ?? []
 
-  const inviteMutation = useTeamControllerInvite()
-  const revokeInviteMutation = useTeamControllerRevokeInvite()
-  const deactivateMutation = useTeamControllerDeactivate()
+  const inviteMutation = useBusinessControllerCreate()
+  const revokeInviteMutation = useBusinessControllerRevokeInvite()
 
   const [search, setSearch] = useState('')
   const searchInputRef = useRef<HTMLInputElement>(null)
@@ -167,11 +166,20 @@ export default function TeamPage() {
 
   function handleRevoke(member: ApiHydratedUser) {
     const isPending = member.status === 'requires-activation'
-    const mutation = isPending ? revokeInviteMutation : deactivateMutation
-    const successTitle = isPending ? 'Invite revoked' : 'Member deactivated'
-    const errorTitle = isPending ? 'Failed to revoke invite' : 'Failed to deactivate member'
+    if (!isPending) {
+      toast({
+        title: 'Not available',
+        description: 'Removing active members is not supported yet. Contact support if needed.',
+        severity: 'warning',
+      } as any)
+      setMemberToRevoke(null)
+      return
+    }
 
-    mutation.mutate(
+    const successTitle = 'Invite revoked'
+    const errorTitle = 'Failed to revoke invite'
+
+    revokeInviteMutation.mutate(
       { id: member.id! },
       {
         onSuccess: () => {
@@ -283,19 +291,7 @@ export default function TeamPage() {
           )
         }
 
-        return (
-          <PermissionGate permission={Permission.TeamUpdateMember}>
-            <div className="flex justify-end">
-              <ActionIconButton
-                label="Revoke access"
-                danger
-                onClick={() => setMemberToRevoke(member)}
-              >
-                <UserMinus size={14} />
-              </ActionIconButton>
-            </div>
-          </PermissionGate>
-        )
+        return null
       },
     },
   ]
@@ -377,7 +373,7 @@ export default function TeamPage() {
         <RevokeAccessDialog
           memberName={nameFor(memberToRevoke)}
           memberEmail={memberToRevoke.email}
-          isPending={deactivateMutation.isPending || revokeInviteMutation.isPending}
+          isPending={revokeInviteMutation.isPending}
           onClose={() => setMemberToRevoke(null)}
           onConfirm={() => handleRevoke(memberToRevoke)}
         />

@@ -12,15 +12,13 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from '@/lib/pax'
-import { useEventsControllerGetAll } from '@/apiu/events/events'
+import { useEventsControllerGetAll } from '@/api/events/events'
 import { DataTable } from '@/components/ui/DataTable'
 import { formatDatetime } from '@/lib/format'
 
 // ── Event type chip ───────────────────────────────────────────────────────────
 const EVENT_TYPE_COLORS: Record<string, string> = {
-  'card.': 'information',
   'payment.': 'success',
-  'dispute.': 'warning',
   'request.': 'secondary',
 }
 const CHIP_OVERRIDES: Record<string, string> = {
@@ -49,16 +47,9 @@ function EventTypeChip({ type }: { type?: string }) {
 // ── Filter options ────────────────────────────────────────────────────────────
 const EVENT_TYPE_OPTIONS = [
   { label: 'All types', value: '' },
-  { label: 'card.created', value: 'card.created' },
-  { label: 'card.activated', value: 'card.activated' },
-  { label: 'card.authorization.request', value: 'card.authorization.request' },
-  { label: 'card.authorization.closed', value: 'card.authorization.closed' },
-  { label: 'card.authorization.update', value: 'card.authorization.update' },
-  { label: 'card.transaction.created', value: 'card.transaction.created' },
   { label: 'payment.completed', value: 'payment.completed' },
   { label: 'payment.authorization.approved', value: 'payment.authorization.approved' },
   { label: 'payment.authorization.activated', value: 'payment.authorization.activated' },
-  { label: 'dispute.updated', value: 'dispute.updated' },
   { label: 'request.completed', value: 'request.completed' },
   { label: 'request.cancelled', value: 'request.cancelled' },
 ]

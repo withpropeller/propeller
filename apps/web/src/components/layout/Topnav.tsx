@@ -14,8 +14,8 @@ import {
 } from '@/lib/pax'
 import { useIssuingNav } from '@/context/IssuingNavContext'
 import { useMode } from '@/context/ModeContext'
-import { useProfileControllerUpdateProfile } from '@/apiu/me/me'
-import { useBusinessControllerFind } from '@/apiu/business/business'
+import { useProfileControllerUpdateProfile } from '@/api/me/me'
+import { useBusinessControllerFind } from '@/api/business/business'
 
 // Single-level breadcrumb pages — just show the label, no back button
 const LIST_LABELS: Record<string, string> = {
@@ -23,7 +23,6 @@ const LIST_LABELS: Record<string, string> = {
   '/dashboard/payments': 'Payments',
   '/dashboard/accounts': 'Accounts',
   '/dashboard/customers': 'Customers',
-  '/dashboard/disputes': 'Disputes',
 }
 
 // Two-level breadcrumb pages — section > subsection, no back button
@@ -56,7 +55,6 @@ interface ParentInfo {
 const DETAIL_PARENTS: Record<string, ParentInfo> = {
   'accounts':               { section: 'Accounts',  sectionPath: '/dashboard/accounts' },
   'customers':              { section: 'Customers', sectionPath: '/dashboard/customers' },
-  'disputes':               { section: 'Disputes',  sectionPath: '/dashboard/disputes' },
   // Legacy top-level api-keys route
   'api-keys':               { section: 'Developer', sectionPath: '/dashboard/developer', subsection: 'API keys', subsectionPath: '/dashboard/developer/api-keys' },
   'developer/events':       { section: 'Developer', sectionPath: '/dashboard/developer', subsection: 'Events',          subsectionPath: '/dashboard/developer/events' },

@@ -12,7 +12,7 @@ import { useMode } from '@/context/ModeContext'
 import { useSidebar } from '@/context/SidebarContext'
 import { usePathname } from '@/lib/routing'
 import { Alert, AlertDescription, AlertWarningIcon } from '@/lib/pax'
-import { useBusinessControllerFind } from '@/apiu/business/business'
+import { useBusinessControllerFind } from '@/api/business/business'
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { closePanel, panelState } = usePanelContext()

@@ -22,10 +22,10 @@ import {
   ModalDialogClose,
   toast,
 } from '@/lib/pax'
-import { useAccountControllerCreate, getAccountControllerGetQueryKey } from '@/apiu/accounts/accounts'
-import { useCustomerControllerGetAll } from '@/apiu/customers/customers'
+import { useAccountControllerCreate, getAccountControllerGetQueryKey } from '@/api/accounts/accounts'
+import { useCustomerControllerGetAll } from '@/api/customers/customers'
 import { useQueryClient } from '@tanstack/react-query'
-import type { CreateAccountDto } from '@/apiu/model'
+import type { CreateAccountDto } from '@/api/model'
 
 const ACCOUNT_TYPES = [
   { label: 'Main Account', value: 'main' },

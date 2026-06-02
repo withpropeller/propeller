@@ -24,6 +24,10 @@ import type {
   UseQueryResult
 } from '@tanstack/react-query';
 
+import type {
+  BasicResponse
+} from '../model';
+
 import { customInstance } from '../../lib/orvalClient';
 import type { ErrorType } from '../../lib/orvalClient';
 
@@ -36,16 +40,33 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Get Webhooks
  */
 export type webhookControllerGetResponse200 = {
-  data: void
+  data: BasicResponse
   status: 200
+}
+
+export type webhookControllerGetResponse400 = {
+  data: BasicResponse
+  status: 400
+}
+
+export type webhookControllerGetResponse401 = {
+  data: BasicResponse
+  status: 401
+}
+
+export type webhookControllerGetResponse403 = {
+  data: BasicResponse
+  status: 403
 }
 
 export type webhookControllerGetResponseSuccess = (webhookControllerGetResponse200) & {
   headers: Headers;
 };
-;
+export type webhookControllerGetResponseError = (webhookControllerGetResponse400 | webhookControllerGetResponse401 | webhookControllerGetResponse403) & {
+  headers: Headers;
+};
 
-export type webhookControllerGetResponse = (webhookControllerGetResponseSuccess)
+export type webhookControllerGetResponse = (webhookControllerGetResponseSuccess | webhookControllerGetResponseError)
 
 export const getWebhookControllerGetUrl = () => {
 
@@ -77,7 +98,7 @@ export const getWebhookControllerGetQueryKey = () => {
     }
 
 
-export const getWebhookControllerGetQueryOptions = <TData = Awaited<ReturnType<typeof webhookControllerGet>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof webhookControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getWebhookControllerGetQueryOptions = <TData = Awaited<ReturnType<typeof webhookControllerGet>>, TError = ErrorType<BasicResponse>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof webhookControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -96,10 +117,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type WebhookControllerGetQueryResult = NonNullable<Awaited<ReturnType<typeof webhookControllerGet>>>
-export type WebhookControllerGetQueryError = ErrorType<unknown>
+export type WebhookControllerGetQueryError = ErrorType<BasicResponse>
 
 
-export function useWebhookControllerGet<TData = Awaited<ReturnType<typeof webhookControllerGet>>, TError = ErrorType<unknown>>(
+export function useWebhookControllerGet<TData = Awaited<ReturnType<typeof webhookControllerGet>>, TError = ErrorType<BasicResponse>>(
   options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof webhookControllerGet>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof webhookControllerGet>>,
@@ -109,7 +130,7 @@ export function useWebhookControllerGet<TData = Awaited<ReturnType<typeof webhoo
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useWebhookControllerGet<TData = Awaited<ReturnType<typeof webhookControllerGet>>, TError = ErrorType<unknown>>(
+export function useWebhookControllerGet<TData = Awaited<ReturnType<typeof webhookControllerGet>>, TError = ErrorType<BasicResponse>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof webhookControllerGet>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof webhookControllerGet>>,
@@ -119,7 +140,7 @@ export function useWebhookControllerGet<TData = Awaited<ReturnType<typeof webhoo
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useWebhookControllerGet<TData = Awaited<ReturnType<typeof webhookControllerGet>>, TError = ErrorType<unknown>>(
+export function useWebhookControllerGet<TData = Awaited<ReturnType<typeof webhookControllerGet>>, TError = ErrorType<BasicResponse>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof webhookControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
@@ -127,7 +148,7 @@ export function useWebhookControllerGet<TData = Awaited<ReturnType<typeof webhoo
  * @summary Get Webhooks
  */
 
-export function useWebhookControllerGet<TData = Awaited<ReturnType<typeof webhookControllerGet>>, TError = ErrorType<unknown>>(
+export function useWebhookControllerGet<TData = Awaited<ReturnType<typeof webhookControllerGet>>, TError = ErrorType<BasicResponse>>(
   options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof webhookControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -143,19 +164,36 @@ export function useWebhookControllerGet<TData = Awaited<ReturnType<typeof webhoo
 
 
 /**
- * @summary Create Webhooks
+ * @summary Create Webhook
  */
 export type webhookControllerCreateResponse201 = {
-  data: void
+  data: BasicResponse
   status: 201
+}
+
+export type webhookControllerCreateResponse400 = {
+  data: BasicResponse
+  status: 400
+}
+
+export type webhookControllerCreateResponse401 = {
+  data: BasicResponse
+  status: 401
+}
+
+export type webhookControllerCreateResponse403 = {
+  data: BasicResponse
+  status: 403
 }
 
 export type webhookControllerCreateResponseSuccess = (webhookControllerCreateResponse201) & {
   headers: Headers;
 };
-;
+export type webhookControllerCreateResponseError = (webhookControllerCreateResponse400 | webhookControllerCreateResponse401 | webhookControllerCreateResponse403) & {
+  headers: Headers;
+};
 
-export type webhookControllerCreateResponse = (webhookControllerCreateResponseSuccess)
+export type webhookControllerCreateResponse = (webhookControllerCreateResponseSuccess | webhookControllerCreateResponseError)
 
 export const getWebhookControllerCreateUrl = () => {
 
@@ -179,7 +217,7 @@ export const webhookControllerCreate = async ( options?: RequestInit): Promise<w
 
 
 
-export const getWebhookControllerCreateMutationOptions = <TError = ErrorType<unknown>,
+export const getWebhookControllerCreateMutationOptions = <TError = ErrorType<BasicResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof webhookControllerCreate>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof webhookControllerCreate>>, TError,void, TContext> => {
 
@@ -208,12 +246,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type WebhookControllerCreateMutationResult = NonNullable<Awaited<ReturnType<typeof webhookControllerCreate>>>
 
-    export type WebhookControllerCreateMutationError = ErrorType<unknown>
+    export type WebhookControllerCreateMutationError = ErrorType<BasicResponse>
 
     /**
- * @summary Create Webhooks
+ * @summary Create Webhook
  */
-export const useWebhookControllerCreate = <TError = ErrorType<unknown>,
+export const useWebhookControllerCreate = <TError = ErrorType<BasicResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof webhookControllerCreate>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof webhookControllerCreate>>,
@@ -227,16 +265,38 @@ export const useWebhookControllerCreate = <TError = ErrorType<unknown>,
  * @summary Get One Webhook
  */
 export type webhookControllerGetOneResponse200 = {
-  data: void
+  data: BasicResponse
   status: 200
+}
+
+export type webhookControllerGetOneResponse400 = {
+  data: BasicResponse
+  status: 400
+}
+
+export type webhookControllerGetOneResponse401 = {
+  data: BasicResponse
+  status: 401
+}
+
+export type webhookControllerGetOneResponse403 = {
+  data: BasicResponse
+  status: 403
+}
+
+export type webhookControllerGetOneResponse404 = {
+  data: BasicResponse
+  status: 404
 }
 
 export type webhookControllerGetOneResponseSuccess = (webhookControllerGetOneResponse200) & {
   headers: Headers;
 };
-;
+export type webhookControllerGetOneResponseError = (webhookControllerGetOneResponse400 | webhookControllerGetOneResponse401 | webhookControllerGetOneResponse403 | webhookControllerGetOneResponse404) & {
+  headers: Headers;
+};
 
-export type webhookControllerGetOneResponse = (webhookControllerGetOneResponseSuccess)
+export type webhookControllerGetOneResponse = (webhookControllerGetOneResponseSuccess | webhookControllerGetOneResponseError)
 
 export const getWebhookControllerGetOneUrl = (id: string,) => {
 
@@ -268,7 +328,7 @@ export const getWebhookControllerGetOneQueryKey = (id: string,) => {
     }
 
 
-export const getWebhookControllerGetOneQueryOptions = <TData = Awaited<ReturnType<typeof webhookControllerGetOne>>, TError = ErrorType<unknown>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof webhookControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getWebhookControllerGetOneQueryOptions = <TData = Awaited<ReturnType<typeof webhookControllerGetOne>>, TError = ErrorType<BasicResponse>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof webhookControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -287,10 +347,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type WebhookControllerGetOneQueryResult = NonNullable<Awaited<ReturnType<typeof webhookControllerGetOne>>>
-export type WebhookControllerGetOneQueryError = ErrorType<unknown>
+export type WebhookControllerGetOneQueryError = ErrorType<BasicResponse>
 
 
-export function useWebhookControllerGetOne<TData = Awaited<ReturnType<typeof webhookControllerGetOne>>, TError = ErrorType<unknown>>(
+export function useWebhookControllerGetOne<TData = Awaited<ReturnType<typeof webhookControllerGetOne>>, TError = ErrorType<BasicResponse>>(
  id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof webhookControllerGetOne>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof webhookControllerGetOne>>,
@@ -300,7 +360,7 @@ export function useWebhookControllerGetOne<TData = Awaited<ReturnType<typeof web
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useWebhookControllerGetOne<TData = Awaited<ReturnType<typeof webhookControllerGetOne>>, TError = ErrorType<unknown>>(
+export function useWebhookControllerGetOne<TData = Awaited<ReturnType<typeof webhookControllerGetOne>>, TError = ErrorType<BasicResponse>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof webhookControllerGetOne>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof webhookControllerGetOne>>,
@@ -310,7 +370,7 @@ export function useWebhookControllerGetOne<TData = Awaited<ReturnType<typeof web
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useWebhookControllerGetOne<TData = Awaited<ReturnType<typeof webhookControllerGetOne>>, TError = ErrorType<unknown>>(
+export function useWebhookControllerGetOne<TData = Awaited<ReturnType<typeof webhookControllerGetOne>>, TError = ErrorType<BasicResponse>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof webhookControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
@@ -318,7 +378,7 @@ export function useWebhookControllerGetOne<TData = Awaited<ReturnType<typeof web
  * @summary Get One Webhook
  */
 
-export function useWebhookControllerGetOne<TData = Awaited<ReturnType<typeof webhookControllerGetOne>>, TError = ErrorType<unknown>>(
+export function useWebhookControllerGetOne<TData = Awaited<ReturnType<typeof webhookControllerGetOne>>, TError = ErrorType<BasicResponse>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof webhookControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -334,19 +394,41 @@ export function useWebhookControllerGetOne<TData = Awaited<ReturnType<typeof web
 
 
 /**
- * @summary Update Webhooks
+ * @summary Update Webhook
  */
 export type webhookControllerUpdateResponse200 = {
-  data: void
+  data: BasicResponse
   status: 200
+}
+
+export type webhookControllerUpdateResponse400 = {
+  data: BasicResponse
+  status: 400
+}
+
+export type webhookControllerUpdateResponse401 = {
+  data: BasicResponse
+  status: 401
+}
+
+export type webhookControllerUpdateResponse403 = {
+  data: BasicResponse
+  status: 403
+}
+
+export type webhookControllerUpdateResponse404 = {
+  data: BasicResponse
+  status: 404
 }
 
 export type webhookControllerUpdateResponseSuccess = (webhookControllerUpdateResponse200) & {
   headers: Headers;
 };
-;
+export type webhookControllerUpdateResponseError = (webhookControllerUpdateResponse400 | webhookControllerUpdateResponse401 | webhookControllerUpdateResponse403 | webhookControllerUpdateResponse404) & {
+  headers: Headers;
+};
 
-export type webhookControllerUpdateResponse = (webhookControllerUpdateResponseSuccess)
+export type webhookControllerUpdateResponse = (webhookControllerUpdateResponseSuccess | webhookControllerUpdateResponseError)
 
 export const getWebhookControllerUpdateUrl = (id: string,) => {
 
@@ -370,7 +452,7 @@ export const webhookControllerUpdate = async (id: string, options?: RequestInit)
 
 
 
-export const getWebhookControllerUpdateMutationOptions = <TError = ErrorType<unknown>,
+export const getWebhookControllerUpdateMutationOptions = <TError = ErrorType<BasicResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof webhookControllerUpdate>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof webhookControllerUpdate>>, TError,{id: string}, TContext> => {
 
@@ -399,12 +481,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type WebhookControllerUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof webhookControllerUpdate>>>
 
-    export type WebhookControllerUpdateMutationError = ErrorType<unknown>
+    export type WebhookControllerUpdateMutationError = ErrorType<BasicResponse>
 
     /**
- * @summary Update Webhooks
+ * @summary Update Webhook
  */
-export const useWebhookControllerUpdate = <TError = ErrorType<unknown>,
+export const useWebhookControllerUpdate = <TError = ErrorType<BasicResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof webhookControllerUpdate>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof webhookControllerUpdate>>,
@@ -415,19 +497,41 @@ export const useWebhookControllerUpdate = <TError = ErrorType<unknown>,
       return useMutation(getWebhookControllerUpdateMutationOptions(options), queryClient);
     }
     /**
- * @summary Delete Webhooks
+ * @summary Delete Webhook
  */
 export type webhookControllerDeleteResponse200 = {
-  data: void
+  data: BasicResponse
   status: 200
+}
+
+export type webhookControllerDeleteResponse400 = {
+  data: BasicResponse
+  status: 400
+}
+
+export type webhookControllerDeleteResponse401 = {
+  data: BasicResponse
+  status: 401
+}
+
+export type webhookControllerDeleteResponse403 = {
+  data: BasicResponse
+  status: 403
+}
+
+export type webhookControllerDeleteResponse404 = {
+  data: BasicResponse
+  status: 404
 }
 
 export type webhookControllerDeleteResponseSuccess = (webhookControllerDeleteResponse200) & {
   headers: Headers;
 };
-;
+export type webhookControllerDeleteResponseError = (webhookControllerDeleteResponse400 | webhookControllerDeleteResponse401 | webhookControllerDeleteResponse403 | webhookControllerDeleteResponse404) & {
+  headers: Headers;
+};
 
-export type webhookControllerDeleteResponse = (webhookControllerDeleteResponseSuccess)
+export type webhookControllerDeleteResponse = (webhookControllerDeleteResponseSuccess | webhookControllerDeleteResponseError)
 
 export const getWebhookControllerDeleteUrl = (id: string,) => {
 
@@ -451,7 +555,7 @@ export const webhookControllerDelete = async (id: string, options?: RequestInit)
 
 
 
-export const getWebhookControllerDeleteMutationOptions = <TError = ErrorType<unknown>,
+export const getWebhookControllerDeleteMutationOptions = <TError = ErrorType<BasicResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof webhookControllerDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof webhookControllerDelete>>, TError,{id: string}, TContext> => {
 
@@ -480,12 +584,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type WebhookControllerDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof webhookControllerDelete>>>
 
-    export type WebhookControllerDeleteMutationError = ErrorType<unknown>
+    export type WebhookControllerDeleteMutationError = ErrorType<BasicResponse>
 
     /**
- * @summary Delete Webhooks
+ * @summary Delete Webhook
  */
-export const useWebhookControllerDelete = <TError = ErrorType<unknown>,
+export const useWebhookControllerDelete = <TError = ErrorType<BasicResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof webhookControllerDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof webhookControllerDelete>>,
@@ -496,19 +600,41 @@ export const useWebhookControllerDelete = <TError = ErrorType<unknown>,
       return useMutation(getWebhookControllerDeleteMutationOptions(options), queryClient);
     }
     /**
- * @summary Get Webhook  Signing Secret
+ * @summary Get Webhook Signing Secret
  */
 export type webhookControllerGetSigningSecretResponse200 = {
-  data: void
+  data: BasicResponse
   status: 200
+}
+
+export type webhookControllerGetSigningSecretResponse400 = {
+  data: BasicResponse
+  status: 400
+}
+
+export type webhookControllerGetSigningSecretResponse401 = {
+  data: BasicResponse
+  status: 401
+}
+
+export type webhookControllerGetSigningSecretResponse403 = {
+  data: BasicResponse
+  status: 403
+}
+
+export type webhookControllerGetSigningSecretResponse404 = {
+  data: BasicResponse
+  status: 404
 }
 
 export type webhookControllerGetSigningSecretResponseSuccess = (webhookControllerGetSigningSecretResponse200) & {
   headers: Headers;
 };
-;
+export type webhookControllerGetSigningSecretResponseError = (webhookControllerGetSigningSecretResponse400 | webhookControllerGetSigningSecretResponse401 | webhookControllerGetSigningSecretResponse403 | webhookControllerGetSigningSecretResponse404) & {
+  headers: Headers;
+};
 
-export type webhookControllerGetSigningSecretResponse = (webhookControllerGetSigningSecretResponseSuccess)
+export type webhookControllerGetSigningSecretResponse = (webhookControllerGetSigningSecretResponseSuccess | webhookControllerGetSigningSecretResponseError)
 
 export const getWebhookControllerGetSigningSecretUrl = (id: string,) => {
 
@@ -540,7 +666,7 @@ export const getWebhookControllerGetSigningSecretQueryKey = (id: string,) => {
     }
 
 
-export const getWebhookControllerGetSigningSecretQueryOptions = <TData = Awaited<ReturnType<typeof webhookControllerGetSigningSecret>>, TError = ErrorType<unknown>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof webhookControllerGetSigningSecret>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getWebhookControllerGetSigningSecretQueryOptions = <TData = Awaited<ReturnType<typeof webhookControllerGetSigningSecret>>, TError = ErrorType<BasicResponse>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof webhookControllerGetSigningSecret>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -559,10 +685,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type WebhookControllerGetSigningSecretQueryResult = NonNullable<Awaited<ReturnType<typeof webhookControllerGetSigningSecret>>>
-export type WebhookControllerGetSigningSecretQueryError = ErrorType<unknown>
+export type WebhookControllerGetSigningSecretQueryError = ErrorType<BasicResponse>
 
 
-export function useWebhookControllerGetSigningSecret<TData = Awaited<ReturnType<typeof webhookControllerGetSigningSecret>>, TError = ErrorType<unknown>>(
+export function useWebhookControllerGetSigningSecret<TData = Awaited<ReturnType<typeof webhookControllerGetSigningSecret>>, TError = ErrorType<BasicResponse>>(
  id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof webhookControllerGetSigningSecret>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof webhookControllerGetSigningSecret>>,
@@ -572,7 +698,7 @@ export function useWebhookControllerGetSigningSecret<TData = Awaited<ReturnType<
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useWebhookControllerGetSigningSecret<TData = Awaited<ReturnType<typeof webhookControllerGetSigningSecret>>, TError = ErrorType<unknown>>(
+export function useWebhookControllerGetSigningSecret<TData = Awaited<ReturnType<typeof webhookControllerGetSigningSecret>>, TError = ErrorType<BasicResponse>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof webhookControllerGetSigningSecret>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof webhookControllerGetSigningSecret>>,
@@ -582,15 +708,15 @@ export function useWebhookControllerGetSigningSecret<TData = Awaited<ReturnType<
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useWebhookControllerGetSigningSecret<TData = Awaited<ReturnType<typeof webhookControllerGetSigningSecret>>, TError = ErrorType<unknown>>(
+export function useWebhookControllerGetSigningSecret<TData = Awaited<ReturnType<typeof webhookControllerGetSigningSecret>>, TError = ErrorType<BasicResponse>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof webhookControllerGetSigningSecret>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Get Webhook  Signing Secret
+ * @summary Get Webhook Signing Secret
  */
 
-export function useWebhookControllerGetSigningSecret<TData = Awaited<ReturnType<typeof webhookControllerGetSigningSecret>>, TError = ErrorType<unknown>>(
+export function useWebhookControllerGetSigningSecret<TData = Awaited<ReturnType<typeof webhookControllerGetSigningSecret>>, TError = ErrorType<BasicResponse>>(
  id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof webhookControllerGetSigningSecret>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -606,19 +732,41 @@ export function useWebhookControllerGetSigningSecret<TData = Awaited<ReturnType<
 
 
 /**
- * @summary Roll Webhook  Signing Secret
+ * @summary Roll Webhook Signing Secret
  */
-export type webhookControllerRollSigningSecretResponse201 = {
-  data: void
-  status: 201
+export type webhookControllerRollSigningSecretResponse200 = {
+  data: BasicResponse
+  status: 200
 }
 
-export type webhookControllerRollSigningSecretResponseSuccess = (webhookControllerRollSigningSecretResponse201) & {
+export type webhookControllerRollSigningSecretResponse400 = {
+  data: BasicResponse
+  status: 400
+}
+
+export type webhookControllerRollSigningSecretResponse401 = {
+  data: BasicResponse
+  status: 401
+}
+
+export type webhookControllerRollSigningSecretResponse403 = {
+  data: BasicResponse
+  status: 403
+}
+
+export type webhookControllerRollSigningSecretResponse404 = {
+  data: BasicResponse
+  status: 404
+}
+
+export type webhookControllerRollSigningSecretResponseSuccess = (webhookControllerRollSigningSecretResponse200) & {
   headers: Headers;
 };
-;
+export type webhookControllerRollSigningSecretResponseError = (webhookControllerRollSigningSecretResponse400 | webhookControllerRollSigningSecretResponse401 | webhookControllerRollSigningSecretResponse403 | webhookControllerRollSigningSecretResponse404) & {
+  headers: Headers;
+};
 
-export type webhookControllerRollSigningSecretResponse = (webhookControllerRollSigningSecretResponseSuccess)
+export type webhookControllerRollSigningSecretResponse = (webhookControllerRollSigningSecretResponseSuccess | webhookControllerRollSigningSecretResponseError)
 
 export const getWebhookControllerRollSigningSecretUrl = (id: string,) => {
 
@@ -642,7 +790,7 @@ export const webhookControllerRollSigningSecret = async (id: string, options?: R
 
 
 
-export const getWebhookControllerRollSigningSecretMutationOptions = <TError = ErrorType<unknown>,
+export const getWebhookControllerRollSigningSecretMutationOptions = <TError = ErrorType<BasicResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof webhookControllerRollSigningSecret>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof webhookControllerRollSigningSecret>>, TError,{id: string}, TContext> => {
 
@@ -671,12 +819,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type WebhookControllerRollSigningSecretMutationResult = NonNullable<Awaited<ReturnType<typeof webhookControllerRollSigningSecret>>>
 
-    export type WebhookControllerRollSigningSecretMutationError = ErrorType<unknown>
+    export type WebhookControllerRollSigningSecretMutationError = ErrorType<BasicResponse>
 
     /**
- * @summary Roll Webhook  Signing Secret
+ * @summary Roll Webhook Signing Secret
  */
-export const useWebhookControllerRollSigningSecret = <TError = ErrorType<unknown>,
+export const useWebhookControllerRollSigningSecret = <TError = ErrorType<BasicResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof webhookControllerRollSigningSecret>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof webhookControllerRollSigningSecret>>,
@@ -689,17 +837,39 @@ export const useWebhookControllerRollSigningSecret = <TError = ErrorType<unknown
     /**
  * @summary Enable Webhook
  */
-export type webhookControllerEnableResponse201 = {
-  data: void
-  status: 201
+export type webhookControllerEnableResponse200 = {
+  data: BasicResponse
+  status: 200
 }
 
-export type webhookControllerEnableResponseSuccess = (webhookControllerEnableResponse201) & {
+export type webhookControllerEnableResponse400 = {
+  data: BasicResponse
+  status: 400
+}
+
+export type webhookControllerEnableResponse401 = {
+  data: BasicResponse
+  status: 401
+}
+
+export type webhookControllerEnableResponse403 = {
+  data: BasicResponse
+  status: 403
+}
+
+export type webhookControllerEnableResponse404 = {
+  data: BasicResponse
+  status: 404
+}
+
+export type webhookControllerEnableResponseSuccess = (webhookControllerEnableResponse200) & {
   headers: Headers;
 };
-;
+export type webhookControllerEnableResponseError = (webhookControllerEnableResponse400 | webhookControllerEnableResponse401 | webhookControllerEnableResponse403 | webhookControllerEnableResponse404) & {
+  headers: Headers;
+};
 
-export type webhookControllerEnableResponse = (webhookControllerEnableResponseSuccess)
+export type webhookControllerEnableResponse = (webhookControllerEnableResponseSuccess | webhookControllerEnableResponseError)
 
 export const getWebhookControllerEnableUrl = (id: string,) => {
 
@@ -723,7 +893,7 @@ export const webhookControllerEnable = async (id: string, options?: RequestInit)
 
 
 
-export const getWebhookControllerEnableMutationOptions = <TError = ErrorType<unknown>,
+export const getWebhookControllerEnableMutationOptions = <TError = ErrorType<BasicResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof webhookControllerEnable>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof webhookControllerEnable>>, TError,{id: string}, TContext> => {
 
@@ -752,12 +922,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type WebhookControllerEnableMutationResult = NonNullable<Awaited<ReturnType<typeof webhookControllerEnable>>>
 
-    export type WebhookControllerEnableMutationError = ErrorType<unknown>
+    export type WebhookControllerEnableMutationError = ErrorType<BasicResponse>
 
     /**
  * @summary Enable Webhook
  */
-export const useWebhookControllerEnable = <TError = ErrorType<unknown>,
+export const useWebhookControllerEnable = <TError = ErrorType<BasicResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof webhookControllerEnable>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof webhookControllerEnable>>,
@@ -770,17 +940,39 @@ export const useWebhookControllerEnable = <TError = ErrorType<unknown>,
     /**
  * @summary Disable Webhook
  */
-export type webhookControllerDisableResponse201 = {
-  data: void
-  status: 201
+export type webhookControllerDisableResponse200 = {
+  data: BasicResponse
+  status: 200
 }
 
-export type webhookControllerDisableResponseSuccess = (webhookControllerDisableResponse201) & {
+export type webhookControllerDisableResponse400 = {
+  data: BasicResponse
+  status: 400
+}
+
+export type webhookControllerDisableResponse401 = {
+  data: BasicResponse
+  status: 401
+}
+
+export type webhookControllerDisableResponse403 = {
+  data: BasicResponse
+  status: 403
+}
+
+export type webhookControllerDisableResponse404 = {
+  data: BasicResponse
+  status: 404
+}
+
+export type webhookControllerDisableResponseSuccess = (webhookControllerDisableResponse200) & {
   headers: Headers;
 };
-;
+export type webhookControllerDisableResponseError = (webhookControllerDisableResponse400 | webhookControllerDisableResponse401 | webhookControllerDisableResponse403 | webhookControllerDisableResponse404) & {
+  headers: Headers;
+};
 
-export type webhookControllerDisableResponse = (webhookControllerDisableResponseSuccess)
+export type webhookControllerDisableResponse = (webhookControllerDisableResponseSuccess | webhookControllerDisableResponseError)
 
 export const getWebhookControllerDisableUrl = (id: string,) => {
 
@@ -804,7 +996,7 @@ export const webhookControllerDisable = async (id: string, options?: RequestInit
 
 
 
-export const getWebhookControllerDisableMutationOptions = <TError = ErrorType<unknown>,
+export const getWebhookControllerDisableMutationOptions = <TError = ErrorType<BasicResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof webhookControllerDisable>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof webhookControllerDisable>>, TError,{id: string}, TContext> => {
 
@@ -833,12 +1025,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type WebhookControllerDisableMutationResult = NonNullable<Awaited<ReturnType<typeof webhookControllerDisable>>>
 
-    export type WebhookControllerDisableMutationError = ErrorType<unknown>
+    export type WebhookControllerDisableMutationError = ErrorType<BasicResponse>
 
     /**
  * @summary Disable Webhook
  */
-export const useWebhookControllerDisable = <TError = ErrorType<unknown>,
+export const useWebhookControllerDisable = <TError = ErrorType<BasicResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof webhookControllerDisable>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof webhookControllerDisable>>,

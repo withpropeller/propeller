@@ -25,9 +25,14 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  BasicResponse,
   CreateSecretKeyDto,
   PatchSecretKeyDto,
+  ResponseWrapperApiHydratedSecretKey,
+  ResponseWrapperApiHydratedSecretKeyList,
+  ResponseWrapperSecretKeyMetricsResponseDto,
   SecretKeyControllerGetAllParams,
+  SecretKeyControllerGetMetricsParams,
   SecretKeyControllerGetOneParams
 } from '../model';
 
@@ -43,16 +48,33 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Get Project Access Keys
  */
 export type secretKeyControllerGetAllResponse200 = {
-  data: void
+  data: ResponseWrapperApiHydratedSecretKeyList
   status: 200
+}
+
+export type secretKeyControllerGetAllResponse400 = {
+  data: BasicResponse
+  status: 400
+}
+
+export type secretKeyControllerGetAllResponse401 = {
+  data: BasicResponse
+  status: 401
+}
+
+export type secretKeyControllerGetAllResponse403 = {
+  data: BasicResponse
+  status: 403
 }
 
 export type secretKeyControllerGetAllResponseSuccess = (secretKeyControllerGetAllResponse200) & {
   headers: Headers;
 };
-;
+export type secretKeyControllerGetAllResponseError = (secretKeyControllerGetAllResponse400 | secretKeyControllerGetAllResponse401 | secretKeyControllerGetAllResponse403) & {
+  headers: Headers;
+};
 
-export type secretKeyControllerGetAllResponse = (secretKeyControllerGetAllResponseSuccess)
+export type secretKeyControllerGetAllResponse = (secretKeyControllerGetAllResponseSuccess | secretKeyControllerGetAllResponseError)
 
 export const getSecretKeyControllerGetAllUrl = (params?: SecretKeyControllerGetAllParams,) => {
   const normalizedParams = new URLSearchParams();
@@ -91,7 +113,7 @@ export const getSecretKeyControllerGetAllQueryKey = (params?: SecretKeyControlle
     }
 
 
-export const getSecretKeyControllerGetAllQueryOptions = <TData = Awaited<ReturnType<typeof secretKeyControllerGetAll>>, TError = ErrorType<unknown>>(params?: SecretKeyControllerGetAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof secretKeyControllerGetAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getSecretKeyControllerGetAllQueryOptions = <TData = Awaited<ReturnType<typeof secretKeyControllerGetAll>>, TError = ErrorType<BasicResponse>>(params?: SecretKeyControllerGetAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof secretKeyControllerGetAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
@@ -110,10 +132,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SecretKeyControllerGetAllQueryResult = NonNullable<Awaited<ReturnType<typeof secretKeyControllerGetAll>>>
-export type SecretKeyControllerGetAllQueryError = ErrorType<unknown>
+export type SecretKeyControllerGetAllQueryError = ErrorType<BasicResponse>
 
 
-export function useSecretKeyControllerGetAll<TData = Awaited<ReturnType<typeof secretKeyControllerGetAll>>, TError = ErrorType<unknown>>(
+export function useSecretKeyControllerGetAll<TData = Awaited<ReturnType<typeof secretKeyControllerGetAll>>, TError = ErrorType<BasicResponse>>(
  params: undefined |  SecretKeyControllerGetAllParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof secretKeyControllerGetAll>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof secretKeyControllerGetAll>>,
@@ -123,7 +145,7 @@ export function useSecretKeyControllerGetAll<TData = Awaited<ReturnType<typeof s
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useSecretKeyControllerGetAll<TData = Awaited<ReturnType<typeof secretKeyControllerGetAll>>, TError = ErrorType<unknown>>(
+export function useSecretKeyControllerGetAll<TData = Awaited<ReturnType<typeof secretKeyControllerGetAll>>, TError = ErrorType<BasicResponse>>(
  params?: SecretKeyControllerGetAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof secretKeyControllerGetAll>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof secretKeyControllerGetAll>>,
@@ -133,7 +155,7 @@ export function useSecretKeyControllerGetAll<TData = Awaited<ReturnType<typeof s
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useSecretKeyControllerGetAll<TData = Awaited<ReturnType<typeof secretKeyControllerGetAll>>, TError = ErrorType<unknown>>(
+export function useSecretKeyControllerGetAll<TData = Awaited<ReturnType<typeof secretKeyControllerGetAll>>, TError = ErrorType<BasicResponse>>(
  params?: SecretKeyControllerGetAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof secretKeyControllerGetAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
@@ -141,7 +163,7 @@ export function useSecretKeyControllerGetAll<TData = Awaited<ReturnType<typeof s
  * @summary Get Project Access Keys
  */
 
-export function useSecretKeyControllerGetAll<TData = Awaited<ReturnType<typeof secretKeyControllerGetAll>>, TError = ErrorType<unknown>>(
+export function useSecretKeyControllerGetAll<TData = Awaited<ReturnType<typeof secretKeyControllerGetAll>>, TError = ErrorType<BasicResponse>>(
  params?: SecretKeyControllerGetAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof secretKeyControllerGetAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
@@ -160,16 +182,33 @@ export function useSecretKeyControllerGetAll<TData = Awaited<ReturnType<typeof s
  * @summary Create Access Key
  */
 export type secretKeyControllerCreateResponse201 = {
-  data: void
+  data: ResponseWrapperApiHydratedSecretKey
   status: 201
+}
+
+export type secretKeyControllerCreateResponse400 = {
+  data: BasicResponse
+  status: 400
+}
+
+export type secretKeyControllerCreateResponse401 = {
+  data: BasicResponse
+  status: 401
+}
+
+export type secretKeyControllerCreateResponse403 = {
+  data: BasicResponse
+  status: 403
 }
 
 export type secretKeyControllerCreateResponseSuccess = (secretKeyControllerCreateResponse201) & {
   headers: Headers;
 };
-;
+export type secretKeyControllerCreateResponseError = (secretKeyControllerCreateResponse400 | secretKeyControllerCreateResponse401 | secretKeyControllerCreateResponse403) & {
+  headers: Headers;
+};
 
-export type secretKeyControllerCreateResponse = (secretKeyControllerCreateResponseSuccess)
+export type secretKeyControllerCreateResponse = (secretKeyControllerCreateResponseSuccess | secretKeyControllerCreateResponseError)
 
 export const getSecretKeyControllerCreateUrl = () => {
 
@@ -194,7 +233,7 @@ export const secretKeyControllerCreate = async (createSecretKeyDto: CreateSecret
 
 
 
-export const getSecretKeyControllerCreateMutationOptions = <TError = ErrorType<unknown>,
+export const getSecretKeyControllerCreateMutationOptions = <TError = ErrorType<BasicResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof secretKeyControllerCreate>>, TError,{data: CreateSecretKeyDto}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof secretKeyControllerCreate>>, TError,{data: CreateSecretKeyDto}, TContext> => {
 
@@ -223,12 +262,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type SecretKeyControllerCreateMutationResult = NonNullable<Awaited<ReturnType<typeof secretKeyControllerCreate>>>
     export type SecretKeyControllerCreateMutationBody = CreateSecretKeyDto
-    export type SecretKeyControllerCreateMutationError = ErrorType<unknown>
+    export type SecretKeyControllerCreateMutationError = ErrorType<BasicResponse>
 
     /**
  * @summary Create Access Key
  */
-export const useSecretKeyControllerCreate = <TError = ErrorType<unknown>,
+export const useSecretKeyControllerCreate = <TError = ErrorType<BasicResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof secretKeyControllerCreate>>, TError,{data: CreateSecretKeyDto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof secretKeyControllerCreate>>,
@@ -239,19 +278,188 @@ export const useSecretKeyControllerCreate = <TError = ErrorType<unknown>,
       return useMutation(getSecretKeyControllerCreateMutationOptions(options), queryClient);
     }
     /**
+ * @summary Get Secret Key Metrics
+ */
+export type secretKeyControllerGetMetricsResponse200 = {
+  data: ResponseWrapperSecretKeyMetricsResponseDto
+  status: 200
+}
+
+export type secretKeyControllerGetMetricsResponse400 = {
+  data: BasicResponse
+  status: 400
+}
+
+export type secretKeyControllerGetMetricsResponse401 = {
+  data: BasicResponse
+  status: 401
+}
+
+export type secretKeyControllerGetMetricsResponse403 = {
+  data: BasicResponse
+  status: 403
+}
+
+export type secretKeyControllerGetMetricsResponse404 = {
+  data: BasicResponse
+  status: 404
+}
+
+export type secretKeyControllerGetMetricsResponseSuccess = (secretKeyControllerGetMetricsResponse200) & {
+  headers: Headers;
+};
+export type secretKeyControllerGetMetricsResponseError = (secretKeyControllerGetMetricsResponse400 | secretKeyControllerGetMetricsResponse401 | secretKeyControllerGetMetricsResponse403 | secretKeyControllerGetMetricsResponse404) & {
+  headers: Headers;
+};
+
+export type secretKeyControllerGetMetricsResponse = (secretKeyControllerGetMetricsResponseSuccess | secretKeyControllerGetMetricsResponseError)
+
+export const getSecretKeyControllerGetMetricsUrl = (id: string,
+    params?: SecretKeyControllerGetMetricsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/secret-keys/${id}/metrics?${stringifiedParams}` : `/secret-keys/${id}/metrics`
+}
+
+export const secretKeyControllerGetMetrics = async (id: string,
+    params?: SecretKeyControllerGetMetricsParams, options?: RequestInit): Promise<secretKeyControllerGetMetricsResponse> => {
+
+  return customInstance<secretKeyControllerGetMetricsResponse>(getSecretKeyControllerGetMetricsUrl(id,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getSecretKeyControllerGetMetricsQueryKey = (id: string,
+    params?: SecretKeyControllerGetMetricsParams,) => {
+    return [
+    `/secret-keys/${id}/metrics`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getSecretKeyControllerGetMetricsQueryOptions = <TData = Awaited<ReturnType<typeof secretKeyControllerGetMetrics>>, TError = ErrorType<BasicResponse>>(id: string,
+    params?: SecretKeyControllerGetMetricsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof secretKeyControllerGetMetrics>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getSecretKeyControllerGetMetricsQueryKey(id,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof secretKeyControllerGetMetrics>>> = ({ signal }) => secretKeyControllerGetMetrics(id,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof secretKeyControllerGetMetrics>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type SecretKeyControllerGetMetricsQueryResult = NonNullable<Awaited<ReturnType<typeof secretKeyControllerGetMetrics>>>
+export type SecretKeyControllerGetMetricsQueryError = ErrorType<BasicResponse>
+
+
+export function useSecretKeyControllerGetMetrics<TData = Awaited<ReturnType<typeof secretKeyControllerGetMetrics>>, TError = ErrorType<BasicResponse>>(
+ id: string,
+    params: undefined |  SecretKeyControllerGetMetricsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof secretKeyControllerGetMetrics>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof secretKeyControllerGetMetrics>>,
+          TError,
+          Awaited<ReturnType<typeof secretKeyControllerGetMetrics>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSecretKeyControllerGetMetrics<TData = Awaited<ReturnType<typeof secretKeyControllerGetMetrics>>, TError = ErrorType<BasicResponse>>(
+ id: string,
+    params?: SecretKeyControllerGetMetricsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof secretKeyControllerGetMetrics>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof secretKeyControllerGetMetrics>>,
+          TError,
+          Awaited<ReturnType<typeof secretKeyControllerGetMetrics>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSecretKeyControllerGetMetrics<TData = Awaited<ReturnType<typeof secretKeyControllerGetMetrics>>, TError = ErrorType<BasicResponse>>(
+ id: string,
+    params?: SecretKeyControllerGetMetricsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof secretKeyControllerGetMetrics>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get Secret Key Metrics
+ */
+
+export function useSecretKeyControllerGetMetrics<TData = Awaited<ReturnType<typeof secretKeyControllerGetMetrics>>, TError = ErrorType<BasicResponse>>(
+ id: string,
+    params?: SecretKeyControllerGetMetricsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof secretKeyControllerGetMetrics>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getSecretKeyControllerGetMetricsQueryOptions(id,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+/**
  * @summary Get One Project Access Keys
  */
 export type secretKeyControllerGetOneResponse200 = {
-  data: void
+  data: ResponseWrapperApiHydratedSecretKey
   status: 200
+}
+
+export type secretKeyControllerGetOneResponse400 = {
+  data: BasicResponse
+  status: 400
+}
+
+export type secretKeyControllerGetOneResponse401 = {
+  data: BasicResponse
+  status: 401
+}
+
+export type secretKeyControllerGetOneResponse403 = {
+  data: BasicResponse
+  status: 403
+}
+
+export type secretKeyControllerGetOneResponse404 = {
+  data: BasicResponse
+  status: 404
 }
 
 export type secretKeyControllerGetOneResponseSuccess = (secretKeyControllerGetOneResponse200) & {
   headers: Headers;
 };
-;
+export type secretKeyControllerGetOneResponseError = (secretKeyControllerGetOneResponse400 | secretKeyControllerGetOneResponse401 | secretKeyControllerGetOneResponse403 | secretKeyControllerGetOneResponse404) & {
+  headers: Headers;
+};
 
-export type secretKeyControllerGetOneResponse = (secretKeyControllerGetOneResponseSuccess)
+export type secretKeyControllerGetOneResponse = (secretKeyControllerGetOneResponseSuccess | secretKeyControllerGetOneResponseError)
 
 export const getSecretKeyControllerGetOneUrl = (id: string,
     params?: SecretKeyControllerGetOneParams,) => {
@@ -293,7 +501,7 @@ export const getSecretKeyControllerGetOneQueryKey = (id: string,
     }
 
 
-export const getSecretKeyControllerGetOneQueryOptions = <TData = Awaited<ReturnType<typeof secretKeyControllerGetOne>>, TError = ErrorType<unknown>>(id: string,
+export const getSecretKeyControllerGetOneQueryOptions = <TData = Awaited<ReturnType<typeof secretKeyControllerGetOne>>, TError = ErrorType<BasicResponse>>(id: string,
     params?: SecretKeyControllerGetOneParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof secretKeyControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
@@ -313,10 +521,10 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type SecretKeyControllerGetOneQueryResult = NonNullable<Awaited<ReturnType<typeof secretKeyControllerGetOne>>>
-export type SecretKeyControllerGetOneQueryError = ErrorType<unknown>
+export type SecretKeyControllerGetOneQueryError = ErrorType<BasicResponse>
 
 
-export function useSecretKeyControllerGetOne<TData = Awaited<ReturnType<typeof secretKeyControllerGetOne>>, TError = ErrorType<unknown>>(
+export function useSecretKeyControllerGetOne<TData = Awaited<ReturnType<typeof secretKeyControllerGetOne>>, TError = ErrorType<BasicResponse>>(
  id: string,
     params: undefined |  SecretKeyControllerGetOneParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof secretKeyControllerGetOne>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
@@ -327,7 +535,7 @@ export function useSecretKeyControllerGetOne<TData = Awaited<ReturnType<typeof s
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useSecretKeyControllerGetOne<TData = Awaited<ReturnType<typeof secretKeyControllerGetOne>>, TError = ErrorType<unknown>>(
+export function useSecretKeyControllerGetOne<TData = Awaited<ReturnType<typeof secretKeyControllerGetOne>>, TError = ErrorType<BasicResponse>>(
  id: string,
     params?: SecretKeyControllerGetOneParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof secretKeyControllerGetOne>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
@@ -338,7 +546,7 @@ export function useSecretKeyControllerGetOne<TData = Awaited<ReturnType<typeof s
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useSecretKeyControllerGetOne<TData = Awaited<ReturnType<typeof secretKeyControllerGetOne>>, TError = ErrorType<unknown>>(
+export function useSecretKeyControllerGetOne<TData = Awaited<ReturnType<typeof secretKeyControllerGetOne>>, TError = ErrorType<BasicResponse>>(
  id: string,
     params?: SecretKeyControllerGetOneParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof secretKeyControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
@@ -347,7 +555,7 @@ export function useSecretKeyControllerGetOne<TData = Awaited<ReturnType<typeof s
  * @summary Get One Project Access Keys
  */
 
-export function useSecretKeyControllerGetOne<TData = Awaited<ReturnType<typeof secretKeyControllerGetOne>>, TError = ErrorType<unknown>>(
+export function useSecretKeyControllerGetOne<TData = Awaited<ReturnType<typeof secretKeyControllerGetOne>>, TError = ErrorType<BasicResponse>>(
  id: string,
     params?: SecretKeyControllerGetOneParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof secretKeyControllerGetOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
@@ -367,16 +575,38 @@ export function useSecretKeyControllerGetOne<TData = Awaited<ReturnType<typeof s
  * @summary Update Access Key
  */
 export type secretKeyControllerPutResponse200 = {
-  data: void
+  data: ResponseWrapperApiHydratedSecretKey
   status: 200
+}
+
+export type secretKeyControllerPutResponse400 = {
+  data: BasicResponse
+  status: 400
+}
+
+export type secretKeyControllerPutResponse401 = {
+  data: BasicResponse
+  status: 401
+}
+
+export type secretKeyControllerPutResponse403 = {
+  data: BasicResponse
+  status: 403
+}
+
+export type secretKeyControllerPutResponse404 = {
+  data: BasicResponse
+  status: 404
 }
 
 export type secretKeyControllerPutResponseSuccess = (secretKeyControllerPutResponse200) & {
   headers: Headers;
 };
-;
+export type secretKeyControllerPutResponseError = (secretKeyControllerPutResponse400 | secretKeyControllerPutResponse401 | secretKeyControllerPutResponse403 | secretKeyControllerPutResponse404) & {
+  headers: Headers;
+};
 
-export type secretKeyControllerPutResponse = (secretKeyControllerPutResponseSuccess)
+export type secretKeyControllerPutResponse = (secretKeyControllerPutResponseSuccess | secretKeyControllerPutResponseError)
 
 export const getSecretKeyControllerPutUrl = (id: string,) => {
 
@@ -402,7 +632,7 @@ export const secretKeyControllerPut = async (id: string,
 
 
 
-export const getSecretKeyControllerPutMutationOptions = <TError = ErrorType<unknown>,
+export const getSecretKeyControllerPutMutationOptions = <TError = ErrorType<BasicResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof secretKeyControllerPut>>, TError,{id: string;data: PatchSecretKeyDto}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof secretKeyControllerPut>>, TError,{id: string;data: PatchSecretKeyDto}, TContext> => {
 
@@ -431,12 +661,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type SecretKeyControllerPutMutationResult = NonNullable<Awaited<ReturnType<typeof secretKeyControllerPut>>>
     export type SecretKeyControllerPutMutationBody = PatchSecretKeyDto
-    export type SecretKeyControllerPutMutationError = ErrorType<unknown>
+    export type SecretKeyControllerPutMutationError = ErrorType<BasicResponse>
 
     /**
  * @summary Update Access Key
  */
-export const useSecretKeyControllerPut = <TError = ErrorType<unknown>,
+export const useSecretKeyControllerPut = <TError = ErrorType<BasicResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof secretKeyControllerPut>>, TError,{id: string;data: PatchSecretKeyDto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof secretKeyControllerPut>>,
@@ -450,16 +680,38 @@ export const useSecretKeyControllerPut = <TError = ErrorType<unknown>,
  * @summary Delete Access Key
  */
 export type secretKeyControllerDeleteResponse200 = {
-  data: void
+  data: BasicResponse
   status: 200
+}
+
+export type secretKeyControllerDeleteResponse400 = {
+  data: BasicResponse
+  status: 400
+}
+
+export type secretKeyControllerDeleteResponse401 = {
+  data: BasicResponse
+  status: 401
+}
+
+export type secretKeyControllerDeleteResponse403 = {
+  data: BasicResponse
+  status: 403
+}
+
+export type secretKeyControllerDeleteResponse404 = {
+  data: BasicResponse
+  status: 404
 }
 
 export type secretKeyControllerDeleteResponseSuccess = (secretKeyControllerDeleteResponse200) & {
   headers: Headers;
 };
-;
+export type secretKeyControllerDeleteResponseError = (secretKeyControllerDeleteResponse400 | secretKeyControllerDeleteResponse401 | secretKeyControllerDeleteResponse403 | secretKeyControllerDeleteResponse404) & {
+  headers: Headers;
+};
 
-export type secretKeyControllerDeleteResponse = (secretKeyControllerDeleteResponseSuccess)
+export type secretKeyControllerDeleteResponse = (secretKeyControllerDeleteResponseSuccess | secretKeyControllerDeleteResponseError)
 
 export const getSecretKeyControllerDeleteUrl = (id: string,) => {
 
@@ -483,7 +735,7 @@ export const secretKeyControllerDelete = async (id: string, options?: RequestIni
 
 
 
-export const getSecretKeyControllerDeleteMutationOptions = <TError = ErrorType<unknown>,
+export const getSecretKeyControllerDeleteMutationOptions = <TError = ErrorType<BasicResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof secretKeyControllerDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof secretKeyControllerDelete>>, TError,{id: string}, TContext> => {
 
@@ -512,12 +764,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type SecretKeyControllerDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof secretKeyControllerDelete>>>
 
-    export type SecretKeyControllerDeleteMutationError = ErrorType<unknown>
+    export type SecretKeyControllerDeleteMutationError = ErrorType<BasicResponse>
 
     /**
  * @summary Delete Access Key
  */
-export const useSecretKeyControllerDelete = <TError = ErrorType<unknown>,
+export const useSecretKeyControllerDelete = <TError = ErrorType<BasicResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof secretKeyControllerDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof secretKeyControllerDelete>>,

@@ -22,7 +22,7 @@ import {
   ModalDialogClose,
   toast,
 } from '@/lib/pax'
-import { useTeamControllerInvite } from '@/apiu/team/team'
+import { useBusinessControllerCreate } from '@/api/business/business'
 
 const ROLE_OPTIONS = [
   { value: 'admin',     label: 'Admin',     description: 'Full access' },
@@ -46,7 +46,7 @@ export function InviteTeamMemberModal({ onClose, onInvited }: Props) {
   const [role,  setRole]  = useState('')
   const [errors, setErrors] = useState<FormErrors>({})
 
-  const { mutate, isPending } = useTeamControllerInvite()
+  const { mutate, isPending } = useBusinessControllerCreate()
 
   function validate(): FormErrors {
     const errs: FormErrors = {}

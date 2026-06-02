@@ -28,8 +28,8 @@ import {
   TooltipProvider,
   toast,
 } from '@/lib/pax'
-import { usePaymentRequestControllerCreate } from '@/apiu/payment-requests/payment-requests'
-import { useCustomerControllerGetAll } from '@/apiu/customers/customers'
+import { usePaymentRequestControllerCreate } from '@/api/payment-requests/payment-requests'
+import { useCustomerControllerGetAll } from '@/api/customers/customers'
 import { useQueryClient } from '@tanstack/react-query'
 
 const CURRENCIES = [

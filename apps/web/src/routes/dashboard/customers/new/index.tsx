@@ -26,8 +26,8 @@ import {
   StepMetadata,
   StepReview,
 } from '../_components/steps'
-import { useCustomerControllerCreate } from '@/apiu/customers/customers'
 import { useQueryClient } from '@tanstack/react-query'
+import { customInstance } from '@/lib/orvalClient'
 
 // ─── Types ───────────────────────────────────────────────────────────────────────
 
@@ -56,7 +56,7 @@ function getInitialData(): any {
 export default function NewCustomerPage() {
   const router = useRouter()
   const queryClient = useQueryClient()
-  const createMutation = useCustomerControllerCreate()
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // ── Form state ─────────────────────────────────────────────────────────────
   const [form, setForm] = useState<FormState>(() => {
@@ -107,7 +107,6 @@ export default function NewCustomerPage() {
   const STEPS =
     form.customerType === 'business' ? BUSINESS_STEPS : INDIVIDUAL_STEPS
   const isReviewStep = step === STEPS[STEPS.length - 1].id
-  const isSubmitting = createMutation.isPending
 
   // ── Helpers ────────────────────────────────────────────────────────────────
   function set(key: keyof FormState, value: string) {
@@ -294,31 +293,31 @@ export default function NewCustomerPage() {
     }
   }
 
-  function submit() {
+  async function submit() {
     const payload = buildPayload()
-
-    createMutation.mutate(
-      { data: payload as any },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['/customers'] })
-          try {
-            localStorage.removeItem(STORAGE_KEY)
-          } catch {
-            // ignore
-          }
-          setIsDirty(false)
-          setCreated(true)
-        },
-        onError: (err: any) => {
-          toast({
-            title: 'Failed to create customer',
-            description: err?.message ?? 'Something went wrong.',
-            severity: 'danger',
-          })
-        },
-      },
-    )
+    setIsSubmitting(true)
+    try {
+      await customInstance('/customers', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      })
+      queryClient.invalidateQueries({ queryKey: ['/customers'] })
+      try {
+        localStorage.removeItem(STORAGE_KEY)
+      } catch {
+        // ignore
+      }
+      setIsDirty(false)
+      setCreated(true)
+    } catch (err: any) {
+      toast({
+        title: 'Failed to create customer',
+        description: err?.message ?? 'Something went wrong.',
+        severity: 'danger',
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   // ── Navigation ─────────────────────────────────────────────────────────────

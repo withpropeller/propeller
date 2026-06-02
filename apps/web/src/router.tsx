@@ -56,7 +56,6 @@ export const router = createBrowserRouter([
         lazy: lazyDefault(() => import('@/routes/dashboard/developer/logs/[id]')),
       },
       { path: 'developer/webhooks', lazy: lazyDefault(() => import('@/routes/dashboard/developer/webhooks')) },
-      { path: 'disputes', lazy: lazyDefault(() => import('@/routes/dashboard/disputes')) },
       { path: 'payments', lazy: lazyDefault(() => import('@/routes/dashboard/payments')) },
       { path: 'settings', lazy: lazyDefault(() => import('@/routes/dashboard/settings')) },
       { path: 'settings/business', lazy: lazyDefault(() => import('@/routes/dashboard/settings/business')) },

@@ -5,10 +5,11 @@
  * The Allawee Infrastructure APIs description
  * OpenAPI spec version: 0.0.1
  */
+import type { ObjectId } from './objectId';
 
 export interface ActivateAccountDto {
   firstName: string;
   lastName: string;
   password: string;
-  businessId: string;
+  businessId: ObjectId;
 }

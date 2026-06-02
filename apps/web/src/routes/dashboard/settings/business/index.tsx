@@ -30,18 +30,19 @@ import {
   toast,
 } from '@/lib/pax'
 import { DetailCell, SectionHeader } from '@/components/ui/DetailPage'
-import { useBusinessControllerFind } from '@/apiu/business/business'
+import { extractKycFromResponse, isKycVerifiedForBusiness } from '@/lib/kyc'
+import { useBusinessControllerFind } from '@/api/business/business'
 import {
   useBusinessKYCControllerGetKyc,
   useBusinessKYCControllerUpdateBusinessInfo,
   useBusinessKYCControllerUpdateBusinessAddress,
-} from '@/apiu/business-kyc/business-kyc'
+} from '@/api/business-kyc/business-kyc'
 import type {
   ApiHydratedBusiness,
   ApiHydratedBusinessKYC,
   KYCBusinessInformationDto,
   KYCBusinessAddressDto,
-} from '@/apiu/model'
+} from '@/api/model'
 import { formatDate } from '@/lib/format'
 
 // ── Empty value ─────────────────────────────────────────────────────────────
@@ -93,8 +94,11 @@ function resolveVerificationState(
   business: ApiHydratedBusiness | undefined,
   kyc: ApiHydratedBusinessKYC | undefined,
 ): VerificationState {
-  if (business?.status === 'approved' && kyc?.completed) return 'verified'
-  if (business?.status === 'requested' || (kyc?.completed && business?.status !== 'approved')) {
+  if (business?.status === 'approved' && kyc?.status === 'approved') return 'verified'
+  if (
+    business?.status === 'requested' ||
+    (isKycVerifiedForBusiness(kyc) && business?.status !== 'approved')
+  ) {
     return 'in_review'
   }
   return 'action_required'
@@ -114,7 +118,7 @@ const STATE_CONFIG: Record<
     severity: 'success',
     icon: AlertSuccessIcon,
     title: 'Business verified',
-    body: 'Your business is active and able to issue cards.',
+    body: 'Your business is active and verified.',
   },
   in_review: {
     severity: 'information',
@@ -126,7 +130,7 @@ const STATE_CONFIG: Record<
     severity: 'warning',
     icon: AlertWarningIcon,
     title: 'Verification required',
-    body: 'Complete your KYC to activate card issuing.',
+    body: 'Complete your KYC to activate your business.',
     cta: { label: 'Complete KYC', href: '/dashboard/settings/compliance' },
   },
 }
@@ -174,7 +178,7 @@ function EditInformationModal({
   onSaved,
 }: {
   kycId: string
-  current: ApiHydratedBusinessKYC['information']
+  current?: ApiHydratedBusinessKYC['businessInformation']
   onClose: () => void
   onSaved: () => void
 }) {
@@ -330,7 +334,7 @@ function EditAddressModal({
   onSaved,
 }: {
   kycId: string
-  current: ApiHydratedBusinessKYC['address']
+  current?: ApiHydratedBusinessKYC['businessAddress']
   onClose: () => void
   onSaved: () => void
 }) {
@@ -505,15 +509,7 @@ export default function BusinessPage() {
     refetch: refetchKyc,
   } = useBusinessKYCControllerGetKyc(kycId, { query: { enabled: !!kycId } })
 
-  const kycRaw = (kycData as any)?.data?.data ?? (kycData as any)?.data
-  const kyc = kycRaw
-    ? ({
-        ...kycRaw,
-        information: kycRaw.information ?? kycRaw.businessInformation,
-        address: kycRaw.address ?? kycRaw.businessAddress,
-        directors: kycRaw.directors?.length ? kycRaw.directors : kycRaw.leadership,
-      } as ApiHydratedBusinessKYC)
-    : undefined
+  const kyc = extractKycFromResponse(kycData)
 
   const [editOpen, setEditOpen] = useState<'information' | 'address' | null>(null)
 
@@ -521,10 +517,10 @@ export default function BusinessPage() {
 
   const state = resolveVerificationState(business, kyc)
 
-  const addressLines = [kyc?.address?.addressLineOne, kyc?.address?.addressLineTwo]
+  const addressLines = [kyc?.businessAddress?.addressLineOne, kyc?.businessAddress?.addressLineTwo]
     .filter(Boolean)
     .join(', ')
-  const cityState = [kyc?.address?.city, kyc?.address?.state].filter(Boolean).join(', ')
+  const cityState = [kyc?.businessAddress?.city, kyc?.businessAddress?.state].filter(Boolean).join(', ')
 
   return (
     <div className="space-y-8 pb-16">
@@ -554,17 +550,17 @@ export default function BusinessPage() {
           {business?.email || <Empty>Not provided</Empty>}
         </DetailCell>
         <DetailCell label="Registered name">
-          {kyc?.information?.businessName || <Empty>Not provided</Empty>}
+          {kyc?.businessInformation?.businessName || <Empty>Not provided</Empty>}
         </DetailCell>
         <DetailCell label="Registration type">
-          {kyc?.information?.registrationType ? (
-            <span className="capitalize">{kyc.information.registrationType}</span>
+          {kyc?.businessInformation?.registrationType ? (
+            <span className="capitalize">{kyc.businessInformation.registrationType}</span>
           ) : (
             <Empty>Not provided</Empty>
           )}
         </DetailCell>
         <DetailCell label="Business description">
-          {kyc?.information?.businessDescription || <Empty>Not provided</Empty>}
+          {kyc?.businessInformation?.businessDescription || <Empty>Not provided</Empty>}
         </DetailCell>
         <DetailCell label="Member since">
           {business?.createdAt ? formatDate(business.createdAt) : <Empty>Unknown</Empty>}
@@ -578,10 +574,10 @@ export default function BusinessPage() {
         onEdit={can(Permission.BusinessKyc) ? () => setEditOpen('information') : undefined}
       >
         <DetailCell label="Registration number (CAC)">
-          {kyc?.information?.registrationNumber || <Empty>Not provided</Empty>}
+          {kyc?.businessInformation?.registrationNumber || <Empty>Not provided</Empty>}
         </DetailCell>
         <DetailCell label="Tax ID (TIN)">
-          {kyc?.information?.tin || <Empty>Not provided</Empty>}
+          {kyc?.businessInformation?.tin || <Empty>Not provided</Empty>}
         </DetailCell>
       </SectionBlock>
 
@@ -598,20 +594,20 @@ export default function BusinessPage() {
           {cityState || <Empty>Not provided</Empty>}
         </DetailCell>
         <DetailCell label="Country">
-          {kyc?.address?.countryCode || <Empty>Not provided</Empty>}
+          {kyc?.businessAddress?.countryCode || <Empty>Not provided</Empty>}
         </DetailCell>
         <DetailCell label="Phone">
-          {kyc?.address?.phone || <Empty>Not provided</Empty>}
+          {kyc?.businessAddress?.phone || <Empty>Not provided</Empty>}
         </DetailCell>
         <DetailCell label="Email">
-          {kyc?.address?.email || <Empty>Not provided</Empty>}
+          {kyc?.businessAddress?.email || <Empty>Not provided</Empty>}
         </DetailCell>
       </SectionBlock>
 
       {editOpen === 'information' && kycId && (
         <EditInformationModal
           kycId={kycId}
-          current={kyc?.information}
+          current={kyc?.businessInformation}
           onClose={() => setEditOpen(null)}
           onSaved={() => refetchKyc()}
         />
@@ -619,7 +615,7 @@ export default function BusinessPage() {
       {editOpen === 'address' && kycId && (
         <EditAddressModal
           kycId={kycId}
-          current={kyc?.address}
+          current={kyc?.businessAddress}
           onClose={() => setEditOpen(null)}
           onSaved={() => refetchKyc()}
         />

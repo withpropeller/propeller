@@ -24,9 +24,9 @@ import {
   ModalDialogClose,
   toast,
 } from '@/lib/pax'
-import { useAccountControllerGet, useAccountControllerGetBalance } from '@/apiu/accounts/accounts'
-import { useToolsControllerGetBanks, useToolsControllerResolveBankAccount } from '@/apiu/tools/tools'
-import { usePaymentControllerPayout } from '@/apiu/payments/payments'
+import { useAccountControllerGet, useAccountControllerGetBalance } from '@/api/accounts/accounts'
+import { useToolsControllerGet, useToolsControllerResolve } from '@/api/tools/tools'
+import { usePaymentControllerCreate } from '@/api/payments/payments'
 import { useQueryClient } from '@tanstack/react-query'
 import { formatAmount } from '@/lib/format'
 
@@ -86,29 +86,21 @@ export function NewPayoutModal({ onClose }: Props) {
   })
   const balance = (balanceRes?.data as any)?.balance
 
-  const { mutate: createPayout, isPending } = usePaymentControllerPayout()
+  const { mutate: createPayout, isPending } = usePaymentControllerCreate()
 
   // Banks list for bank-transfer
-  const { data: banksRes } = useToolsControllerGetBanks({
+  const { data: banksRes } = useToolsControllerGet({
     query: { enabled: method === 'bank-transfer' },
   })
   const banks: any[] = (banksRes?.data as any) || []
 
   // Resolve bank account name when accountNumber (10 digits) + bankCode are both set
   const canResolve = method === 'bank-transfer' && accountNumber.length === 10 && !!bankCode
-  const { data: resolvedRes, isFetching: isResolving } = useToolsControllerResolveBankAccount(
-    { accountNumber, bankCode },
-    { query: { enabled: canResolve } },
+  const { data: resolvedRes, isFetching: isResolving } = useToolsControllerResolve(
+    { data: { accountNumber, bankCode } } as any,
+    { query: { enabled: canResolve } } as any,
   )
-  const resolvedAccountName = (resolvedRes?.data as any)?.accountName
-
-  // Reset destination / bank fields when method changes
-  useEffect(() => {
-    setDestination('')
-    setAccountNumber('')
-    setBankCode('')
-    setFormErrors({})
-  }, [method])
+  const resolvedAccountName = (resolvedRes?.data as any)?.name
 
   function validate(): FormErrors {
     const errs: FormErrors = {}

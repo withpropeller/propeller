@@ -26,12 +26,13 @@ import {
   useBusinessKYCControllerDeleteLeadership,
   useBusinessKYCControllerSubmitKyc,
   getBusinessKYCControllerGetKycQueryKey,
-} from '@/apiu/business-kyc/business-kyc'
+} from '@/api/business-kyc/business-kyc'
 import {
   getBusinessControllerFindQueryKey,
   useBusinessControllerFind,
-} from '@/apiu/business/business'
-import type { ApiHydratedBusinessKYC, BusinessLeadership, KYCLeadershipDto } from '@/apiu/model'
+} from '@/api/business/business'
+import type { ApiHydratedBusinessKYC, BusinessLeadership, KYCLeadershipDto } from '@/api/model'
+import { extractKycFromResponse, isKycSubmitted } from '@/lib/kyc'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -219,7 +220,7 @@ function BusinessInfoSection({
   onToggle: () => void
   onSaved: () => void
 }) {
-  const existing = kyc?.information
+  const existing = kyc?.businessInformation
   const [form, setForm] = useState({
     businessName: existing?.businessName ?? '',
     businessDescription: existing?.businessDescription ?? '',
@@ -384,7 +385,7 @@ function AddressSection({
   onToggle: () => void
   onSaved: () => void
 }) {
-  const existing = kyc?.address
+  const existing = kyc?.businessAddress
   const [form, setForm] = useState({
     addressLineOne: existing?.addressLineOne ?? '',
     addressLineTwo: existing?.addressLineTwo ?? '',
@@ -556,7 +557,7 @@ function DirectorsSection({
   onToggle: () => void
   onSaved: () => void
 }) {
-  const directors = kyc?.directors ?? []
+  const directors = kyc?.leadership ?? []
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
@@ -964,7 +965,7 @@ function SubmitSection({
 }) {
   const submitKyc = useBusinessKYCControllerSubmitKyc()
 
-  if (kyc?.approvalRequestedAt) {
+  if (kyc?.status === 'submitted') {
     return (
       <div className="rounded-xl border border-feedback-success-border bg-feedback-success-light px-5 py-4 flex items-center gap-4">
         <CheckCircle className="text-feedback-success-main shrink-0" width={18} height={18} />
@@ -1019,18 +1020,6 @@ function SubmitSection({
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-function normalizeKyc(raw: Record<string, unknown> | undefined): ApiHydratedBusinessKYC | undefined {
-  if (!raw) return undefined
-  return {
-    ...(raw as unknown as ApiHydratedBusinessKYC),
-    information: (raw.information ?? raw.businessInformation) as ApiHydratedBusinessKYC['information'],
-    address: (raw.address ?? raw.businessAddress) as ApiHydratedBusinessKYC['address'],
-    directors: ((raw.directors as BusinessLeadership[] | undefined)?.length
-      ? raw.directors
-      : raw.leadership) as BusinessLeadership[] | undefined,
-  }
-}
-
 export default function CompliancePage() {
   const queryClient = useQueryClient()
   const { data: bizData, isLoading: bizLoading } = useBusinessControllerFind(undefined)
@@ -1041,16 +1030,12 @@ export default function CompliancePage() {
   const { data: kycData, isLoading: kycLoading } = useBusinessKYCControllerGetKyc(kycId, {
     query: { enabled: !!kycId },
   })
-  const raw = ((kycData as { data?: Record<string, unknown> })?.data ??
-    (kycData as { data?: { data?: Record<string, unknown> } })?.data?.data) as
-    | Record<string, unknown>
-    | undefined
-  const kyc = normalizeKyc(raw)
+  const kyc = extractKycFromResponse(kycData)
   const isLoading = bizLoading || (!!kycId && kycLoading)
 
-  const infoDone = !!kyc?.information
-  const addressDone = !!kyc?.address
-  const directorsDone = (kyc?.directors?.length ?? 0) > 0
+  const infoDone = !!kyc?.businessInformation
+  const addressDone = !!kyc?.businessAddress
+  const directorsDone = (kyc?.leadership?.length ?? 0) > 0
   const docsDone = !!kyc?.documentation
   const allDone = infoDone && addressDone && directorsDone && docsDone
 
@@ -1132,7 +1117,7 @@ export default function CompliancePage() {
         onSaved={() => handleSaved()}
       />
 
-      {!kyc?.completed && (
+      {!isKycSubmitted(kyc?.status) && (
         <SubmitSection
           kyc={kyc}
           kycId={kycId || kyc?.id || ''}

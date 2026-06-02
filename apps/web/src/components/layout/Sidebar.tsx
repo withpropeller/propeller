@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import Link from '@/lib/routing'
 import { usePathname } from '@/lib/routing'
 import {
-  LayoutDashboard, Users, Wallet, ShieldAlert, ArrowLeftRight,
+  LayoutDashboard, Users, Wallet, ArrowLeftRight,
   Code2, Settings, ChevronDown, ChevronLeft, ChevronRight, X,
   LogOut, MoreVertical,
 } from 'lucide-react'
@@ -19,7 +19,6 @@ const NAV_STANDALONE = [
   { href: '/dashboard', label: 'Dashboard', end: true, icon: LayoutDashboard },
   { href: '/dashboard/customers', label: 'Customers', icon: Users },
   { href: '/dashboard/accounts', label: 'Accounts', icon: Wallet },
-  { href: '/dashboard/disputes', label: 'Disputes', icon: ShieldAlert },
 ]
 
 type NavIcon = React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>

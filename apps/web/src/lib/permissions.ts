@@ -66,12 +66,6 @@ export enum Permission {
   BillingsRead = 'billings.read',
   BillingsUpdate = 'billings.update',
 
-  // Disputes
-  Disputes = 'disputes.*',
-  DisputesRead = 'disputes.read',
-  DisputesCreate = 'disputes.create',
-  DisputesUpdate = 'disputes.update',
-
   // Payments
   Payments = 'payments.*',
   PaymentsRead = 'payments.read',
@@ -102,19 +96,6 @@ export enum Permission {
   Audit = 'audit.*',
   AuditRead = 'audit.read',
 
-  // Card Programs
-  CardPrograms = 'card-programs.*',
-  CardProgramsRead = 'card-programs.read',
-  CardProgramsCreate = 'card-programs.create',
-  CardProgramsUpdate = 'card-programs.update',
-  CardProgramsUpdateStatus = 'card-programs.update.status',
-  CardProgramsDelete = 'card-programs.delete',
-
-  // Card BINs
-  CardBins = 'card-bins.*',
-  CardBinsRead = 'card-bins.read',
-  CardBinsCreate = 'card-bins.create',
-
   // Configurations
   Configurations = 'configurations.*',
   ConfigurationsRead = 'configurations.read',
@@ -125,29 +106,6 @@ export enum Permission {
   CustomersRead = 'customers.read',
   CustomersCreate = 'customers.create',
   CustomersUpdate = 'customers.update',
-
-  // Cards
-  Cards = 'cards.*',
-  CardsRead = 'cards.read',
-  CardsReadInfo = 'cards.read.info',
-  CardsReadSecrets = 'cards.read.secrets',
-  CardsReadFundingSource = 'cards.read.funding-source',
-  CardsCreate = 'cards.create',
-  CardsUpdateInfo = 'cards.update.info',
-  CardsUpdateLink = 'cards.update.link',
-  CardsUpdateFund = 'cards.update.fund',
-  CardsUpdateActivate = 'cards.update.activate',
-  CardsUpdateStatus = 'cards.update.status',
-  CardsUpdatePin = 'cards.update.pin',
-  CardsDelete = 'cards.delete',
-
-  // Card Authorizations
-  CardAuthorizations = 'card-authorizations.*',
-  CardAuthorizationsRead = 'card-authorizations.read',
-
-  // Card Transactions
-  CardTransactions = 'card-transactions.*',
-  CardTransactionsRead = 'card-transactions.read',
 
   // Events
   Events = 'events.*',

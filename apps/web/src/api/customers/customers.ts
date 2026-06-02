@@ -24,6 +24,12 @@ import type {
   UseQueryResult
 } from '@tanstack/react-query';
 
+import type {
+  BasicResponse,
+  CustomerControllerGetAllParams,
+  CustomerControllerGetParams
+} from '../model';
+
 import { customInstance } from '../../lib/orvalClient';
 import type { ErrorType } from '../../lib/orvalClient';
 
@@ -36,28 +42,52 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
  * @summary Get Customers
  */
 export type customerControllerGetAllResponse200 = {
-  data: void
+  data: BasicResponse
   status: 200
+}
+
+export type customerControllerGetAllResponse400 = {
+  data: BasicResponse
+  status: 400
+}
+
+export type customerControllerGetAllResponse401 = {
+  data: BasicResponse
+  status: 401
+}
+
+export type customerControllerGetAllResponse403 = {
+  data: BasicResponse
+  status: 403
 }
 
 export type customerControllerGetAllResponseSuccess = (customerControllerGetAllResponse200) & {
   headers: Headers;
 };
-;
+export type customerControllerGetAllResponseError = (customerControllerGetAllResponse400 | customerControllerGetAllResponse401 | customerControllerGetAllResponse403) & {
+  headers: Headers;
+};
 
-export type customerControllerGetAllResponse = (customerControllerGetAllResponseSuccess)
+export type customerControllerGetAllResponse = (customerControllerGetAllResponseSuccess | customerControllerGetAllResponseError)
 
-export const getCustomerControllerGetAllUrl = () => {
+export const getCustomerControllerGetAllUrl = (params?: CustomerControllerGetAllParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/customers`
+  return stringifiedParams.length > 0 ? `/customers?${stringifiedParams}` : `/customers`
 }
 
-export const customerControllerGetAll = async ( options?: RequestInit): Promise<customerControllerGetAllResponse> => {
+export const customerControllerGetAll = async (params?: CustomerControllerGetAllParams, options?: RequestInit): Promise<customerControllerGetAllResponse> => {
 
-  return customInstance<customerControllerGetAllResponse>(getCustomerControllerGetAllUrl(),
+  return customInstance<customerControllerGetAllResponse>(getCustomerControllerGetAllUrl(params),
   {
     ...options,
     method: 'GET'
@@ -70,23 +100,23 @@ export const customerControllerGetAll = async ( options?: RequestInit): Promise<
 
 
 
-export const getCustomerControllerGetAllQueryKey = () => {
+export const getCustomerControllerGetAllQueryKey = (params?: CustomerControllerGetAllParams,) => {
     return [
-    `/customers`
+    `/customers`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getCustomerControllerGetAllQueryOptions = <TData = Awaited<ReturnType<typeof customerControllerGetAll>>, TError = ErrorType<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof customerControllerGetAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getCustomerControllerGetAllQueryOptions = <TData = Awaited<ReturnType<typeof customerControllerGetAll>>, TError = ErrorType<BasicResponse>>(params?: CustomerControllerGetAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof customerControllerGetAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getCustomerControllerGetAllQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getCustomerControllerGetAllQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof customerControllerGetAll>>> = ({ signal }) => customerControllerGetAll({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof customerControllerGetAll>>> = ({ signal }) => customerControllerGetAll(params, { signal, ...requestOptions });
 
 
 
@@ -96,11 +126,11 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type CustomerControllerGetAllQueryResult = NonNullable<Awaited<ReturnType<typeof customerControllerGetAll>>>
-export type CustomerControllerGetAllQueryError = ErrorType<unknown>
+export type CustomerControllerGetAllQueryError = ErrorType<BasicResponse>
 
 
-export function useCustomerControllerGetAll<TData = Awaited<ReturnType<typeof customerControllerGetAll>>, TError = ErrorType<unknown>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof customerControllerGetAll>>, TError, TData>> & Pick<
+export function useCustomerControllerGetAll<TData = Awaited<ReturnType<typeof customerControllerGetAll>>, TError = ErrorType<BasicResponse>>(
+ params: undefined |  CustomerControllerGetAllParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof customerControllerGetAll>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof customerControllerGetAll>>,
           TError,
@@ -109,8 +139,8 @@ export function useCustomerControllerGetAll<TData = Awaited<ReturnType<typeof cu
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCustomerControllerGetAll<TData = Awaited<ReturnType<typeof customerControllerGetAll>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof customerControllerGetAll>>, TError, TData>> & Pick<
+export function useCustomerControllerGetAll<TData = Awaited<ReturnType<typeof customerControllerGetAll>>, TError = ErrorType<BasicResponse>>(
+ params?: CustomerControllerGetAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof customerControllerGetAll>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof customerControllerGetAll>>,
           TError,
@@ -119,20 +149,20 @@ export function useCustomerControllerGetAll<TData = Awaited<ReturnType<typeof cu
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCustomerControllerGetAll<TData = Awaited<ReturnType<typeof customerControllerGetAll>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof customerControllerGetAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useCustomerControllerGetAll<TData = Awaited<ReturnType<typeof customerControllerGetAll>>, TError = ErrorType<BasicResponse>>(
+ params?: CustomerControllerGetAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof customerControllerGetAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get Customers
  */
 
-export function useCustomerControllerGetAll<TData = Awaited<ReturnType<typeof customerControllerGetAll>>, TError = ErrorType<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof customerControllerGetAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useCustomerControllerGetAll<TData = Awaited<ReturnType<typeof customerControllerGetAll>>, TError = ErrorType<BasicResponse>>(
+ params?: CustomerControllerGetAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof customerControllerGetAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getCustomerControllerGetAllQueryOptions(options)
+  const queryOptions = getCustomerControllerGetAllQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -146,16 +176,33 @@ export function useCustomerControllerGetAll<TData = Awaited<ReturnType<typeof cu
  * @summary Create Customer
  */
 export type customerControllerCreateResponse201 = {
-  data: void
+  data: BasicResponse
   status: 201
+}
+
+export type customerControllerCreateResponse400 = {
+  data: BasicResponse
+  status: 400
+}
+
+export type customerControllerCreateResponse401 = {
+  data: BasicResponse
+  status: 401
+}
+
+export type customerControllerCreateResponse403 = {
+  data: BasicResponse
+  status: 403
 }
 
 export type customerControllerCreateResponseSuccess = (customerControllerCreateResponse201) & {
   headers: Headers;
 };
-;
+export type customerControllerCreateResponseError = (customerControllerCreateResponse400 | customerControllerCreateResponse401 | customerControllerCreateResponse403) & {
+  headers: Headers;
+};
 
-export type customerControllerCreateResponse = (customerControllerCreateResponseSuccess)
+export type customerControllerCreateResponse = (customerControllerCreateResponseSuccess | customerControllerCreateResponseError)
 
 export const getCustomerControllerCreateUrl = () => {
 
@@ -179,7 +226,7 @@ export const customerControllerCreate = async ( options?: RequestInit): Promise<
 
 
 
-export const getCustomerControllerCreateMutationOptions = <TError = ErrorType<unknown>,
+export const getCustomerControllerCreateMutationOptions = <TError = ErrorType<BasicResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof customerControllerCreate>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof customerControllerCreate>>, TError,void, TContext> => {
 
@@ -208,12 +255,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type CustomerControllerCreateMutationResult = NonNullable<Awaited<ReturnType<typeof customerControllerCreate>>>
 
-    export type CustomerControllerCreateMutationError = ErrorType<unknown>
+    export type CustomerControllerCreateMutationError = ErrorType<BasicResponse>
 
     /**
  * @summary Create Customer
  */
-export const useCustomerControllerCreate = <TError = ErrorType<unknown>,
+export const useCustomerControllerCreate = <TError = ErrorType<BasicResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof customerControllerCreate>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof customerControllerCreate>>,
@@ -227,28 +274,59 @@ export const useCustomerControllerCreate = <TError = ErrorType<unknown>,
  * @summary Get Customer
  */
 export type customerControllerGetResponse200 = {
-  data: void
+  data: BasicResponse
   status: 200
+}
+
+export type customerControllerGetResponse400 = {
+  data: BasicResponse
+  status: 400
+}
+
+export type customerControllerGetResponse401 = {
+  data: BasicResponse
+  status: 401
+}
+
+export type customerControllerGetResponse403 = {
+  data: BasicResponse
+  status: 403
+}
+
+export type customerControllerGetResponse404 = {
+  data: BasicResponse
+  status: 404
 }
 
 export type customerControllerGetResponseSuccess = (customerControllerGetResponse200) & {
   headers: Headers;
 };
-;
+export type customerControllerGetResponseError = (customerControllerGetResponse400 | customerControllerGetResponse401 | customerControllerGetResponse403 | customerControllerGetResponse404) & {
+  headers: Headers;
+};
 
-export type customerControllerGetResponse = (customerControllerGetResponseSuccess)
+export type customerControllerGetResponse = (customerControllerGetResponseSuccess | customerControllerGetResponseError)
 
-export const getCustomerControllerGetUrl = (id: string,) => {
+export const getCustomerControllerGetUrl = (id: string,
+    params?: CustomerControllerGetParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
 
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
 
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/customers/${id}`
+  return stringifiedParams.length > 0 ? `/customers/${id}?${stringifiedParams}` : `/customers/${id}`
 }
 
-export const customerControllerGet = async (id: string, options?: RequestInit): Promise<customerControllerGetResponse> => {
+export const customerControllerGet = async (id: string,
+    params?: CustomerControllerGetParams, options?: RequestInit): Promise<customerControllerGetResponse> => {
 
-  return customInstance<customerControllerGetResponse>(getCustomerControllerGetUrl(id),
+  return customInstance<customerControllerGetResponse>(getCustomerControllerGetUrl(id,params),
   {
     ...options,
     method: 'GET'
@@ -261,23 +339,25 @@ export const customerControllerGet = async (id: string, options?: RequestInit): 
 
 
 
-export const getCustomerControllerGetQueryKey = (id: string,) => {
+export const getCustomerControllerGetQueryKey = (id: string,
+    params?: CustomerControllerGetParams,) => {
     return [
-    `/customers/${id}`
+    `/customers/${id}`, ...(params ? [params] : [])
     ] as const;
     }
 
 
-export const getCustomerControllerGetQueryOptions = <TData = Awaited<ReturnType<typeof customerControllerGet>>, TError = ErrorType<unknown>>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof customerControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getCustomerControllerGetQueryOptions = <TData = Awaited<ReturnType<typeof customerControllerGet>>, TError = ErrorType<BasicResponse>>(id: string,
+    params?: CustomerControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof customerControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
 const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getCustomerControllerGetQueryKey(id);
+  const queryKey =  queryOptions?.queryKey ?? getCustomerControllerGetQueryKey(id,params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof customerControllerGet>>> = ({ signal }) => customerControllerGet(id, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof customerControllerGet>>> = ({ signal }) => customerControllerGet(id,params, { signal, ...requestOptions });
 
 
 
@@ -287,11 +367,12 @@ const {query: queryOptions, request: requestOptions} = options ?? {};
 }
 
 export type CustomerControllerGetQueryResult = NonNullable<Awaited<ReturnType<typeof customerControllerGet>>>
-export type CustomerControllerGetQueryError = ErrorType<unknown>
+export type CustomerControllerGetQueryError = ErrorType<BasicResponse>
 
 
-export function useCustomerControllerGet<TData = Awaited<ReturnType<typeof customerControllerGet>>, TError = ErrorType<unknown>>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof customerControllerGet>>, TError, TData>> & Pick<
+export function useCustomerControllerGet<TData = Awaited<ReturnType<typeof customerControllerGet>>, TError = ErrorType<BasicResponse>>(
+ id: string,
+    params: undefined |  CustomerControllerGetParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof customerControllerGet>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof customerControllerGet>>,
           TError,
@@ -300,8 +381,9 @@ export function useCustomerControllerGet<TData = Awaited<ReturnType<typeof custo
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCustomerControllerGet<TData = Awaited<ReturnType<typeof customerControllerGet>>, TError = ErrorType<unknown>>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof customerControllerGet>>, TError, TData>> & Pick<
+export function useCustomerControllerGet<TData = Awaited<ReturnType<typeof customerControllerGet>>, TError = ErrorType<BasicResponse>>(
+ id: string,
+    params?: CustomerControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof customerControllerGet>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof customerControllerGet>>,
           TError,
@@ -310,20 +392,22 @@ export function useCustomerControllerGet<TData = Awaited<ReturnType<typeof custo
       >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCustomerControllerGet<TData = Awaited<ReturnType<typeof customerControllerGet>>, TError = ErrorType<unknown>>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof customerControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useCustomerControllerGet<TData = Awaited<ReturnType<typeof customerControllerGet>>, TError = ErrorType<BasicResponse>>(
+ id: string,
+    params?: CustomerControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof customerControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get Customer
  */
 
-export function useCustomerControllerGet<TData = Awaited<ReturnType<typeof customerControllerGet>>, TError = ErrorType<unknown>>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof customerControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export function useCustomerControllerGet<TData = Awaited<ReturnType<typeof customerControllerGet>>, TError = ErrorType<BasicResponse>>(
+ id: string,
+    params?: CustomerControllerGetParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof customerControllerGet>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getCustomerControllerGetQueryOptions(id,options)
+  const queryOptions = getCustomerControllerGetQueryOptions(id,params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -334,19 +418,41 @@ export function useCustomerControllerGet<TData = Awaited<ReturnType<typeof custo
 
 
 /**
- * @summary Update a customer
+ * @summary Update Customer
  */
 export type customerControllerUpdateResponse200 = {
-  data: void
+  data: BasicResponse
   status: 200
+}
+
+export type customerControllerUpdateResponse400 = {
+  data: BasicResponse
+  status: 400
+}
+
+export type customerControllerUpdateResponse401 = {
+  data: BasicResponse
+  status: 401
+}
+
+export type customerControllerUpdateResponse403 = {
+  data: BasicResponse
+  status: 403
+}
+
+export type customerControllerUpdateResponse404 = {
+  data: BasicResponse
+  status: 404
 }
 
 export type customerControllerUpdateResponseSuccess = (customerControllerUpdateResponse200) & {
   headers: Headers;
 };
-;
+export type customerControllerUpdateResponseError = (customerControllerUpdateResponse400 | customerControllerUpdateResponse401 | customerControllerUpdateResponse403 | customerControllerUpdateResponse404) & {
+  headers: Headers;
+};
 
-export type customerControllerUpdateResponse = (customerControllerUpdateResponseSuccess)
+export type customerControllerUpdateResponse = (customerControllerUpdateResponseSuccess | customerControllerUpdateResponseError)
 
 export const getCustomerControllerUpdateUrl = (id: string,) => {
 
@@ -370,7 +476,7 @@ export const customerControllerUpdate = async (id: string, options?: RequestInit
 
 
 
-export const getCustomerControllerUpdateMutationOptions = <TError = ErrorType<unknown>,
+export const getCustomerControllerUpdateMutationOptions = <TError = ErrorType<BasicResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof customerControllerUpdate>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof customerControllerUpdate>>, TError,{id: string}, TContext> => {
 
@@ -399,12 +505,12 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
     export type CustomerControllerUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof customerControllerUpdate>>>
 
-    export type CustomerControllerUpdateMutationError = ErrorType<unknown>
+    export type CustomerControllerUpdateMutationError = ErrorType<BasicResponse>
 
     /**
- * @summary Update a customer
+ * @summary Update Customer
  */
-export const useCustomerControllerUpdate = <TError = ErrorType<unknown>,
+export const useCustomerControllerUpdate = <TError = ErrorType<BasicResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof customerControllerUpdate>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof customerControllerUpdate>>,

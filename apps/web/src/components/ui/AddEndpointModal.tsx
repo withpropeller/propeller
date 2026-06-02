@@ -22,25 +22,10 @@ import {
   ModalDialogClose,
   toast,
 } from '@/lib/pax'
-import {
-  useWebhookControllerCreate,
-  useWebhookControllerUpdate,
-} from '@/apiu/webhooks/webhooks'
 import { useQueryClient } from '@tanstack/react-query'
+import { customInstance } from '@/lib/orvalClient'
 
 const EVENT_GROUPS = [
-  {
-    label: 'Card',
-    events: [
-      { value: 'card.created', label: 'Card created' },
-      { value: 'card.linked', label: 'Card linked' },
-      { value: 'card.activated', label: 'Card activated' },
-      { value: 'card.authorization.request', label: 'Authorization request' },
-      { value: 'card.authorization.closed', label: 'Authorization closed' },
-      { value: 'card.authorization.update', label: 'Authorization updated' },
-      { value: 'card.transaction.created', label: 'Transaction created' },
-    ],
-  },
   {
     label: 'Payment',
     events: [
@@ -48,10 +33,6 @@ const EVENT_GROUPS = [
       { value: 'payment.authorization.approved', label: 'Authorization approved' },
       { value: 'payment.authorization.activated', label: 'Authorization activated' },
     ],
-  },
-  {
-    label: 'Dispute',
-    events: [{ value: 'dispute.updated', label: 'Dispute updated' }],
   },
   {
     label: 'Request',
@@ -97,10 +78,7 @@ export function AddEndpointModal({ initialWebhook, onClose, onSuccess }: AddEndp
     }
   }, [initialWebhook])
 
-  const createMutation = useWebhookControllerCreate()
-  const updateMutation = useWebhookControllerUpdate()
-
-  const submitting = isEdit ? updateMutation.isPending : createMutation.isPending
+  const [submitting, setSubmitting] = useState(false)
 
   function set(key: keyof typeof form, value: string) {
     setForm((prev) => ({ ...prev, [key]: value }))
@@ -135,12 +113,19 @@ export function AddEndpointModal({ initialWebhook, onClose, onSuccess }: AddEndp
       ...(form.signingKey.trim() ? { signingKey: form.signingKey.trim() } : {}),
     } as any
 
+    setSubmitting(true)
     try {
       if (isEdit) {
-        await updateMutation.mutateAsync({ id: initialWebhook.id, data: payload })
+        await customInstance(`/webhooks/${initialWebhook.id}`, {
+          method: 'PUT',
+          body: JSON.stringify(payload),
+        })
         toast({ title: 'Endpoint updated', severity: 'success' })
       } else {
-        await createMutation.mutateAsync({ data: payload })
+        await customInstance('/webhooks', {
+          method: 'POST',
+          body: JSON.stringify(payload),
+        })
         toast({ title: 'Endpoint added', severity: 'success' })
       }
       queryClient.invalidateQueries({ queryKey: ['webhook'] })
@@ -152,6 +137,8 @@ export function AddEndpointModal({ initialWebhook, onClose, onSuccess }: AddEndp
         description: err?.message ?? 'Something went wrong.',
         severity: 'danger',
       })
+    } finally {
+      setSubmitting(false)
     }
   }
 
@@ -189,7 +176,7 @@ export function AddEndpointModal({ initialWebhook, onClose, onSuccess }: AddEndp
                   id="webhook-name"
                   value={form.name}
                   onChange={(e) => set('name', (e.target as HTMLInputElement).value)}
-                  placeholder="e.g. Production card events"
+                  placeholder="e.g. Production payment events"
                   autoFocus
                   className="w-full"
                 />

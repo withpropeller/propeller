@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { useDashboardControllerGetMetrics } from '@/apiu/dashboard/dashboard'
-import { useBusinessControllerFind } from '@/apiu/business/business'
+import { useDashboardControllerGetMetrics } from '@/api/dashboard/dashboard'
+import { useBusinessControllerFind } from '@/api/business/business'
 import { useAuth } from '@/context/AuthContext'
 import { Sparkline } from '@/components/ui/Sparkline'
 import { Delta } from '@/components/ui/Delta'
@@ -10,7 +10,7 @@ import { ChartEmpty } from '@/components/ui/ChartEmpty'
 import { StatValue } from '@/components/ui/StatValue'
 import { PeriodSelect, PERIODS, type Period } from '@/components/ui/PeriodSelect'
 import { formatAmount } from '@/lib/format'
-import type { TreasuryDailyVolumeStatDto, TreasuryFlowSplitStatDto, TreasuryStatusStatDto } from '@/apiu/model'
+import type { TreasuryDailyVolumeStatDto, TreasuryFlowSplitStatDto, TreasuryStatusStatDto } from '@/api/model'
 import {
   PieChart,
   Pie,

@@ -22,7 +22,6 @@ const PERMISSIONS: PermissionRow[] = [
   { page: 'Dashboard',         admin: 'yes', developer: 'yes' },
   { page: 'Customers',         admin: 'yes', developer: 'yes' },
   { page: 'Accounts',          admin: 'yes', developer: 'yes' },
-  { page: 'Disputes',          admin: 'yes', developer: 'yes' },
   { page: 'Payments',          admin: 'yes', developer: 'yes' },
   { page: 'Developer tools',   admin: 'yes', developer: 'yes' },
   { page: 'Business Identity', admin: 'yes', developer: 'no'  },
