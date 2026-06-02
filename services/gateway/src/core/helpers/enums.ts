@@ -20,11 +20,11 @@ export enum RequestTasks {
 }
 
 export enum AccountStatus {
-    PENDING = 'pending',
-    REQUIRES_ACTIVATION = 'requires-activation',
-    ACTIVE = 'active',
-    SUSPENDED = 'suspended',
-    TERMINATED = 'terminated',
+    Pending = 'pending',
+    RequiresActivation = 'requires-activation',
+    Active = 'active',
+    Suspended = 'suspended',
+    Terminated = 'terminated',
 }
 
 export enum WorkerQueue {

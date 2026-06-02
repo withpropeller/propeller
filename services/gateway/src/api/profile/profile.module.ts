@@ -5,10 +5,7 @@ import { AuthModule } from '@auth/auth.module';
 import { CommonModule } from '@common/common.module';
 
 @Module({
-    imports: [
-        CommonModule,
-        UsersModule, AuthModule,
-    ],
+    imports: [CommonModule, UsersModule, AuthModule],
     controllers: [ProfileController],
     providers: [],
 })

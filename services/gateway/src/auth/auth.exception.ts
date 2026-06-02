@@ -64,24 +64,24 @@ export class AuthException extends CustomException {
 
     public static ACCOUNT_INACTIVE(
         status:
-            | AccountStatus.PENDING
-            | AccountStatus.SUSPENDED
-            | AccountStatus.REQUIRES_ACTIVATION
-            | AccountStatus.TERMINATED,
+            | AccountStatus.Pending
+            | AccountStatus.Suspended
+            | AccountStatus.RequiresActivation
+            | AccountStatus.Terminated,
         body?: any,
     ) {
         let code;
         switch (status) {
-            case AccountStatus.PENDING:
+            case AccountStatus.Pending:
                 code = AuthErrors.AccountPending;
                 break;
-            case AccountStatus.SUSPENDED:
+            case AccountStatus.Suspended:
                 code = AuthErrors.AccountSuspended;
                 break;
-            case AccountStatus.REQUIRES_ACTIVATION:
+            case AccountStatus.RequiresActivation:
                 code = AuthErrors.AccountRequiresActivation;
                 break;
-            case AccountStatus.TERMINATED:
+            case AccountStatus.Terminated:
                 code = AuthErrors.AccountTerminated;
                 break;
         }
@@ -93,7 +93,11 @@ export class AuthException extends CustomException {
     }
 
     public static get IDENTITY_NOT_CONFIRMED() {
-        return new this('User identity not confirmed', AuthErrors.IdentityNotConfirmed, HttpStatus.UNPROCESSABLE_ENTITY);
+        return new this(
+            'User identity not confirmed',
+            AuthErrors.IdentityNotConfirmed,
+            HttpStatus.UNPROCESSABLE_ENTITY,
+        );
     }
 
     public static get USER_ALREADY_EXIST() {

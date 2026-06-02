@@ -10,7 +10,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
         bodyParser: true,
-        bufferLogs: false,
+        bufferLogs: true,
     });
     app.useLogger(app.get(Logger));
     app.useGlobalPipes(new ParamValidationPipe());

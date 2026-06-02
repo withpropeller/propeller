@@ -4,7 +4,7 @@ import { ModuleRef, REQUEST } from '@nestjs/core';
 import { getModelToken } from '@nestjs/mongoose';
 import { AccessKeyTag, TenantDataSource } from '@core/helpers/enums';
 import { Repository, RepositoryFactory } from '@core/abstracts';
-import { CreateSecretKeyDto, PatchSecretKeyDto } from './secret-key.dto';
+import { CreateSecretKeyDto, PatchSecretKeyDto, SecretKeyMetricsDto } from './secret-key.dto';
 import { BusinessService } from '@api/business/business.service';
 import { GetTenantDataSource, TenantRequestPayload, Utils } from '@core/helpers';
 import { BusinessStatus } from '@api/business/business.enums';
@@ -19,6 +19,13 @@ import { RedisKeys } from '@common/helpers/constants';
 import { BusinessException } from '@api/business/business.exception';
 import { SecretKeyStatus } from './secret-key.enums';
 import { SecretKeyException } from './secret-key.exception';
+import { ApiRequestsService } from '@api/api-requests/api-requests.service';
+import {
+    getSecretKeyDailyRequestsPipeline,
+    getSecretKeyErrorsTodayPipeline,
+    getSecretKeyRequestsTodayPipeline,
+    getSecretKeyTotalRequestsPipeline,
+} from './secret-key.utils';
 
 @Injectable({ scope: Scope.REQUEST, durable: true })
 export class SecretKeyService {
@@ -29,6 +36,7 @@ export class SecretKeyService {
         private moduleRef: ModuleRef,
         private businessService: BusinessService,
         private auditService: AuditService,
+        private apiRequestsService: ApiRequestsService,
     ) {
         const model = this.moduleRef.get(getModelToken(SecretKey.name, GetTenantDataSource(this.request)), {
             strict: false,
@@ -37,7 +45,7 @@ export class SecretKeyService {
     }
 
     async create(user: JWTUser, data: CreateSecretKeyDto, req: Request): Promise<any> {
-        const business = await this.businessService.findOneById(user.businessId);
+        const business = await this.businessService.findById(user.businessId);
         const dataSource = GetTenantDataSource(this.request);
         const accessKeyTag = dataSource === TenantDataSource.Live ? AccessKeyTag.LiveKey : AccessKeyTag.TestKey;
 
@@ -73,7 +81,7 @@ export class SecretKeyService {
         return { accessKey, plainKey };
     }
 
-    async update(user: JWTUser, id: string, data: PatchSecretKeyDto, req: Request): Promise<any> {
+    async update(user: JWTUser, id: Types.ObjectId, data: PatchSecretKeyDto, req: Request): Promise<any> {
         const secretKey = await this.repo.findOne({ business: user.businessId, _id: id });
         if (secretKey.status === SecretKeyStatus.Terminated) {
             throw SecretKeyException.SecretKeyAlreadyTerminated;
@@ -109,7 +117,7 @@ export class SecretKeyService {
      * Delete a Access Key
      * @param publicId
      */
-    async delete(publicId: string, user: JWTUser, req: Request) {
+    async delete(publicId: Types.ObjectId, user: JWTUser, req: Request) {
         const secretKey = await this.repo.findOne({ business: user.businessId, _id: publicId });
         if (secretKey.status === SecretKeyStatus.Terminated) {
             throw SecretKeyException.SecretKeyAlreadyTerminated;
@@ -126,5 +134,25 @@ export class SecretKeyService {
             },
             req,
         );
+    }
+
+    async getMetrics(user: JWTUser, id: Types.ObjectId, query: SecretKeyMetricsDto) {
+        const secretKey = await this.repo.findOne({ _id: id, business: user.businessId });
+        const days = parseInt(query.days || '7', 10);
+        const keyId = secretKey._id as Types.ObjectId;
+
+        const [requestsToday, errorsToday, totalRequests, dailyStats] = await Promise.all([
+            this.apiRequestsService.repo.aggregate(getSecretKeyRequestsTodayPipeline(user.businessId, keyId)),
+            this.apiRequestsService.repo.aggregate(getSecretKeyErrorsTodayPipeline(user.businessId, keyId)),
+            this.apiRequestsService.repo.aggregate(getSecretKeyTotalRequestsPipeline(user.businessId, keyId)),
+            this.apiRequestsService.repo.aggregate(getSecretKeyDailyRequestsPipeline(user.businessId, keyId, days)),
+        ]);
+
+        return {
+            requestsToday: (requestsToday as any[])[0]?.count || 0,
+            errorsToday: (errorsToday as any[])[0]?.count || 0,
+            totalRequests: (totalRequests as any[])[0]?.count || 0,
+            dailyStats: (dailyStats as any[]).map((d) => ({ date: d._id, count: d.count })),
+        };
     }
 }

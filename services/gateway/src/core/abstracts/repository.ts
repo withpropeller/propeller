@@ -48,7 +48,7 @@ export abstract class Repository<T> {
         return await this.model.countDocuments(conditions);
     }
 
-    async findOneById(id: string, failSilently = false): Promise<HydratedDocument<T>> {
+    async findById(id: Types.ObjectId, failSilently = false): Promise<HydratedDocument<T>> {
         const entity = await this.model.findById(id).exec();
         if (!entity && !failSilently) {
             throw new NotFoundException(`${this.collectionName} not found`);
@@ -56,8 +56,8 @@ export abstract class Repository<T> {
         return entity;
     }
 
-    async safeFindOneById(id: string, activeString = 'ACTIVE') {
-        const entity = await this.findOneById(id);
+    async safeFindById(id: Types.ObjectId, activeString = 'ACTIVE') {
+        const entity = await this.findById(id);
         if ((entity as any).status !== activeString) {
             throw new BadRequestException(`${this.collectionName} not in ${activeString} state`);
         }

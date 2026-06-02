@@ -26,9 +26,9 @@ export class InfraApiService extends RequestService {
         const token = InfraToken.sign(
             {
                 iss: 'gateway',
-                businessId: user.businessId,
-                userId: user.userId,
-                tenantId: this.request.tenantId,
+                businessId: user.businessId.toString(),
+                userId: user.userId.toString(),
+                tenantId: this.request.tenantId.toString(),
                 // ObjectId-shaped so the api can adopt it as the request id verbatim.
                 requestId: randomBytes(12).toString('hex'),
             },

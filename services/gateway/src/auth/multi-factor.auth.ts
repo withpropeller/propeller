@@ -8,13 +8,13 @@ import { TwoFAChannels } from './auth.enums';
 import { AuthException } from './auth.exception';
 import { AccessKeyUtils } from '@core/crypto';
 import { ExtractEmailNotificationTo } from '@core/jobs/notification.job';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 @Injectable()
 export class MultiFactorAuth {
     constructor(private usersService: UsersService, private notificationHandler: NotificationHandler) {}
 
-    async getMFASettings(publicId: string) {
+    async getMFASettings(publicId: Types.ObjectId) {
         const user = await this.usersService.findOneAndUpdate({ _id: publicId }, { $set: { stateToken: null } });
 
         const multiFactors = user.toObject().multiFactors;
@@ -27,8 +27,8 @@ export class MultiFactorAuth {
         return !!multiFactors.find((v) => v.enabled);
     }
 
-    async activate2FA(publicId: string, data: Activated2FADto) {
-        const user = await this.usersService.findOneById(publicId);
+    async activate2FA(publicId: Types.ObjectId, data: Activated2FADto) {
+        const user = await this.usersService.findById(publicId);
 
         const multiFactors = user.multiFactors || [];
         const factor = multiFactors.find((v) => v.channel === data.channel);
@@ -55,8 +55,8 @@ export class MultiFactorAuth {
         return { recoveryKey: plainKey };
     }
 
-    async setup2FA(publicId: string, data: Setup2FADto, sendToken = false) {
-        const user = await this.usersService.findOneById(publicId);
+    async setup2FA(publicId: Types.ObjectId, data: Setup2FADto, sendToken = false) {
+        const user = await this.usersService.findById(publicId);
 
         // authenticate password
         await this.usersService.authenticateCredentials(user, data.password);
@@ -79,7 +79,7 @@ export class MultiFactorAuth {
         await this.addMFA(user, mfa);
 
         if (data.channel === TwoFAChannels.Authenticator) {
-            const otpAuth = authenticator.keyuri(user.email, 'Allawee', secret);
+            const otpAuth = authenticator.keyuri(user.email, 'Hyphen', secret);
             return { otpAuth, setupKey: secret };
         }
 
@@ -88,8 +88,8 @@ export class MultiFactorAuth {
         }
     }
 
-    async deactivate2FA(publicId: string, data: Setup2FADto, sendToken = false) {
-        const user = await this.usersService.findOneById(publicId);
+    async deactivate2FA(publicId: Types.ObjectId, data: Setup2FADto, sendToken = false) {
+        const user = await this.usersService.findById(publicId);
 
         // authenticate password
         await this.usersService.authenticateCredentials(user, data.password);
@@ -107,8 +107,8 @@ export class MultiFactorAuth {
         return this.usersService.updateById(user.id, { $set: { multiFactors } });
     }
 
-    async recoverMFA(publicId: string, data: RecoverMFADto) {
-        const user = await this.usersService.findOneById(publicId);
+    async recoverMFA(publicId: Types.ObjectId, data: RecoverMFADto) {
+        const user = await this.usersService.findById(publicId);
 
         // Get The factor
         const multiFactors = user.multiFactors || [];
@@ -146,8 +146,8 @@ export class MultiFactorAuth {
         this.send2FAToken(user, mfa);
     }
 
-    async sendUserMFA(publicId: string, channel: TwoFAChannels) {
-        const user = await this.usersService.findOneById(publicId);
+    async sendUserMFA(publicId: Types.ObjectId, channel: TwoFAChannels) {
+        const user = await this.usersService.findById(publicId);
 
         const multiFactors = user.multiFactors || [];
         const factor = multiFactors.find((v) => v.channel === channel);
@@ -182,8 +182,8 @@ export class MultiFactorAuth {
         return this.usersService.updateById(user.id, { $set: { multiFactors } });
     }
 
-    async setDefault(publicId: string, channel: TwoFAChannels) {
-        const user = await this.usersService.findOneById(publicId);
+    async setDefault(publicId: Types.ObjectId, channel: TwoFAChannels) {
+        const user = await this.usersService.findById(publicId);
 
         let multiFactors = user.multiFactors || [];
         const factor = multiFactors.find((v) => v.channel === channel);
@@ -286,6 +286,10 @@ export class MultiFactorAuth {
     async handle2FATokenEmail(user: User, token: string): Promise<void> {
         const content = { firstName: user.firstName, token };
 
-        this.notificationHandler.handle(NotificationTemplates.TwoFactorRequested, ExtractEmailNotificationTo(user), content);
+        this.notificationHandler.handle(
+            NotificationTemplates.TwoFactorRequested,
+            ExtractEmailNotificationTo(user),
+            content,
+        );
     }
 }

@@ -5,7 +5,7 @@ import { AccountStatus, TenantDataSource, MongoIdEquals, NotificationTemplates, 
 import { NotificationHandler } from '@common/notifications/notification-handler.service';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { HydratedDocument, Model } from 'mongoose';
+import { HydratedDocument, Model, Types } from 'mongoose';
 import { InviteUserDto } from './business.dto';
 import { Business } from './business.schema';
 import { Repository } from '@core/abstracts/repository';
@@ -14,7 +14,6 @@ import { RolesService } from '@api/roles/roles.service';
 import { AuthException } from '@auth/auth.exception';
 import { OnboardSurvey } from '@auth/onboard/onboard-survey.schema';
 import { BusinessStatus } from './business.enums';
-// shortener removed
 import { ExtractEmailNotificationTo } from '@core/jobs/notification.job';
 import { RoleSlugs } from '@api/roles/roles.enums';
 import { AccountService } from '@api/account/account.service';
@@ -22,7 +21,6 @@ import { ConfigurationService } from '@api/configuration/configuration.service';
 
 @Injectable()
 export class BusinessService extends Repository<Business> {
-
     constructor(
         @InjectModel(Business.name, TenantDataSource.Core) model: Model<HydratedDocument<Business>>,
         private userService: UsersService,
@@ -54,16 +52,15 @@ export class BusinessService extends Repository<Business> {
         await this.configurationService.create(business, mainAccount);
     }
 
-
     async getBusinessMembers(businessId: any, query: APIPagingDto): Promise<APIPagingData<User>> {
-        const business = await this.findOneById(businessId);
+        const business = await this.findById(businessId);
 
         return this.userService.findByQuery(query, { business: business._id });
     }
 
-    async inviteUser(businessId: string, data: InviteUserDto, adminPublicId: string) {
-        const admin = await this.userService.findOneById(adminPublicId);
-        const business = await this.findOneById(businessId);
+    async inviteUser(businessId: Types.ObjectId, data: InviteUserDto, adminPublicId: Types.ObjectId) {
+        const admin = await this.userService.findById(adminPublicId);
+        const business = await this.findById(businessId);
 
         // check if user exist on allawee
         const user = await this.userService.findOneByEmail(data.email, true);
@@ -75,7 +72,7 @@ export class BusinessService extends Repository<Business> {
             return;
         }
 
-        if (user && MongoIdEquals(user.business, business._id) && user.status === AccountStatus.REQUIRES_ACTIVATION) {
+        if (user && MongoIdEquals(user.business, business._id) && user.status === AccountStatus.RequiresActivation) {
             const stateToken = await this.userService.setStateToken(user.id);
             await this.handleInvitationEmail(admin, user, business, stateToken);
             return;
@@ -84,11 +81,11 @@ export class BusinessService extends Repository<Business> {
         throw AuthException.USER_ALREADY_EXIST;
     }
 
-    async revokeInvite(businessId: string, userId: string) {
+    async revokeInvite(businessId: Types.ObjectId, userId: Types.ObjectId) {
         const user = await this.userService.findOne({
             _id: userId,
             business: businessId,
-            status: AccountStatus.REQUIRES_ACTIVATION,
+            status: AccountStatus.RequiresActivation,
         });
 
         return this.userService.deleteById(user.id);
@@ -127,7 +124,11 @@ export class BusinessService extends Repository<Business> {
             redirectLink,
         };
 
-        this.notificationHandler.handle(NotificationTemplates.KycPromptEmail, ExtractEmailNotificationTo(user), content);
+        this.notificationHandler.handle(
+            NotificationTemplates.KycPromptEmail,
+            ExtractEmailNotificationTo(user),
+            content,
+        );
     }
 
     async memberCounts(organizationId: string) {

@@ -7,19 +7,19 @@ import {
     IsOptional,
     IsPhoneNumber,
     IsString,
-    IsDateString,
     MaxLength,
     MinLength,
 } from 'class-validator';
+import { Types } from 'mongoose';
 
 export class ParamKYCLeadershipMongoIdDto {
     @ApiProperty()
     @IsMongoId()
-    kycId: string;
+    kycId: Types.ObjectId;
 
     @ApiProperty()
     @IsMongoId()
-    leadershipId: string;
+    leadershipId: Types.ObjectId;
 }
 
 export class KYCBusinessInformationDto {

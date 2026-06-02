@@ -4,7 +4,7 @@ import { ROLES_CACHE_KEY } from '@common/helpers';
 import { AddRolePermissionDto, CreateRolesDto } from './dto/roles.dto';
 import { TenantDataSource, Utils } from '@core/helpers';
 import { InjectModel } from '@nestjs/mongoose';
-import { HydratedDocument, Model } from 'mongoose';
+import { HydratedDocument, Model, Types } from 'mongoose';
 import { Repository } from '@core/abstracts/repository';
 
 @Injectable()
@@ -80,8 +80,8 @@ export class RolesService extends Repository<Role> {
         return roles.filter((v) => slugs.includes(v.slug));
     }
 
-    async addPermissions(publicId: string, body: AddRolePermissionDto) {
-        const role = await this.findOneById(publicId);
+    async addPermissions(publicId: Types.ObjectId, body: AddRolePermissionDto) {
+        const role = await this.findById(publicId);
         const updatedPermissions = role.permissions.concat(body.permissions);
 
         // Enforce uniqueness
@@ -91,8 +91,8 @@ export class RolesService extends Repository<Role> {
         return this.cacheRoles();
     }
 
-    async removePermissions(publicId: string, body: AddRolePermissionDto) {
-        const role = await this.findOneById(publicId);
+    async removePermissions(publicId: Types.ObjectId, body: AddRolePermissionDto) {
+        const role = await this.findById(publicId);
         role.permissions = role.permissions.filter((v) => !body.permissions.includes(v));
 
         await role.save();

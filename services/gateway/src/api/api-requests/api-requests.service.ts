@@ -2,15 +2,15 @@ import { Inject, Injectable, Scope } from '@nestjs/common';
 import { ModuleRef, REQUEST } from '@nestjs/core';
 import { GetTenantDataSource, TenantDataSource, TenantRequestPayload } from '@core/helpers';
 import { Repository, RepositoryFactory } from '@core/abstracts';
-import { ApiRequest } from './api-log.schema';
+import { ApiRequest } from './api-request.schema';
 import { getModelToken, InjectModel } from '@nestjs/mongoose';
 import { User } from '@api/users';
-import { Model, HydratedDocument } from 'mongoose';
+import { Model, HydratedDocument, Types } from 'mongoose';
 import { JWTUser } from '@auth/jwt.strategy';
 import { APIPagingDto } from '@common/api-paging';
 
 @Injectable({ scope: Scope.REQUEST, durable: true })
-export class ApiLogsService {
+export class ApiRequestsService {
     public repo: Repository<ApiRequest>;
 
     constructor(
@@ -34,7 +34,7 @@ export class ApiLogsService {
         );
     }
 
-    getOne(id: string, businessId: string, query: APIPagingDto) {
+    getOne(id: string, businessId: Types.ObjectId, query: APIPagingDto) {
         return this.repo.findOneWithOptions({
             conditions: { _id: id, business: businessId },
             select: query.select,

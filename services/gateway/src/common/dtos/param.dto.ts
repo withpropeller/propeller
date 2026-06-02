@@ -4,6 +4,7 @@ import { ArgsType, Field } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsString, MinLength, MaxLength, IsNotEmpty, Validate, IsMongoId } from 'class-validator';
+import { Types } from 'mongoose';
 
 export class ParamIdDto {
     @ApiProperty()
@@ -16,17 +17,16 @@ export class ParamMongoIdDto {
     @Field()
     @ApiProperty()
     @IsMongoId()
-    id: string;
+    id: Types.ObjectId;
 }
 
 export class ParamTagIdDto {
     @Field()
     @ApiProperty()
-    @Transform(v => Utils.parseIdTag(v.value))
+    @Transform((v) => Utils.parseIdTag(v.value))
     @Validate(TagId)
     id: string;
 }
-
 
 export class StateTokenDto {
     @ApiProperty()

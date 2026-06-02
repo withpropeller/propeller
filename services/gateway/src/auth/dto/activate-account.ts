@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsString } from 'class-validator';
+import { Types } from 'mongoose';
 
 export class ActivateAccountDto {
     @ApiProperty({ example: 'Adekunle' })
@@ -20,5 +21,5 @@ export class ActivateAccountDto {
 
     @ApiProperty()
     @IsString()
-    readonly businessId: string;
+    readonly businessId: Types.ObjectId;
 }

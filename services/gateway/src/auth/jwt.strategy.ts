@@ -8,11 +8,11 @@ import { BusinessStatus } from '@api/business/business.enums';
 import { Business } from '@api/business/business.schema';
 import { TenantDataSource } from '@core/helpers';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, HydratedDocument } from 'mongoose';
+import { Model, HydratedDocument, Types } from 'mongoose';
 
 export interface JWTUser {
-    businessId: string;
-    userId: string;
+    businessId: Types.ObjectId;
+    userId: Types.ObjectId;
     email: string;
     roles: string;
 }
@@ -20,9 +20,10 @@ export interface JWTUser {
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(
-        @InjectModel(Business.name, TenantDataSource.Core) 
+        @InjectModel(Business.name, TenantDataSource.Core)
         private businessModel: Model<HydratedDocument<Business>>,
-        config: ConfigService) {
+        config: ConfigService,
+    ) {
         super({
             passReqToCallback: true,
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -37,14 +38,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
      * enabling us to perform token revocation.
      */
     async validate(request: any, payload: any): Promise<JWTUser> {
-        const req = request.raw ?? request as Request;
+        const req = request.raw ?? (request as Request);
         const tenant = req.headers['x-dashboard-mode'] ?? DashboardMode.Sandbox;
 
         if (tenant == DashboardMode.Live) {
             const business = await this.businessModel.findById(payload.org);
-            if(business?.status !== BusinessStatus.APPROVED) {
-               throw new ForbiddenException();
-            };
+            if (business?.status !== BusinessStatus.APPROVED) {
+                throw new ForbiddenException();
+            }
         }
 
         return {

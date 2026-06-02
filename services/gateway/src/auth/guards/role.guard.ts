@@ -11,7 +11,7 @@ export class RolesGuard implements CanActivate {
         if (typeof roles === 'object' && roles.length < 1) return true;
         const request = context.switchToHttp().getRequest();
         // eslint-disable-next-line
-        const user = await this.usersService.findOneById(
+        const user = await this.usersService.findById(
             request.user.publicId,
         );
         // TODO: we could change this to something like `user.accountType` then we can uncomment

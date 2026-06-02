@@ -2,7 +2,7 @@ import { BusinessService } from '@api/business/business.service';
 import { Repository } from '@core/abstracts';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { HydratedDocument, Model } from 'mongoose';
+import { HydratedDocument, Model, Types } from 'mongoose';
 import { KYCBusinessInformationDto, KYCBusinessAddressDto, KYCLeadershipDto } from './kyc-dto';
 import { BusinessKYC, KYCWizardDocument } from './business-kyc.schema';
 import { StorageService } from '@common/integrations/storage.service';
@@ -23,8 +23,8 @@ export class KYCWizardService extends Repository<BusinessKYC> {
         super(model);
     }
 
-    async createKYC(id: string, body: KYCBusinessInformationDto) {
-        const business = await this.businessService.findOneById(id);
+    async createKYC(id: Types.ObjectId, body: KYCBusinessInformationDto) {
+        const business = await this.businessService.findById(id);
         const businessKyc = await this.findOne({ business: business._id }, true);
 
         if (!businessKyc) {
@@ -36,21 +36,21 @@ export class KYCWizardService extends Repository<BusinessKYC> {
         return this.findOneAndUpdate({ _id: businessKyc._id }, { $set: { businessInformation: body as any } });
     }
 
-    async updateBusinessInfo(businessId: string, id: string, body: KYCBusinessInformationDto) {
+    async updateBusinessInfo(businessId: Types.ObjectId, id: Types.ObjectId, body: KYCBusinessInformationDto) {
         const businessKyc = await this.findOne({ _id: id, business: businessId });
 
         return this.findOneAndUpdate({ _id: businessKyc._id }, { $set: { businessInformation: body as any } });
     }
 
-    async updateBusinessAddress(businessId: string, id: string, body: KYCBusinessAddressDto) {
+    async updateBusinessAddress(businessId: Types.ObjectId, id: Types.ObjectId, body: KYCBusinessAddressDto) {
         const businessKyc = await this.findOne({ _id: id, business: businessId });
-        const business = await this.businessService.findOneById(businessKyc.business.toString());
+        const business = await this.businessService.findById(businessKyc.business as unknown as Types.ObjectId);
 
         await this.businessService.updateById(business.id, { email: body.email });
         return this.findOneAndUpdate({ _id: businessKyc._id }, { $set: { businessAddress: body as any } });
     }
 
-    async addLeadership(businessId: string, id: string, body: KYCLeadershipDto) {
+    async addLeadership(businessId: Types.ObjectId, id: Types.ObjectId, body: KYCLeadershipDto) {
         const businessKyc = await this.findOne({ _id: id, business: businessId });
         const exists = businessKyc.leadership.find((v) => v.bvn === body.bvn);
 
@@ -64,7 +64,7 @@ export class KYCWizardService extends Repository<BusinessKYC> {
         return this.findOneAndUpdate({ _id: businessKyc._id }, { $addToSet: { leadership: entity as any } });
     }
 
-    async deleteLeadership(businessId: string, id: string, leadershipId: string) {
+    async deleteLeadership(businessId: Types.ObjectId, id: Types.ObjectId, leadershipId: Types.ObjectId) {
         const businessKyc = await this.findOne({ _id: id, business: businessId });
 
         const toDelete = businessKyc.leadership.find((v) => (v as any)._id.toString() === leadershipId);
@@ -77,8 +77,8 @@ export class KYCWizardService extends Repository<BusinessKYC> {
     }
 
     async addDocumentations(
-        businessId: string,
-        id: string,
+        businessId: Types.ObjectId,
+        id: Types.ObjectId,
         cacCertificate: Express.Multer.File,
         applicationDoc: Express.Multer.File,
     ) {
@@ -95,8 +95,8 @@ export class KYCWizardService extends Repository<BusinessKYC> {
     }
 
     async updateDocumentations(
-        businessId: string,
-        id: string,
+        businessId: Types.ObjectId,
+        id: Types.ObjectId,
         cacCertificate: Express.Multer.File,
         applicationDoc: Express.Multer.File,
     ) {
@@ -136,7 +136,7 @@ export class KYCWizardService extends Repository<BusinessKYC> {
         return this.storageService.deleteDocument(object.keyName);
     }
 
-    async submitKyc(businessId: string, kycId: string) {
+    async submitKyc(businessId: Types.ObjectId, kycId: Types.ObjectId) {
         const businessKyc = await this.findOne({ _id: kycId, business: businessId });
 
         // Guard: validate KYC completeness before submission

@@ -1,6 +1,6 @@
 import { AppStatus, Utils } from '@core/helpers';
-import { APIRequestStatus } from './api-logs.enums';
-import { ApiLogsPayload } from './api-log.schema';
+import { APIRequestStatus } from './api-requests.enums';
+import { ApiRequestsPayload } from './api-request.schema';
 
 export const RESPONSE_REDACTION = ['responseBody.data.signingKey', 'responseBody.data.cvv', 'responseBody.data.pan'];
 export const REQUEST_REDACTION = ['requestBody.pan', 'requestBody.pin', 'requestBody.cvv'];
@@ -13,7 +13,7 @@ export function getApiRequestStatus(responseBody: any, forceHardStop: boolean) {
     return APIRequestStatus.Completed;
 }
 
-export function getApiRequestAttemptFromPayload(payload: ApiLogsPayload, forceHardStop: boolean) {
+export function getApiRequestAttemptFromPayload(payload: ApiRequestsPayload, forceHardStop: boolean) {
     if (payload.data && payload.data?.error && forceHardStop) {
         return Utils.removeNilValues({
             statusCode: 500,

@@ -19,6 +19,7 @@ import { StateTokenGuard } from './guards/state-token.guard';
 import { RecoverMFADto, SendMFADto } from '@api/profile/dto/two-fa.dto';
 import { JWTUser } from './jwt.strategy';
 import { validatePasswordStrength } from './auth.utils';
+import { Types } from 'mongoose';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -42,7 +43,7 @@ export class AuthController {
     @Public()
     @UseGuards(StateTokenGuard)
     @HttpCode(HttpStatus.OK)
-    async getMFASettings(@CurrentUser('userId') publicId: string) {
+    async getMFASettings(@CurrentUser('userId') publicId: Types.ObjectId) {
         const multiFactors = await this.mfa.getMFASettings(publicId);
 
         //set security
@@ -56,7 +57,7 @@ export class AuthController {
     @Public()
     @UseGuards(StateTokenGuard)
     @HttpCode(HttpStatus.OK)
-    async sendMFA(@CurrentUser('userId') publicId: string, @Body() body: SendMFADto) {
+    async sendMFA(@CurrentUser('userId') publicId: Types.ObjectId, @Body() body: SendMFADto) {
         await this.mfa.sendUserMFA(publicId, body.channel);
 
         //set security
@@ -70,7 +71,7 @@ export class AuthController {
     @Public()
     @UseGuards(StateTokenGuard)
     @HttpCode(HttpStatus.OK)
-    async recoverMFA(@CurrentUser('userId') publicId: string, @Body() body: RecoverMFADto) {
+    async recoverMFA(@CurrentUser('userId') publicId: Types.ObjectId, @Body() body: RecoverMFADto) {
         const response = await this.mfa.recoverMFA(publicId, body);
 
         //set security
@@ -149,7 +150,7 @@ export class AuthController {
 
     @ApiBearerAuth()
     @Post('password/change')
-    async changePassword(@CurrentUser('userId') publicId: string, @Body() data: ChangePasswordDto) {
+    async changePassword(@CurrentUser('userId') publicId: Types.ObjectId, @Body() data: ChangePasswordDto) {
         return this.authService.changePassword(publicId, data);
     }
 
@@ -161,7 +162,7 @@ export class AuthController {
     @Public()
     @Post('account/activate')
     @UseGuards(StateTokenGuard)
-    public async activateAccount(@CurrentUser('userId') publicId: string, @Body() data: ActivateAccountDto) {
+    public async activateAccount(@CurrentUser('userId') publicId: Types.ObjectId, @Body() data: ActivateAccountDto) {
         await this.authService.activateAccount(publicId, data);
 
         return AppMessages.ACCOUNT_ACTIVATED_SUCCESSFUL;
@@ -175,7 +176,7 @@ export class AuthController {
     @Public()
     @Get('account/info')
     @UseGuards(StateTokenGuard)
-    public async getAccountInfo(@CurrentUser('userId') publicId: string) {
+    public async getAccountInfo(@CurrentUser('userId') publicId: Types.ObjectId) {
         const user = await this.authService.getAccountInfo(publicId);
 
         const business = Utils.pickKeys(user.business, 'name');

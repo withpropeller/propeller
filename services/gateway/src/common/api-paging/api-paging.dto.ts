@@ -9,7 +9,7 @@ import { parseQueryBoolean } from './utils';
 export class APIPagingDto implements ExecutionOptions {
     @ApiPropertyOptional()
     @IsOptional()
-    @Transform(({ value }) => Utils.safeNumber(value) )
+    @Transform(({ value }) => Utils.safeNumber(value))
     @IsNumber()
     readonly limit?: number;
 
@@ -73,29 +73,28 @@ export class APIPagingDto implements ExecutionOptions {
 
     @ApiPropertyOptional({})
     @IsOptional()
-    @Transform(v => Utils.parseIdTag(v.value))
+    @Transform((v) => Utils.parseIdTag(v.value))
     @Validate(TagId)
     readonly before?: string;
 
     @ApiPropertyOptional({})
     @IsOptional()
-    @Transform(v => Utils.parseIdTag(v.value))
+    @Transform((v) => Utils.parseIdTag(v.value))
     @Validate(TagId)
     readonly after?: string;
 
     @ApiPropertyOptional({})
     @IsOptional()
-    @Transform((v) => parseQueryBoolean(v.value) )
+    @Transform((v) => parseQueryBoolean(v.value))
     @IsBoolean()
     readonly countTotal?: boolean;
 
     @ApiPropertyOptional({})
     @IsOptional()
-    @Transform((v) => parseQueryBoolean(v.value) )
+    @Transform((v) => parseQueryBoolean(v.value))
     @IsBoolean()
     readonly dryRun?: boolean;
 }
-
 
 /*
 const exampleFilter = '/customers?filter=email|eq|john@doe.com metadata.key|eq|value accountType|in|main,sub,virtual';

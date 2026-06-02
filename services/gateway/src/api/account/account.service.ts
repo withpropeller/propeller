@@ -53,9 +53,4 @@ export class AccountService extends InfraApiService {
         };
         return this.repo.createAndSave(entity);
     }
-
-    async requestCreditLimitApproval(_userPublicId: string, _accountId: string, _data: RequestOverdraftDto) {
-        throw AppException.BAD_REQUEST.setMessage('Credit limit not supported in MOR');
-    }
 }
-

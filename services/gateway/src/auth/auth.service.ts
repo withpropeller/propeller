@@ -14,7 +14,7 @@ import { UsersService } from '@api/users/users.service';
 import { OnboardSurvey } from './onboard/onboard-survey.schema';
 import { MultiFactorAuth } from './multi-factor.auth';
 import { AuthErrors, TwoFAChannels } from './auth.enums';
-import { HydratedDocument } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 import { JWTUser } from './jwt.strategy';
 import { EventTask, EventTasks } from '@core/events';
 import { ExecutionOptions } from '@core/interfaces';
@@ -56,7 +56,7 @@ export class AuthService {
     }
 
     async confirmEmail(user: JWTUser) {
-        const update = { emailConfirmed: true, status: AccountStatus.ACTIVE };
+        const update = { emailConfirmed: true, status: AccountStatus.Active };
         await this.usersService.updateById(user.userId, { $set: update });
 
         // TigerBeetle/ledger accounts are created on business activation (post-KYB)
@@ -126,7 +126,7 @@ export class AuthService {
         };
     }
 
-    async setStateToken(userId: string, isMobileFriendly = false): Promise<string> {
+    async setStateToken(userId: Types.ObjectId, isMobileFriendly = false): Promise<string> {
         return this.usersService.setStateToken(userId, isMobileFriendly);
     }
 
@@ -139,8 +139,8 @@ export class AuthService {
         );
     }
 
-    async changePassword(publicId: string, data: ChangePasswordDto) {
-        const user = await this.usersService.safeFindOneById(publicId);
+    async changePassword(publicId: Types.ObjectId, data: ChangePasswordDto) {
+        const user = await this.usersService.safeFindById(publicId);
 
         // Authenticate old password
         await this.usersService.authenticateCredentials(user, data.oldPassword);
@@ -185,15 +185,15 @@ export class AuthService {
         return this.usersService.changePassword(userId, data.newPassword);
     }
 
-    async activateAccount(publicId: string, data: ActivateAccountDto): Promise<UserWithAccessToken> {
-        const user = await this.usersService.findOneById(publicId);
-        const business = await this.businessService.findOneById(data.businessId);
+    async activateAccount(publicId: Types.ObjectId, data: ActivateAccountDto): Promise<UserWithAccessToken> {
+        const user = await this.usersService.findById(publicId);
+        const business = await this.businessService.findById(data.businessId);
 
         user.firstName = data.firstName;
         user.lastName = data.lastName;
         user.passwordHash = await SCryptCryptoFactory.hash(data.password);
         user.emailConfirmed = true;
-        user.status = AccountStatus.ACTIVE;
+        user.status = AccountStatus.Active;
         user.business = business;
 
         // save user
@@ -207,7 +207,7 @@ export class AuthService {
         return this.authenticatedUser(user);
     }
 
-    async getAccountInfo(publicId: string): Promise<HydratedDocument<User>> {
+    async getAccountInfo(publicId: Types.ObjectId): Promise<HydratedDocument<User>> {
         return this.usersService.findOneAndPopulate({ _id: publicId }, 'business');
     }
 

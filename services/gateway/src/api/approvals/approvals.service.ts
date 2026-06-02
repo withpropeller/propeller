@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { HydratedDocument, Model } from 'mongoose';
+import { HydratedDocument, Model, Types } from 'mongoose';
 import { Approval, ApprovalData, ApprovalStatus, ApprovalTypes } from './approvals.schema';
 import { Repository } from '@core/abstracts/repository';
 import { NotificationSenders, NotificationTemplates, TenantDataSource } from '@core/helpers';
@@ -53,9 +53,9 @@ export class ApprovalService extends Repository<Approval> {
         return doc;
     }
 
-    async requestBusinessAccountApproval(userPublicId: string, businessId: string) {
-        const user = await this.userService.findOneById(userPublicId);
-        const business = await this.businessService.findOneById(businessId);
+    async requestBusinessAccountApproval(userPublicId: Types.ObjectId, businessId: Types.ObjectId) {
+        const user = await this.userService.findById(userPublicId);
+        const business = await this.businessService.findById(businessId);
 
         // ensure no pending approval
         await this.ensureNoPendingApproval(business.id, ApprovalTypes.BusinessAccount);

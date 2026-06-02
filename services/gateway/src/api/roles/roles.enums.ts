@@ -6,6 +6,13 @@ export enum RoleSlugs {
 }
 
 export enum Permissions {
+    // Team
+    Team = 'team.*',
+    TeamReadMembers = 'team.read.members',
+    TeamCreateInvite = 'team.create.invite',
+    TeamDeleteInvite = 'team.delete.invite',
+    TeamUpdateMember = 'team.update.member',
+
     // Business
     Business = 'business.*',
     BusinessRead = 'business.read.*',
@@ -71,9 +78,9 @@ export enum Permissions {
     WebhookUpdate = 'webhook.update',
     WebhookDelete = 'webhook.delete',
 
-    //ApiLogs
-    ApiLogs = 'api-logs.*',
-    ApiLogsRead = 'api-logs.read',
+    //ApiRequests
+    ApiRequests = 'api-requests.*',
+    ApiRequestsRead = 'api-requests.read',
 
     //Customers
     Customers = 'customers.*',

@@ -46,7 +46,7 @@ export class UsersService extends Repository<User> {
             Utils.removeNilValuesDeep({
                 ...v,
                 roles: [role._id],
-                status: AccountStatus.ACTIVE,
+                status: AccountStatus.Active,
                 business: businessId,
             }),
         );
@@ -116,7 +116,7 @@ export class UsersService extends Repository<User> {
     async authenticateCredentials(user: User, password: string) {
         const isPinAuthentic = await SCryptCryptoFactory.compare(password, user.passwordHash);
 
-        if (user.status !== AccountStatus.ACTIVE) {
+        if (user.status !== AccountStatus.Active) {
             throw AuthException.ACCOUNT_INACTIVE(user.status);
         }
 
@@ -127,7 +127,7 @@ export class UsersService extends Repository<User> {
         return user;
     }
 
-    async addUserRoles(userId: string, newRoles: string[]) {
+    async addUserRoles(userId: Types.ObjectId, newRoles: string[]) {
         const roles = await this.rolesService.fetchRolesFromCache();
 
         if (!roles) {
@@ -148,8 +148,8 @@ export class UsersService extends Repository<User> {
      * @param userId
      * @param roles
      */
-    async assignRoles(userId: string, roles: string[]): Promise<User> {
-        const user = await this.findOneById(userId);
+    async assignRoles(userId: Types.ObjectId, roles: string[]): Promise<User> {
+        const user = await this.findById(userId);
         const userRoles = user.roles || [];
 
         const updatedRoles = userRoles.concat(roles as any);
@@ -163,8 +163,8 @@ export class UsersService extends Repository<User> {
      * @param userId
      * @param roles
      */
-    async unAssignRoles(userId: string, roles: string[]): Promise<User> {
-        const user = await this.findOneById(userId);
+    async unAssignRoles(userId: Types.ObjectId, roles: string[]): Promise<User> {
+        const user = await this.findById(userId);
         user.roles = user.roles.filter((v) => !roles.includes(v._id.toString()));
 
         return this.save(user);
@@ -178,7 +178,7 @@ export class UsersService extends Repository<User> {
         return await this.model.find(conditions).count().exec();
     }
 
-    async setStateToken(userId: string, isMobileFriendly = false): Promise<string> {
+    async setStateToken(userId: Types.ObjectId, isMobileFriendly = false): Promise<string> {
         const code = isMobileFriendly ? Utils.generateRandomNumber(6).toString() : Utils.generateRandomID(16);
 
         const stateToken = {
@@ -221,8 +221,8 @@ export class UsersService extends Repository<User> {
         throw AuthException.INVALID_TOKEN;
     }
 
-    async registerServiceIntegration(publicId: string, body: RegisterServiceIntegrationDto) {
-        const user = await this.safeFindOneById(publicId);
+    async registerServiceIntegration(publicId: Types.ObjectId, body: RegisterServiceIntegrationDto) {
+        const user = await this.safeFindById(publicId);
         const integration = user.toObject().integration;
 
         if (body.service === ServiceIntegrationType.OneSignal) {
@@ -245,7 +245,7 @@ export class UsersService extends Repository<User> {
             throw new BadRequestException('User must have a valid role');
         }
 
-        const entity = this.createPartial({ email, status: AccountStatus.REQUIRES_ACTIVATION });
+        const entity = this.createPartial({ email, status: AccountStatus.RequiresActivation });
         entity.business = businessId as any;
         entity.roles = roleIds as any;
 
